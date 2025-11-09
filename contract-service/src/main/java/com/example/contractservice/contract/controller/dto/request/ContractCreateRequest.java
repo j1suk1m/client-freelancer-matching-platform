@@ -3,8 +3,8 @@ package com.example.contractservice.contract.controller.dto.request;
 import java.time.Instant;
 
 public record ContractCreateRequest(
-        String freelancerId,
-        String clientId,
+        String freelancerCode,
+        String clientCode,
         Instant startedAt,
         Instant endedAt,
         String paymentType,
