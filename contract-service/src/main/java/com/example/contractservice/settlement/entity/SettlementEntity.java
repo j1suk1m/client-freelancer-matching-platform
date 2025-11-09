@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,8 +34,11 @@ public class SettlementEntity {
     @Column(name = "contract_code", nullable = false, columnDefinition = "CHAR(36)")
     private String contractCode;
 
-    @Column(name = "amount", nullable = false)
-    private Long amount;
+    @Column(name = "original_amount", nullable = false)
+    private Long originalAmount;
+
+    @Column(name = "settled_amount")
+    private Long settledAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -46,7 +50,10 @@ public class SettlementEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @Column(name = "processed_at")
-    private Instant processedAt;
+    @Column(name = "settled_at")
+    private Instant settledAt;
+
+    @Column(name = "settlement_rate", precision = 5, scale = 2)
+    private BigDecimal settlementRate;
 
 }
