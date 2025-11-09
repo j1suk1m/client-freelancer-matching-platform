@@ -1,4 +1,4 @@
-package com.example.contractservice.controller.dto.response;
+package com.example.contractservice.contract.controller.dto.response;
 
 import java.time.Instant;
 
