@@ -2,8 +2,10 @@ package com.example.contractservice.deposit.controller;
 
 import com.example.contractservice.deposit.controller.dto.response.DepositHistoryInfoResponse;
 import com.example.contractservice.deposit.controller.dto.response.DepositInfoResponse;
+import com.example.contractservice.deposit.service.DepositService;
 import java.time.Instant;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/deposits")
 public class DepositController {
+    private final DepositService depositService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
