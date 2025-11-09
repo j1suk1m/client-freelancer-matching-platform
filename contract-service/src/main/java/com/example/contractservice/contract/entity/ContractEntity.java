@@ -9,7 +9,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import lombok.AccessLevel;
@@ -26,13 +25,13 @@ public class ContractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // BaseEntity
 
-    @Column(name = "freelancer_code", nullable = false, length = 36)
+    @Column(name = "freelancer_code", nullable = false, columnDefinition = "CHAR(36)")
     private String freelancerCode;
 
-    @Column(name = "client_code", nullable = false, length = 36)
+    @Column(name = "client_code", nullable = false, columnDefinition = "CHAR(36)")
     private String clientCode;
 
-    @Column(name = "code", nullable = false, length = 36)
+    @Column(name = "code", nullable = false, columnDefinition = "CHAR(36)")
     private String code;
 
     @Column(name = "created_at", nullable = false)
@@ -64,8 +63,7 @@ public class ContractEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob
-    @Column(name = "body", nullable = false)
+    @Column(name = "body", nullable = false, columnDefinition = "TEXT")
     private String body;
 
 }

@@ -20,10 +20,10 @@ public class DepositEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "member_code", nullable = false, length = 36)
+    @Column(name = "member_code", nullable = false, columnDefinition = "CHAR(36)")
     private String memberCode;
 
-    @Column(name = "code", nullable = false, length = 36)
+    @Column(name = "code", nullable = false, columnDefinition = "CHAR(36)")
     private String code;
 
     @Column(name = "amount", nullable = false)

@@ -21,10 +21,10 @@ public class DepositHistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // BaseEntity
 
-    @Column(name = "deposit_code", nullable = false, length = 36)
+    @Column(name = "deposit_code", nullable = false, columnDefinition = "CHAR(36)")
     private String depositCode;
 
-    @Column(name = "code", nullable = false, length = 36)
+    @Column(name = "code", nullable = false, columnDefinition = "CHAR(36)")
     private String code;
 
     @Column(name = "created_at", nullable = false)
