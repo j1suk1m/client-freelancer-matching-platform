@@ -1,9 +1,9 @@
-package com.example.memberservice.domain.member.entity;
+package com.example.memberservice.member.entity;
 
 
-import com.example.memberservice.domain.member.common.model.vo.Gender;
+import com.example.memberservice.member.entity.vo.Gender;
 
-import com.example.memberservice.domain.member.common.model.vo.Provider;
+import com.example.memberservice.common.model.vo.Provider;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 

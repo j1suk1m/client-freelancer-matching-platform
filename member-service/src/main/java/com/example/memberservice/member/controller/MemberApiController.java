@@ -1,4 +1,4 @@
-package com.example.memberservice.domain.member.controller;
+package com.example.memberservice.member.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
