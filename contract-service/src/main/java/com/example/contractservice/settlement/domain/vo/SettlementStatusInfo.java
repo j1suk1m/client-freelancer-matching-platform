@@ -1,12 +1,13 @@
 package com.example.contractservice.settlement.domain.vo;
 
 import com.example.contractservice.settlement.common.SettlementStatus;
-import java.time.Instant;
+import java.math.BigDecimal;
 
 public record SettlementStatusInfo(
-    Long amount,
+    Long originalAmount,
+    Long settledAmount,
     SettlementStatus status,
-    Instant progressingAt
+    BigDecimal settlementRate
 ) {
 
 }

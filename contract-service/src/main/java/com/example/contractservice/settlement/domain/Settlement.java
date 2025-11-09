@@ -2,7 +2,7 @@ package com.example.contractservice.settlement.domain;
 
 import com.example.contractservice.settlement.domain.vo.SettlementReference;
 import com.example.contractservice.settlement.domain.vo.SettlementStatusInfo;
-import java.time.Instant;
+import com.example.contractservice.settlement.domain.vo.SettlementTimeline;
 import java.util.UUID;
 
 public class Settlement {
@@ -13,16 +13,14 @@ public class Settlement {
 
     private SettlementStatusInfo settlementStatusInfo;
 
-    private Instant createdAt;
-    private Instant processedAt;
+    private SettlementTimeline settlementTimeline;
 
     public Settlement(String code, SettlementReference settlementReference,
-        SettlementStatusInfo settlementStatusInfo, Instant createdAt, Instant processedAt) {
+        SettlementStatusInfo settlementStatusInfo, SettlementTimeline settlementTimeline) {
         this.code = (code == null) ? generateCode() : code;
         this.settlementReference = settlementReference;
         this.settlementStatusInfo = settlementStatusInfo;
-        this.createdAt = (createdAt == null) ? Instant.now() : createdAt;
-        this.processedAt = processedAt;
+        this.settlementTimeline = settlementTimeline;
     }
 
     private String generateCode() {
