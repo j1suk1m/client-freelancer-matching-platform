@@ -1,5 +1,6 @@
 package com.example.contractservice.contract.controller;
 
+import com.example.contractservice.contract.common.swagger.annotation.GetContractInternalApi;
 import com.example.contractservice.contract.controller.dto.response.ContractBriefResponse;
 import com.example.contractservice.contract.service.ContractService;
 import java.time.Instant;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContractInternalController {
     private final ContractService contractService;
 
+    @GetContractInternalApi
     @GetMapping("/{code}")
     @ResponseStatus(HttpStatus.OK)
     public ContractBriefResponse getBriefInfo(@PathVariable String code) {
