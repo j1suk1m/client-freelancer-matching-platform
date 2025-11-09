@@ -5,9 +5,11 @@ import com.example.contractservice.contract.controller.dto.response.ContractBrie
 import com.example.contractservice.contract.controller.dto.response.ContractCreateResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractDetailResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractInfoResponse;
+import com.example.contractservice.contract.service.ContractService;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/contracts")
 public class ContractController {
+    private final ContractService contractService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

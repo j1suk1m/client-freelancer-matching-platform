@@ -1,7 +1,9 @@
 package com.example.contractservice.contract.controller;
 
 import com.example.contractservice.contract.controller.dto.response.ContractBriefResponse;
+import com.example.contractservice.contract.service.ContractService;
 import java.time.Instant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/internal/contracts")
 public class ContractInternalController {
+    private final ContractService contractService;
 
     @GetMapping("/{code}")
     @ResponseStatus(HttpStatus.OK)
