@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,4 +52,18 @@ public class ContractEntity extends BaseEntity {
     @Column(name = "body", nullable = false, columnDefinition = "TEXT")
     private String body;
 
+    @Builder
+    public ContractEntity(String requestorCode, String contractorCode, String code, Instant startedAt, Instant endedAt,
+            PaymentType paymentType, Long unitAmount, ContractStatus status, String name, String body) {
+        this.requestorCode = requestorCode;
+        this.contractorCode = contractorCode;
+        this.code = code;
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.paymentType = paymentType;
+        this.unitAmount = unitAmount;
+        this.status = status;
+        this.name = name;
+        this.body = body;
+    }
 }
