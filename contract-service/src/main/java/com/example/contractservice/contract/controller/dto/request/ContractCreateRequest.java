@@ -1,5 +1,10 @@
 package com.example.contractservice.contract.controller.dto.request;
 
+import com.example.contractservice.contract.common.ContractStatus;
+import com.example.contractservice.contract.common.PaymentType;
+import com.example.contractservice.contract.domain.Contract;
+import com.example.contractservice.contract.domain.vo.ContractContent;
+import com.example.contractservice.contract.domain.vo.ContractInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +28,7 @@ public record ContractCreateRequest(
         @Schema(description = "지불 방식", allowableValues = {"ONE_TIME", "MONTHLY"}, example = "MONTHLY")
         String paymentType,
         @Schema(description = "단위 금액", example = "10000")
-        @Min(value = 100, message = "계약 단위 금액은 100원 이상이어야만 합니다.")
+        @Min(value = 1000, message = "계약 단위 금액은 1000원 이상이어야만 합니다.")
         Long unitAmount,
         @Schema(description = "계약 명", example = "계약1")
         @NotBlank(message = "계약 명은 비어있을 수 없습니다.")
@@ -31,4 +36,14 @@ public record ContractCreateRequest(
         String name,
         @Schema(description = "계약 내용", example = "내용")
         String body
-) {}
+) {
+
+    public Contract toContract() {
+        ContractInfo contractInfo = new ContractInfo(requestorCode, contractorCode, startedAt, endedAt,
+                PaymentType.valueOf(paymentType), unitAmount, ContractStatus.REQUESTED);
+        ContractContent contractContent = new ContractContent(name, body);
+        Instant nowTime = Instant.now();
+
+        return new Contract(contractInfo, contractContent, nowTime, nowTime);
+    }
+}
