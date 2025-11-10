@@ -8,6 +8,7 @@ import com.example.memberservice.member.controller.swagger.MemberApiControllerSw
 import com.example.memberservice.member.service.MemberService;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,6 +54,13 @@ public class MemberApiController implements MemberApiControllerSwagger {
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<ResponseDto<Null>> updateUser(@RequestBody UserUpdateRequest request) {
+
+        return null;
+    }
+
+    @PatchMapping("/state")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<ResponseDto<Null>> updateUserWorkState(@RequestHeader("X-CODE") String memberCode){
 
         return null;
     }
