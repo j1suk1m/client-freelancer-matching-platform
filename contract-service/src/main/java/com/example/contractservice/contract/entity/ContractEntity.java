@@ -1,14 +1,12 @@
 package com.example.contractservice.contract.entity;
 
+import com.example.contractservice.common.entity.BaseEntity;
 import com.example.contractservice.contract.common.ContractStatus;
 import com.example.contractservice.contract.common.PaymentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import lombok.AccessLevel;
@@ -19,29 +17,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "contracts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ContractEntity {
+public class ContractEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // BaseEntity
+    @Column(name = "requestor_code", nullable = false, columnDefinition = "CHAR(36)")
+    private String requestorCode;
 
-    @Column(name = "freelancer_code", nullable = false, columnDefinition = "CHAR(36)")
-    private String freelancerCode;
-
-    @Column(name = "client_code", nullable = false, columnDefinition = "CHAR(36)")
-    private String clientCode;
+    @Column(name = "contractor_code", nullable = false, columnDefinition = "CHAR(36)")
+    private String contractorCode;
 
     @Column(name = "code", nullable = false, columnDefinition = "CHAR(36)")
     private String code;
-
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt; // BaseEntity
-
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt; // BaseEntity
-
-    @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false; // BaseEntity
 
     @Column(name = "started_at", nullable = false)
     private Instant startedAt;
