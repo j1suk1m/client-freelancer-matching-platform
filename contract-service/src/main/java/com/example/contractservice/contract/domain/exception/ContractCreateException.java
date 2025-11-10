@@ -11,4 +11,8 @@ public class ContractCreateException extends RuntimeException {
         super(cause);
         this.errorCode = errorCode;
     }
+
+    public CreateErrorCode getErrorCode() {
+        return errorCode;
+    }
 }
