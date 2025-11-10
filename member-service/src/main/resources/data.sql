@@ -19,3 +19,19 @@ CREATE TABLE members (
                          UNIQUE KEY uq_code (code),
                          UNIQUE KEY uq_email (email)
 );
+
+
+
+CREATE TABLE `social_members` (
+                                  `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                  `code` VARCHAR(36) NOT NULL COMMENT '외부 노출용 식별자(UUID)',
+                                  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
+                                  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
+                                  `is_deleted` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '삭제 여부',
+                                  `email` VARCHAR(255) NOT NULL COMMENT '이메일',
+                                  `provider` ENUM('GOOGLE', 'NAVER', 'KAKAO') NOT NULL COMMENT 'OAuth 제공자',
+                                  `provider_id` VARCHAR(255) NOT NULL COMMENT 'OAuth 서버 제공 ID',
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `UK_code` (`code`),
+                                  UNIQUE KEY `UK_provider_id` (`provider`, `provider_id`)
+)
