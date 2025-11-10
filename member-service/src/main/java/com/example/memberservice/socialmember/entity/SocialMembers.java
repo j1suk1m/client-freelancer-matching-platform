@@ -1,7 +1,6 @@
 package com.example.memberservice.socialmember.entity;
 
 import com.example.memberservice.common.model.vo.Provider;
-import com.example.memberservice.member.entity.vo.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -12,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

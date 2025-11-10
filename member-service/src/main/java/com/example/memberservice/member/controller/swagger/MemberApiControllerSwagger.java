@@ -50,7 +50,6 @@ public interface MemberApiControllerSwagger {
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
-    @DeleteMapping
     ResponseEntity<ResponseDto<Null>> deleteUser();
 
     @Operation(summary = "사용자 이름 중복 체크", description = "사용자 이름이 이미 존재하는지 확인합니다.")
