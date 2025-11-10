@@ -21,7 +21,7 @@ public class ExperienceEntity extends BaseEntity {
     @Column(name = "resume_code", columnDefinition = "VARCHAR(36)", nullable = false, updatable = false)
     private String resumeCode;
 
-    // 활동명/회사명/프로젝트 명
+    // 회사명/활동명
     @Column(length = 255, nullable = false)
     private String title;
 
@@ -41,14 +41,6 @@ public class ExperienceEntity extends BaseEntity {
     @Column(name = "ended_at")
     private Instant endedAt;
 
-    // 직무
-    @Column(length = 100)
-    private String job;
-
-    // 직책
-    @Column(length = 100)
-    private String position;
-
     @Builder
     public ExperienceEntity(String resumeCode, String title, String organization, String description, Instant startedAt, Instant endedAt, String job, String position) {
         this.resumeCode = resumeCode;
@@ -57,8 +49,6 @@ public class ExperienceEntity extends BaseEntity {
         this.description = description;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
-        this.job = job;
-        this.position = position;
     }
 
     public void update(String title, String organization, String description, Instant startedAt, Instant endedAt, String job, String position) {
@@ -67,7 +57,5 @@ public class ExperienceEntity extends BaseEntity {
         this.description = description;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
-        this.job = job;
-        this.position = position;
     }
 }
