@@ -28,8 +28,11 @@ dependencies {
     // 유레카 서비스 등록 관련 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+    //lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     // 데이터 베이스 관련 의존성
-    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -37,7 +40,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //swagger 관련 의존성
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 }
 
 dependencyManagement {

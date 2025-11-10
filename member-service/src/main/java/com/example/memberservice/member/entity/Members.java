@@ -7,6 +7,8 @@ import com.example.memberservice.common.model.vo.Provider;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "members")
@@ -25,8 +28,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Members {
 
+    //TODO(이후 common 모듈 생성시 적용)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -39,12 +44,12 @@ public class Members {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @Comment("생성 일시")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     @Comment("수정 일시")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "is_deleted", nullable = false)
     @Comment("삭제 여부")
