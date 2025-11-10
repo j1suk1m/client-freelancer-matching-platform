@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Null;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Member API", description = "사용자 관련 API를 제공합니다.")
@@ -38,6 +39,12 @@ public interface MemberApiControllerSwagger {
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
     ResponseEntity<ResponseDto<Null>> updateUser(@RequestBody UserUpdateRequest request);
+
+    @Operation(summary = "사용자 판매자 등록", description = "사용자의 판매자 등록을 진행합니다")
+    @Parameters({
+        @Parameter(name = "X-CODE",description = "로그인한 사용자 코드",in = ParameterIn.HEADER, required = true)
+    })
+    ResponseEntity<ResponseDto<Null>> updateUserWorkState(@RequestHeader("X-CODE") String memberCode);
 
     @Operation(summary = "사용자 삭제", description = "사용자를 삭제합니다.")
     @Parameters({

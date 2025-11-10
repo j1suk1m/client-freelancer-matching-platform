@@ -60,7 +60,7 @@ public class MemberApiController implements MemberApiControllerSwagger {
 
     @PatchMapping("/state")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Null>> updateUserWorkState(@RequestHeader("X-CODE") String memberCode){
+    public ResponseEntity<ResponseDto<Null>> updateUserWorkState(@RequestHeader("X-CODE") String memberCode) {
 
         return null;
     }
