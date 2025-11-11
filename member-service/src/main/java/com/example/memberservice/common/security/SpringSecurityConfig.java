@@ -1,5 +1,6 @@
 package com.example.memberservice.common.security;
 
+import com.example.memberservice.common.security.handler.OAuthLoginFailureHandler;
 import com.example.memberservice.common.security.handler.OAuthLoginSuccessHandler;
 import com.example.memberservice.common.security.service.CustomOAuth2UserService;
 import java.util.Collections;
@@ -26,6 +27,8 @@ public class SpringSecurityConfig {
 
     private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
 
+    private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
+
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
@@ -51,6 +54,7 @@ public class SpringSecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig ->
                     userInfoEndpointConfig.userService(customOAuth2UserService) )
                 .successHandler(oAuthLoginSuccessHandler)
+                .failureHandler(oAuthLoginFailureHandler)
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
