@@ -11,10 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
-<<<<<<<HEAD
 import java.util.UUID;
-=======
-    >>>>>>>ca435548ee05f0d492393a256dbcdad25a12f3d8
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
