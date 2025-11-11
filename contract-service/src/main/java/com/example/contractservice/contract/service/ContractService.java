@@ -11,16 +11,20 @@ import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
 import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
+import com.example.contractservice.contract.event.dto.ContractConfirmEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse.MemberInfo;
+import com.example.contractservice.contract.service.mapper.ContractMapper;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ContractService {
     private final ContractRepository contractRepository;
     private final RestTemplate restTemplate;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Value("${module.member.application.name}")
     private String memberServiceName;
@@ -36,6 +41,7 @@ public class ContractService {
     @Value("${module.member.application.path.member-info}")
     private String memberInfoUrl;
 
+    @Transactional
     public ContractCreateResponse requestContract(ContractCreateRequest request) {
         isValidMember(List.of(request.requestorCode(), request.contractorCode()));
 
@@ -47,17 +53,21 @@ public class ContractService {
         return ContractCreateResponse.of(savedContract.getCode());
     }
 
+    @Transactional
     public ContractInfoResponse confirmContract(ContractConfirmRequest request) {
-        Contract contract = toDomain(contractRepository.findByCode(request.contractCode()));
-        ContractInfo contractInfo = contract.getInfo();
+        ContractEntity contractEntity = contractRepository.findByCode(request.contractCode());
+        Contract contract = toDomain(contractEntity);
 
-        validateConfirm(request.xCode(), contractInfo);
-
+        validateConfirm(request.xCode(), contract.getInfo());
         contract.confirm();
 
-        contractRepository.saveContract(toEntity(contract));
+        ContractMapper.applyToEntity(contract, contractEntity);
 
-        return ContractInfoResponse.of(contract.getCode(), contractInfo.status().name());
+        contractRepository.saveContract(contractEntity);
+
+        applicationEventPublisher.publishEvent(new ContractConfirmEvent(contract.getCode(), contract.getCreatedAt()));
+
+        return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
     }
 
     private void isValidMember(List<String> memberCodes) {
