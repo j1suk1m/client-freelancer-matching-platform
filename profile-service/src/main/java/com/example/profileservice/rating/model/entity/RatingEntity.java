@@ -1,6 +1,5 @@
 package com.example.profileservice.rating.model.entity;
 
-import com.example.profileservice.common.model.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "ratings")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RatingEntity extends BaseEntity {
+public class RatingEntity {
 
     // 평가를 받은 회원의 코드 FK
     @Column(name = "receiver_code", columnDefinition = "VARCHAR(36)", nullable = false, updatable = false, unique = true)

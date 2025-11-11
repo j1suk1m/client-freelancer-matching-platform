@@ -1,6 +1,5 @@
 package com.example.profileservice.tag.model.entity;
 
-import com.example.profileservice.common.model.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tags")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TagEntity extends BaseEntity {
+public class TagEntity {
 
     // 기술명
     @Column(length = 100, nullable = false, unique = true)
