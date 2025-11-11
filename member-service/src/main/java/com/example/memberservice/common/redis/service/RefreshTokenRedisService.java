@@ -4,6 +4,7 @@ package com.example.memberservice.common.redis.service;
 import java.time.Duration;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenRedisService implements RedisSingleDataService {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -51,9 +53,10 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     private int executeOperation(Runnable operation) {
         try {
             operation.run();
+            log.info("redis에 정상 저장하였습니다.");
             return 1;
         } catch (Exception e) {
-            System.out.println("Redis 작업 오류 발생 :: " + e.getMessage());
+            log.info("Redis에 정상 저장되지 못했습니다.");
             return 0;
         }
     }

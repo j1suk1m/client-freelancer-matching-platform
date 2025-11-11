@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,8 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
     private final MemberJpaRepository memberJpaRepository;
 
+    private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
+
     @Value("${jwt.refresh-token.ttl}")
     private Long refreshTokenTtl;
 
@@ -45,8 +48,17 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String refreshToken = tokenGenerator.generateRefreshToken();
 
         //레디스에 refreshToken - member code 형태로 저장. ttl 은 14일
-        redisSingleDataService.setSingleData(refreshToken, memberCode, refreshTokenTtl);
+        try{
+            if(0==redisSingleDataService.setSingleData(refreshToken, memberCode, refreshTokenTtl)){
+                //TODO redis refeshToken 저장에 실패했다.
+                throw new IOException();
+            }
+        }catch (IOException e){
+            oAuthLoginFailureHandler.onAuthenticationFailure(request, response,
+                new AuthenticationServiceException("Redis가 불안정합니다.", e));
 
+            return;
+        }
 
         String redirectUri;
 
