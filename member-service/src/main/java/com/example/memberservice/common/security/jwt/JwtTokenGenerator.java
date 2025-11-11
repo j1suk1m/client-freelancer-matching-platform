@@ -18,16 +18,16 @@ public class JwtTokenGenerator {
     @Value("${jwt.refresh-token.ttl}")
     private long refreshTokenTtl;
 
-    public String generateAccessToken(String memberCode, boolean isSign){
+    public String generateAccessToken(String memberCode, boolean isSign) {
         return Jwts.builder()
-            .claim("member-code",memberCode)
+            .claim("member-code", memberCode)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + accessTokenTtl))
             .signWith(jwtKeyProvider.getAccessTokenSignKey())
             .compact();
     }
 
-    public String generateRefreshToken(){
+    public String generateRefreshToken() {
         return Jwts.builder()
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + refreshTokenTtl))

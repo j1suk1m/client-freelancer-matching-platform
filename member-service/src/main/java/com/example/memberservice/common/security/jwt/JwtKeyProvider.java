@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtKeyProvider {
+
     @Value("${jwt.access-token.secret}")
     private String accessTokenSecret;
 
@@ -19,11 +20,11 @@ public class JwtKeyProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public SecretKey getAccessTokenSignKey(){
+    public SecretKey getAccessTokenSignKey() {
         return getSigningKey(accessTokenSecret);
     }
 
-    public SecretKey getRefreshTokenSignKey(){
+    public SecretKey getRefreshTokenSignKey() {
         return getSigningKey(refreshTokenSecret);
     }
 }

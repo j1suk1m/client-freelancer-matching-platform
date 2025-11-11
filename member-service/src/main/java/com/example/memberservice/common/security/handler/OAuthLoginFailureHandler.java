@@ -27,7 +27,7 @@ public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHand
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        ResponseDto<Null> responseBody = new ResponseDto<>(401,"로그인에 실패하였습니다.",null);
+        ResponseDto<Null> responseBody = new ResponseDto<>(401, "로그인에 실패하였습니다.", null);
 
         response.sendRedirect("http://localhost:8000/login");
         response.getWriter().write(om.writeValueAsString(responseBody));

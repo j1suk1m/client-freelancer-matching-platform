@@ -52,7 +52,7 @@ public class SpringSecurityConfig {
             )
             .oauth2Login(oauth -> oauth
                 .userInfoEndpoint(userInfoEndpointConfig ->
-                    userInfoEndpointConfig.userService(customOAuth2UserService) )
+                    userInfoEndpointConfig.userService(customOAuth2UserService))
                 .successHandler(oAuthLoginSuccessHandler)
                 .failureHandler(oAuthLoginFailureHandler)
             )

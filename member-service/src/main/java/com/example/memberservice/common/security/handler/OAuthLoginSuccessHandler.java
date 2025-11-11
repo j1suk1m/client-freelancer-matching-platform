@@ -48,12 +48,14 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String refreshToken = tokenGenerator.generateRefreshToken();
 
         //레디스에  prefix:member code - refreshToken 형태로 저장. ttl 은 14일
-        try{
-            if(0==redisSingleDataService.setSingleData(memberCode,refreshToken, refreshTokenTtl)){
+
+        log.info("TOKEN:%s".formatted(memberCode));
+        try {
+            if (0 == redisSingleDataService.setSingleData(memberCode, refreshToken, refreshTokenTtl)) {
                 //TODO redis refeshToken 저장에 실패했다.
                 throw new IOException();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             oAuthLoginFailureHandler.onAuthenticationFailure(request, response,
                 new AuthenticationServiceException("Redis가 불안정합니다.", e));
 
@@ -63,13 +65,14 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String redirectUri;
 
         //소셜로그인에 회원가입까지 완료했다면
-        if(memberJpaRepository.existsByCode(memberCode)){
+        if (memberJpaRepository.existsByCode(memberCode)) {
             redirectUri = "http://localhost:8000/api/members/healthCheck";
-        }else{
+        } else {
             redirectUri = "http://localhost:8000/api/members/connectCheck";
         }
 
-        response.addHeader(HttpHeaders.SET_COOKIE, CookieGenerator.createCookies("RefreshToken", refreshToken, TimeUnit.MILLISECONDS.toSeconds(refreshTokenTtl)));
+        response.addHeader(HttpHeaders.SET_COOKIE, CookieGenerator.createCookies("RefreshToken", refreshToken,
+            TimeUnit.MILLISECONDS.toSeconds(refreshTokenTtl)));
         response.sendRedirect(redirectUri);
     }
 }
