@@ -26,7 +26,7 @@ class RefreshTokenRedisServiceTest {
         String value = "value123";
 
         //When
-        redisSingleDataService.setSingleData(key, value);
+        redisSingleDataService.setSingleData(key, value,50000);
 
         //Then
         Optional<String> saveData = redisSingleDataService.getSingleData(key);
