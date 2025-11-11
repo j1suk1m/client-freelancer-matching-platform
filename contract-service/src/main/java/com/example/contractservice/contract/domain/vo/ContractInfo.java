@@ -19,4 +19,9 @@ public record ContractInfo(
         return new ContractInfo(requestorCode, contractorCode, freelancerCode, startedAt, endedAt, paymentType,
                 unitAmount, ContractStatus.CONFIRMED);
     }
+
+    public ContractInfo pay() {
+        return new ContractInfo(requestorCode, contractorCode, freelancerCode, startedAt, endedAt, paymentType,
+                unitAmount, ContractStatus.PAID);
+    }
 }
