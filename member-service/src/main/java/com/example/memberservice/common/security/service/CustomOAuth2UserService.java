@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +26,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final SocialMemberJpaRepository socialMemberRepository;
 
     @Override
+    @Transactional
+    //인증 서버에서 받아온 토큰으로 정보 서버에서 사용자 정보를 요청 및 후처리하는 과정입니다.
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
+        log.info("사용자 정보를 불러옵니다.");
+
+        //해당 super.loadUser( ) 에서 정보 서버에서 사용자 정보를 요청 및 받아옵니다.
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         super.loadUser(userRequest);
+
+        log.info("사용자 정보를 불러왔습니다.");
 
         String provider = userRequest.getClientRegistration().getClientName();
 
@@ -41,11 +49,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         SocialMembers existMember = socialMemberRepository.findSocialMembersByProviderId(providerId).orElse(null);
 
-        SocialMembers member;
+        SocialMembers member = loadOrCreateSocialMember(existMember, provider, memberEmail, providerId);
 
-        member = loadOrCreateSocialMember(existMember, provider, memberEmail, providerId);
-
-        return new CustomOAuth2UserDto(oAuth2User, new UserInfoDto(member.getCode(), member.getProviderId(), member.getProvider()));
+        return new CustomOAuth2UserDto(oAuth2User,
+            new UserInfoDto(member.getCode(), member.getProviderId(), member.getProvider()));
     }
 
     private SocialMembers loadOrCreateSocialMember(SocialMembers existMember, String provider, String memberEmail,
@@ -68,20 +75,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             member = existMember;
         }
 
+        log.info("PROVIDER : {}", provider);
+        log.info("PROVIDER_ID : {}", providerId);
+        log.info("Member_Code : {}", member.getCode());
+        log.info("Member_Email : {}", memberEmail);
+
         return member;
     }
 
     private OAuthUserInfo getOAuthUserInfo(String provider, OAuth2User oAuth2User)
         throws OAuth2AuthenticationException {
 
-        if (provider.equals("KAKAO")) {
+        if (provider.equalsIgnoreCase("KAKAO")) {
             return new KakaoUserInfo(oAuth2User.getAttributes());
-        } else if (provider.equals("GOOGLE")) {
+        } else if (provider.equalsIgnoreCase("GOOGLE")) {
             return new GoogleUserInfo(oAuth2User.getAttributes());
-        } else if (provider.equals("NAVER")) {
+        } else if (provider.equalsIgnoreCase("NAVER")) {
             return new NaverUserInfo(oAuth2User.getAttributes());
         }
-
+        log.info("사용자 정보 불러오기에 실패했습니다.");
         throw new OAuth2AuthenticationException("사용자 정보 불러오기에 실패했습니다.");
     }
 }

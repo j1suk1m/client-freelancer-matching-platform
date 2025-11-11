@@ -1,6 +1,8 @@
 package com.example.memberservice.common.security;
 
+import com.example.memberservice.common.security.service.CustomOAuth2UserService;
 import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,7 +18,10 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -40,10 +45,8 @@ public class SpringSecurityConfig {
                 .anyRequest().permitAll()
             )
             .oauth2Login(oauth -> oauth
-                .authorizationEndpoint(endpoint -> endpoint
-                   // 기본 /oauth2/authorization/{registrationId} → 커스텀 URL로 변경
-                   .baseUri("/api/members/oauth2/authorization")
-             )
+                .userInfoEndpoint(userInfoEndpointConfig ->
+                    userInfoEndpointConfig.userService(customOAuth2UserService) )
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
