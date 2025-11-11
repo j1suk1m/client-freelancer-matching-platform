@@ -1,5 +1,6 @@
 package com.example.memberservice.common.security;
 
+import com.example.memberservice.common.security.handler.OAuthLoginSuccessHandler;
 import com.example.memberservice.common.security.service.CustomOAuth2UserService;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import org.springframework.web.filter.CorsFilter;
 public class SpringSecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+
+    private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -47,6 +50,7 @@ public class SpringSecurityConfig {
             .oauth2Login(oauth -> oauth
                 .userInfoEndpoint(userInfoEndpointConfig ->
                     userInfoEndpointConfig.userService(customOAuth2UserService) )
+                .successHandler(oAuthLoginSuccessHandler)
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
