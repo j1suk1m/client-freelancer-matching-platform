@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RedisSingleDataServiceImpl implements RedisSingleDataService {
-
+public class RefreshTokenRedisService implements RedisSingleDataService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -38,7 +37,7 @@ public class RedisSingleDataServiceImpl implements RedisSingleDataService {
     public boolean deleteSingleData(String key) {
 
         Boolean result = redisTemplate.delete(key);
-        // delete는 Boolean을 반환, true면 삭제 성공, false면 실패 또는 키 없음
+
         return Boolean.TRUE.equals(result);
     }
 
