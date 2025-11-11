@@ -39,6 +39,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 @RequiredArgsConstructor
 public class ContractService {
+    private static final String PAYMENT_COMMENT = "계약 결제";
+
     private final SettlementService settlementService;
     private final DepositService depositService;
     private final ContractRepository contractRepository;
@@ -86,21 +88,14 @@ public class ContractService {
         List<Contract> contracts = contractEntities.stream()
                 .map(ContractMapper::toDomain)
                 .toList();
-        Map<String, ContractEntity> entityMapByCode = contractEntities.stream()
-                .collect(Collectors.toMap(ContractEntity::getCode, entity -> entity)); // entity-domain 연결에 사용
 
         validatePayments(request.xCode(), contracts);
 
-        changeStatusToPay(contracts, entityMapByCode);
+        changeStatusToPay(contracts, contractEntities);
 
-        Long totalAmount = contracts.stream()
-                .map(contract -> contract.getInfo().unitAmount())
-                .reduce(0L, Long::sum);
+        withdrawDeposit(request, contracts);
 
-        depositService.withdraw(new DepositWithdrawRequest(request.xCode(), totalAmount));
-
-        List<SettlementSaveRequest> settlementSaveRequests = contracts.stream().map(ContractSettlementMapper::toSaveRequest).toList();
-        settlementService.savePaidSettlements(settlementSaveRequests);
+        saveSettlements(contracts);
 
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
@@ -171,7 +166,10 @@ public class ContractService {
         }
     }
 
-    private void changeStatusToPay(List<Contract> contracts, Map<String, ContractEntity> entityMapByCode) {
+    private void changeStatusToPay(List<Contract> contracts, List<ContractEntity> contractEntities) {
+        Map<String, ContractEntity> entityMapByCode = contractEntities.stream()
+                .collect(Collectors.toMap(ContractEntity::getCode, entity -> entity)); // entity-domain 연결에 사용
+
         contracts.forEach(Contract::pay);
 
         contracts.forEach(contract -> {
@@ -181,5 +179,19 @@ public class ContractService {
         });
 
         entityMapByCode.values().forEach(contractRepository::saveContract);
+    }
+
+    private void withdrawDeposit(ContractPayProcessRequest request, List<Contract> contracts) {
+        Long totalAmount = contracts.stream()
+                .map(contract -> contract.getInfo().unitAmount())
+                .reduce(0L, Long::sum); // 총 금액
+
+        DepositWithdrawRequest depositWithdrawRequest = new DepositWithdrawRequest(request.xCode(), totalAmount, PAYMENT_COMMENT);
+        depositService.process(depositWithdrawRequest, depositService::withdraw);
+    }
+
+    private void saveSettlements(List<Contract> contracts) {
+        List<SettlementSaveRequest> settlementSaveRequests = contracts.stream().map(ContractSettlementMapper::toSaveRequest).toList();
+        settlementService.savePaidSettlements(settlementSaveRequests);
     }
 }
