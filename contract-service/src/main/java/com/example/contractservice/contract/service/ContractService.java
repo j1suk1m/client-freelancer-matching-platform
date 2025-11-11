@@ -104,6 +104,8 @@ public class ContractService {
     }
 
     private void validateConfirm(String xCode, ContractInfo info) {
+        isValidMember(List.of(info.requestorCode(), info.contractorCode()));
+
         if (!xCode.equals(info.contractorCode())) {
             throw new ContractException(NOT_CONTRACTOR);
         }
