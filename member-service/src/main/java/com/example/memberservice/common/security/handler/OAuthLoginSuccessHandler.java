@@ -47,9 +47,9 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         String refreshToken = tokenGenerator.generateRefreshToken();
 
-        //레디스에 refreshToken - member code 형태로 저장. ttl 은 14일
+        //레디스에  prefix:member code - refreshToken 형태로 저장. ttl 은 14일
         try{
-            if(0==redisSingleDataService.setSingleData(refreshToken, memberCode, refreshTokenTtl)){
+            if(0==redisSingleDataService.setSingleData(memberCode,refreshToken, refreshTokenTtl)){
                 //TODO redis refeshToken 저장에 실패했다.
                 throw new IOException();
             }

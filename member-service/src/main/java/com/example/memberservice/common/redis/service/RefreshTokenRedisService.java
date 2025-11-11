@@ -18,17 +18,19 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+    private final String REDIS_KEY_PREFIX = "TOKEN:";
 
     @Override
     public int setSingleData(String key, Object value, long refreshTokenTTL) {
         Duration duration = Duration.ofMillis(refreshTokenTTL);
 
-        return this.executeOperation(() -> valueOperations().set(key, value, duration));
+        return this.executeOperation(() -> valueOperations().set(buildKey(key), value, duration));
     }
 
     @Override
     public Optional<String> getSingleData(String key) {
-        Object value = valueOperations().get(key);
+
+        Object value = valueOperations().get(buildKey(key));
 
         return Optional.ofNullable(value).map(Object::toString);
     }
@@ -59,5 +61,9 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
             log.info("Redis에 정상 저장되지 못했습니다.");
             return 0;
         }
+    }
+
+    private String buildKey(String key) {
+        return String.format("%s%s", REDIS_KEY_PREFIX, key);
     }
 }
