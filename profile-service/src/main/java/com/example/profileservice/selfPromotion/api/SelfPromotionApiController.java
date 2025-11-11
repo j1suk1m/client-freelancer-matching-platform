@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Self Promotion API", description = "프리랜서 수주글 관리")
-@RequestMapping("/api/self-promotions")
 public interface SelfPromotionApiController {
 
     // 내 프로모션 목록 조회

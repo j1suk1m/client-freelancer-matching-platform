@@ -12,9 +12,11 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/resumes")
 public class ResumeController implements ResumeApiController {
 
     // 임시 Mock 데이터 생성 (Swagger 출력을 위해)

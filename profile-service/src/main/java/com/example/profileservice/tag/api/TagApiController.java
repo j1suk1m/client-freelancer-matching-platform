@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Tag API", description = "기술 태그 및 회원-태그 연결 관리")
-@RequestMapping("/api/tags")
 public interface TagApiController {
 
     // 전체 태그 목록 조회

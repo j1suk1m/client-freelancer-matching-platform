@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Rating API", description = "회원 평가 관리 (카운트 집계)")
-@RequestMapping("/api/ratings")
 public interface RatingApiController {
 
     // 특정 회원 평가 조회
