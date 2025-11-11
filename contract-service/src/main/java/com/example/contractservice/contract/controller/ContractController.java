@@ -14,6 +14,7 @@ import com.example.contractservice.contract.controller.dto.response.ContractCrea
 import com.example.contractservice.contract.controller.dto.response.ContractDetailResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractInfoResponse;
 import com.example.contractservice.contract.service.ContractService;
+import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -76,10 +77,12 @@ public class ContractController {
     @ContractConfirmApi
     @PostMapping("/{code}/confirm")
     @ResponseStatus(HttpStatus.OK)
-    public ContractInfoResponse confirmContract(@RequestHeader(name = "X-CODE") String xCode,
+    public ResponseDto<ContractInfoResponse> confirmContract(@RequestHeader(name = "X-CODE") String xCode,
             @PathVariable String code) {
 
-        return new ContractInfoResponse(UUID.randomUUID().toString(), "CONFIRMED");
+        ContractConfirmRequest request = new ContractConfirmRequest(xCode, code);
+
+        return ResponseDto.ok(contractService.confirmContract(request));
     }
 
     @ContractPayApi
@@ -98,10 +101,6 @@ public class ContractController {
             @PathVariable String code) {
 
         return new ContractInfoResponse(UUID.randomUUID().toString(), "CANCELLED");
-    }
-
-    private boolean canCreateContract(String xCode, ContractCreateRequest request) {
-        return request.contractorCode().equals(xCode) || request.requestorCode().equals(xCode);
     }
 
     private void validateCreateRequest(String xCode, ContractCreateRequest request) {

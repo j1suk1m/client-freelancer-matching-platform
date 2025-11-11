@@ -1,15 +1,20 @@
 package com.example.contractservice.contract.service;
 
+import static com.example.contractservice.contract.domain.exception.ContractErrorCode.*;
+import static com.example.contractservice.contract.service.mapper.ContractMapper.*;
+
+import com.example.contractservice.contract.common.ContractStatus;
 import com.example.contractservice.contract.controller.dto.request.ContractCreateRequest;
 import com.example.contractservice.contract.controller.dto.response.ContractCreateResponse;
+import com.example.contractservice.contract.controller.dto.response.ContractInfoResponse;
 import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
-import com.example.contractservice.contract.domain.exception.ContractErrorCode;
+import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
 import com.example.contractservice.contract.repository.ContractRepository;
+import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse.MemberInfo;
-import com.example.contractservice.contract.service.mapper.ContractMapper;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -36,25 +41,38 @@ public class ContractService {
 
         Contract createdContract = request.toContract();
 
-        ContractEntity contractEntity = contractRepository.saveContract(ContractMapper.toEntity(createdContract));
-        Contract savedContract = ContractMapper.toDomain(contractEntity);
+        ContractEntity contractEntity = contractRepository.saveContract(toEntity(createdContract));
+        Contract savedContract = toDomain(contractEntity);
 
         return ContractCreateResponse.of(savedContract.getCode());
+    }
+
+    public ContractInfoResponse confirmContract(ContractConfirmRequest request) {
+        Contract contract = toDomain(contractRepository.findByCode(request.contractCode()));
+        ContractInfo contractInfo = contract.getInfo();
+
+        validateConfirm(request.xCode(), contractInfo);
+
+        contract.confirm();
+
+        contractRepository.saveContract(toEntity(contract));
+
+        return ContractInfoResponse.of(contract.getCode(), contractInfo.status().name());
     }
 
     private void isValidMember(List<String> memberCodes) {
         URI memberExistsUrl = createMemberInfoUrl(memberCodes);
         MemberInfoResponse memberInfoResponse = Optional.ofNullable(restTemplate.getForObject(memberExistsUrl, MemberInfoResponse.class))
-                .orElseThrow(() -> new ContractException(ContractErrorCode.INVALID_MEMBER));
+                .orElseThrow(() -> new ContractException(INVALID_MEMBER));
 
         List<MemberInfo> memberInfos = memberInfoResponse.members();
-        
+
         if (memberInfos.size() != memberCodes.size()) {
-            throw new ContractException(ContractErrorCode.INVALID_MEMBER);
+            throw new ContractException(INVALID_MEMBER);
         }
 
         if (noFreelancer(memberInfos)) {
-            throw new ContractException(ContractErrorCode.NO_FREELANCERS);
+            throw new ContractException(NO_FREELANCERS);
         }
     }
 
@@ -73,5 +91,15 @@ public class ContractService {
                 .queryParam("member-code", memberCodes)
                 .build()
                 .toUri();
+    }
+
+    private void validateConfirm(String xCode, ContractInfo info) {
+        if (!xCode.equals(info.contractorCode())) {
+            throw new ContractException(NOT_CONTRACTOR);
+        }
+
+        if (info.status() != ContractStatus.REQUESTED) {
+            throw new ContractException(NOT_REQUESTED_STATUS);
+        }
     }
 }

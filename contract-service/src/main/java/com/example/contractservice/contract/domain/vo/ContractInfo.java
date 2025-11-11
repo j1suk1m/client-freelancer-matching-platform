@@ -15,4 +15,8 @@ public record ContractInfo(
     ContractStatus status
 ) {
 
+    public ContractInfo confirm() {
+        return new ContractInfo(requestorCode, contractorCode, freelancerCode, startedAt, endedAt, paymentType,
+                unitAmount, ContractStatus.CONFIRMED);
+    }
 }
