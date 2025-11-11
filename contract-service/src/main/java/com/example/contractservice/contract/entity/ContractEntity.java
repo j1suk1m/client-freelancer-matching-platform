@@ -71,4 +71,15 @@ public class ContractEntity extends BaseEntity {
         this.name = name;
         this.body = body;
     }
+
+    public void updateInfo(Instant startedAt, Instant endedAt, PaymentType paymentType, Long unitAmount,
+            ContractStatus status, String name, String body) {
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.paymentType = paymentType;
+        this.unitAmount = unitAmount;
+        this.status = status;
+        this.name = name;
+        this.body = body;
+    }
 }

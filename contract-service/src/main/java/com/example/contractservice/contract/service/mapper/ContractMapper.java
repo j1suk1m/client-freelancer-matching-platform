@@ -44,4 +44,19 @@ public abstract class ContractMapper {
         return new Contract(contractEntity.getCode(), contractInfo, contractContent, contractEntity.getCreatedAt(),
                 contractEntity.getUpdatedAt());
     }
+
+    public static void applyToEntity(Contract contract, ContractEntity contractEntity) {
+        ContractInfo contractInfo = contract.getInfo();
+        ContractContent contractContent = contract.getContent();
+
+        contractEntity.updateInfo(
+                contractInfo.startedAt(),
+                contractInfo.endedAt(),
+                contractInfo.paymentType(),
+                contractInfo.unitAmount(),
+                contractInfo.status(),
+                contractContent.name(),
+                contractContent.body()
+        );
+    }
 }
