@@ -11,5 +11,4 @@ public interface MemberJpaRepository extends JpaRepository<Members, Long> {
     Optional<Members> findByCode(String code);
 
     boolean existsByCode(String code);
-
 }
