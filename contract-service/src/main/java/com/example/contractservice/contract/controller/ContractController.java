@@ -109,6 +109,14 @@ public class ContractController {
             throw new IllegalArgumentException("X-CODE 회원 코드는 요청 회원 코드 혹은 요청 성립 회원 코드와 일치해야 합니다.");
         }
 
+        if (request.requestorCode().equals(request.contractorCode())) {
+            throw new IllegalArgumentException("자기 자신과 계약할 수 없습니다.");
+        }
+
+        if (!(request.contractorCode().equals(request.freelancerCode()) || request.requestorCode().equals(request.freelancerCode()))) {
+            throw new IllegalArgumentException("계약 요청자, 성립자 코드 중 하나는 반드시 계약 상 프리랜서 코드와 일치해야 합니다.");
+        }
+
         if (request.startedAt().isAfter(request.endedAt()) || request.startedAt().isBefore(Instant.now())) {
             throw new IllegalArgumentException("프로젝트 일자 설정이 잘못되었습니다.");
         }
@@ -120,6 +128,10 @@ public class ContractController {
         if (projectDays < DAYS_OF_MONTH && isMonthly) {
             throw new IllegalArgumentException("프로젝트 기간이 짧아 월급 단위 금액으로 생성할 수 없습니다.");
         }
+    }
+
+    private boolean canCreateContract(String xCode, ContractCreateRequest request) {
+        return request.contractorCode().equals(xCode) || request.requestorCode().equals(xCode);
     }
 
 }

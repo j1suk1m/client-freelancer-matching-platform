@@ -17,6 +17,7 @@ public abstract class ContractMapper {
                 .code(contract.getCode())
                 .requestorCode(contractInfo.requestorCode())
                 .contractorCode(contractInfo.contractorCode())
+                .freelancerCode(contractInfo.freelancerCode())
                 .status(contractInfo.status())
                 .startedAt(contractInfo.startedAt())
                 .endedAt(contractInfo.endedAt())
@@ -31,6 +32,7 @@ public abstract class ContractMapper {
         ContractInfo contractInfo = new ContractInfo(
                 contractEntity.getRequestorCode(),
                 contractEntity.getContractorCode(),
+                contractEntity.getFreelancerCode(),
                 contractEntity.getStartedAt(),
                 contractEntity.getEndedAt(),
                 contractEntity.getPaymentType(),

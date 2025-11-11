@@ -3,8 +3,8 @@ package com.example.contractservice.contract.service;
 import com.example.contractservice.contract.controller.dto.request.ContractCreateRequest;
 import com.example.contractservice.contract.controller.dto.response.ContractCreateResponse;
 import com.example.contractservice.contract.domain.Contract;
-import com.example.contractservice.contract.domain.exception.ContractCreateException;
-import com.example.contractservice.contract.domain.exception.CreateErrorCode;
+import com.example.contractservice.contract.domain.exception.ContractException;
+import com.example.contractservice.contract.domain.exception.ContractErrorCode;
 import com.example.contractservice.contract.entity.ContractEntity;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse;
@@ -45,16 +45,16 @@ public class ContractService {
     private void isValidMember(List<String> memberCodes) {
         URI memberExistsUrl = createMemberInfoUrl(memberCodes);
         MemberInfoResponse memberInfoResponse = Optional.ofNullable(restTemplate.getForObject(memberExistsUrl, MemberInfoResponse.class))
-                .orElseThrow(() -> new ContractCreateException(CreateErrorCode.INVALID_MEMBER));
+                .orElseThrow(() -> new ContractException(ContractErrorCode.INVALID_MEMBER));
 
         List<MemberInfo> memberInfos = memberInfoResponse.members();
         
         if (memberInfos.size() != memberCodes.size()) {
-            throw new ContractCreateException(CreateErrorCode.INVALID_MEMBER);
+            throw new ContractException(ContractErrorCode.INVALID_MEMBER);
         }
 
         if (noFreelancer(memberInfos)) {
-            throw new ContractCreateException(CreateErrorCode.NO_FREELANCERS);
+            throw new ContractException(ContractErrorCode.NO_FREELANCERS);
         }
     }
 

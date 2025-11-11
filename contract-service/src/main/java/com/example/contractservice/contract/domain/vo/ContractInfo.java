@@ -7,6 +7,7 @@ import java.time.Instant;
 public record ContractInfo(
     String requestorCode,
     String contractorCode,
+    String freelancerCode,
     Instant startedAt,
     Instant endedAt,
     PaymentType paymentType,
