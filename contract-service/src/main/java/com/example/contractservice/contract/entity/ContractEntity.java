@@ -81,5 +81,7 @@ public class ContractEntity extends BaseEntity {
         this.status = status;
         this.name = name;
         this.body = body;
+
+        touchUpdatedAt();
     }
 }
