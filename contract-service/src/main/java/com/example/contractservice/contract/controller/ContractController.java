@@ -1,7 +1,7 @@
 package com.example.contractservice.contract.controller;
 
 import com.example.contractservice.common.ResponseDto;
-import com.example.contractservice.contract.common.PaymentType;
+import com.example.contractservice.common.PaymentType;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCancelApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractConfirmApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCreateApi;
@@ -90,7 +90,7 @@ public class ContractController {
     @ContractPayApi
     @PostMapping("/pay")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<ContractInfoResponse> payContract(@RequestHeader(name = "X-CODE") String xCode,
+    public ResponseDto<List<ContractInfoResponse>> payContract(@RequestHeader(name = "X-CODE") String xCode,
             @RequestBody ContractPayRequest request) {
 
         ContractPayProcessRequest serviceRequest = new ContractPayProcessRequest(xCode, request.codes());

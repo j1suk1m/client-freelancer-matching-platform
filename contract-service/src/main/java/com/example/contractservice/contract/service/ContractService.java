@@ -14,12 +14,20 @@ import com.example.contractservice.contract.entity.ContractEntity;
 import com.example.contractservice.contract.event.dto.ContractConfirmEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
+import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse;
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse.MemberInfo;
 import com.example.contractservice.contract.service.mapper.ContractMapper;
+import com.example.contractservice.contract.service.mapper.ContractSettlementMapper;
+import com.example.contractservice.deposit.service.dto.request.DepositWithdrawRequest;
+import com.example.contractservice.deposit.service.DepositService;
+import com.example.contractservice.settlement.service.SettlementService;
+import com.example.contractservice.settlement.service.dto.request.SettlementSaveRequest;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,6 +39,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 @RequiredArgsConstructor
 public class ContractService {
+    private final SettlementService settlementService;
+    private final DepositService depositService;
     private final ContractRepository contractRepository;
     private final RestTemplate restTemplate;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -68,6 +78,33 @@ public class ContractService {
         applicationEventPublisher.publishEvent(new ContractConfirmEvent(contract.getCode(), contract.getCreatedAt()));
 
         return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
+    }
+
+    @Transactional
+    public List<ContractInfoResponse> payContracts(ContractPayProcessRequest request) {
+        List<ContractEntity> contractEntities = contractRepository.findAllByCodes(request.contractCodes());
+        List<Contract> contracts = contractEntities.stream()
+                .map(ContractMapper::toDomain)
+                .toList();
+        Map<String, ContractEntity> entityMapByCode = contractEntities.stream()
+                .collect(Collectors.toMap(ContractEntity::getCode, entity -> entity)); // entity-domain 연결에 사용
+
+        validatePayments(request.xCode(), contracts);
+
+        changeStatusToPay(contracts, entityMapByCode);
+
+        Long totalAmount = contracts.stream()
+                .map(contract -> contract.getInfo().unitAmount())
+                .reduce(0L, Long::sum);
+
+        depositService.withdraw(new DepositWithdrawRequest(request.xCode(), totalAmount));
+
+        List<SettlementSaveRequest> settlementSaveRequests = contracts.stream().map(ContractSettlementMapper::toSaveRequest).toList();
+        settlementService.savePaidSettlements(settlementSaveRequests);
+
+        return contracts.stream()
+                .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
+                .toList();
     }
 
     private void isValidMember(List<String> memberCodes) {
@@ -113,5 +150,36 @@ public class ContractService {
         if (info.status() != ContractStatus.REQUESTED) {
             throw new ContractException(NOT_REQUESTED_STATUS);
         }
+    }
+
+    /**
+     * 1. 로그인 사용자가 모든 계약과 연관되어 있는지 확인
+     * 2. 클라이언트인지 확인
+     */
+    private void validatePayments(String xCode, List<Contract> contracts) {
+        boolean isValidUser = contracts.stream() // 모든 계약에 대해
+                .allMatch(contract -> contract.canUserPay(xCode)); // 로그인 유저가 (계약에 관여) && !(일하는 사람)
+
+        if (!isValidUser) {
+            throw new ContractException(INVALID_PAYMENT_MEMBER);
+        }
+
+        boolean isAllConfirmed = contracts.stream().allMatch(Contract::isConfirmed);
+
+        if (!isAllConfirmed) {
+            throw new ContractException(NOT_CONFIRMED_STATUS);
+        }
+    }
+
+    private void changeStatusToPay(List<Contract> contracts, Map<String, ContractEntity> entityMapByCode) {
+        contracts.forEach(Contract::pay);
+
+        contracts.forEach(contract -> {
+            ContractEntity entity = entityMapByCode.get(contract.getCode());
+
+            ContractMapper.applyToEntity(contract, entity);
+        });
+
+        entityMapByCode.values().forEach(contractRepository::saveContract);
     }
 }
