@@ -11,7 +11,7 @@ import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
 import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
-import com.example.contractservice.contract.event.dto.ContractConfirmEvent;
+import com.example.contractservice.contract.event.dto.ContractEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
@@ -77,7 +77,7 @@ public class ContractService {
 
         contractRepository.saveContract(contractEntity);
 
-        applicationEventPublisher.publishEvent(new ContractConfirmEvent(contract.getCode(), contract.getCreatedAt()));
+        applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
 
         return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
     }
@@ -97,7 +97,7 @@ public class ContractService {
 
         saveSettlements(contracts);
 
-        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractConfirmEvent(contract.getCode(), contract.getCreatedAt()))); // TODO: 추후 수정
+        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
 
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
