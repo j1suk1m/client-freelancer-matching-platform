@@ -45,7 +45,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         String memberCode = oAuth2User.getMemberCode();
 
-        String refreshToken = tokenGenerator.generateRefreshToken();
+        String refreshToken = tokenGenerator.generateRefreshToken(memberCode);
 
         //레디스에  prefix:member code - refreshToken 형태로 저장. ttl 은 14일
 

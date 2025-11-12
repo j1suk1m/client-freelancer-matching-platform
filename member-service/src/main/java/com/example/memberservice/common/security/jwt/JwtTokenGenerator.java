@@ -27,8 +27,9 @@ public class JwtTokenGenerator {
             .compact();
     }
 
-    public String generateRefreshToken() {
+    public String generateRefreshToken(String memberCode) {
         return Jwts.builder()
+            .claim("member-code", memberCode)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + refreshTokenTtl))
             .signWith(jwtKeyProvider.getRefreshTokenSignKey())
