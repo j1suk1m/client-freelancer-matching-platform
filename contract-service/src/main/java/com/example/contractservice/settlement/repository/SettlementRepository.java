@@ -1,5 +1,6 @@
 package com.example.contractservice.settlement.repository;
 
+import com.example.contractservice.settlement.entity.SettlementEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -8,4 +9,7 @@ import org.springframework.stereotype.Repository;
 public class SettlementRepository {
     private SettlementJpaRepository settlementJpaRepository;
 
+    public SettlementEntity save(SettlementEntity settlementEntity) {
+        return settlementJpaRepository.save(settlementEntity);
+    }
 }
