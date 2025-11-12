@@ -1,4 +1,4 @@
-package com.example.gatewayservice.jwt;
+package com.example.gatewayservice.common.jwt;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
