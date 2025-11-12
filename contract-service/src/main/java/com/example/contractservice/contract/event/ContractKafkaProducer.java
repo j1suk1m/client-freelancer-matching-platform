@@ -22,6 +22,6 @@ public class ContractKafkaProducer implements ContractEventProducer {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<SendResult<String, Object>> sendConfirmEvent(ContractConfirmEvent event) {
-        return kafkaTemplate.send(contractTopicName, event);
+        return kafkaTemplate.send(contractTopicName, event.code(), event);
     }
 }
