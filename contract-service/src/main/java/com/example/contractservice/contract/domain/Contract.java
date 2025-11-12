@@ -59,7 +59,7 @@ public class Contract {
     }
 
     public boolean isConfirmed() {
-        return getInfo().status() != ContractStatus.CONFIRMED;
+        return getInfo().status() == ContractStatus.CONFIRMED;
     }
 
     public boolean canUserPay(String userCode) {

@@ -16,7 +16,7 @@ public abstract class DepositHistoryMapper {
                 .code(depositHistory.getCode())
                 .depositCode(depositHistory.getDepositCode())
                 .changeAmount(depositChange.changeAmount())
-                .resultAmount(depositChange.changeAmount())
+                .resultAmount(depositChange.resultAmount())
                 .summary(depositHistory.getSummary())
                 .build();
     }

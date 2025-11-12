@@ -23,6 +23,8 @@ public class Deposit {
         if (this.amount < amount) {
             throw new DepositException(NOT_ENOUGH_AMOUNT);
         }
+
+        this.amount -= amount;
     }
 
     public String getCode() {

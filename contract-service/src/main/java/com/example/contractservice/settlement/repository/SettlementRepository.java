@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class SettlementRepository {
-    private SettlementJpaRepository settlementJpaRepository;
+    private final SettlementJpaRepository settlementJpaRepository;
 
     public SettlementEntity save(SettlementEntity settlementEntity) {
         return settlementJpaRepository.save(settlementEntity);

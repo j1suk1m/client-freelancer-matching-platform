@@ -31,12 +31,14 @@ public abstract class SettlementMapper {
     public static SettlementEntity toEntity(Settlement settlement) {
         SettlementReference reference = settlement.getSettlementReference();
         SettlementTimeline timeline = settlement.getSettlementTimeline();
+        SettlementStatusInfo statusInfo = settlement.getSettlementStatusInfo();
 
         return SettlementEntity.builder()
                 .code(settlement.getCode())
                 .receiverCode(reference.receiverCode())
                 .contractCode(reference.contractCode())
-                .originalAmount(settlement.getSettlementStatusInfo().originalAmount())
+                .status(statusInfo.status())
+                .originalAmount(statusInfo.originalAmount())
                 .progressingAt(timeline.progressingAt())
                 .createdAt(timeline.createdAt())
                 .build();
@@ -64,7 +66,7 @@ public abstract class SettlementMapper {
 
         List<Settlement> settlements = new ArrayList<>();
 
-        while (curTime.isBefore(request.endedAt())) {
+        while (curTime.isBefore(request.endedAt()) && restAmount > 0L) {
             curTime = curTime.plus(Duration.ofDays(DAYS_PER_MONTH));
 
             SettlementStatusInfo monthStatusInfo = getStatusInfo(monthAmount);
@@ -75,7 +77,10 @@ public abstract class SettlementMapper {
 
             restAmount = restAmount - monthAmount;
         } // 30일 단위로 끊어 저장
-        settlements.add(new Settlement(reference, getStatusInfo(restAmount), getTimeline(curTime))); // 나머지
+
+        if (restAmount > 0L) {
+            settlements.add(new Settlement(reference, getStatusInfo(restAmount), getTimeline(curTime))); // 나머지 저장
+        }
 
         return settlements;
     }
@@ -89,7 +94,7 @@ public abstract class SettlementMapper {
     private static Long getMonthAmount(Long amount, Instant startedAt, Instant endedAt) {
         long days = Duration.between(startedAt, endedAt).toDays();
 
-        return amount * 30L / days;
+        return amount * DAYS_PER_MONTH / days;
     }
 
     private static SettlementStatusInfo getStatusInfo(Long amount) {
