@@ -19,4 +19,13 @@ public class JwtTokenParser {
         }
         return memberCode.toString();
     }
+
+    public boolean parseIsSign(Claims claims) {
+        Object isSignObj = claims.get(jwtProperties.getIsSignClaims());
+        if (!(isSignObj instanceof Boolean)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZATION);
+        }
+
+        return (Boolean) isSignObj;
+    }
 }
