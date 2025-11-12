@@ -12,7 +12,7 @@ public class ChatMessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/chat.send")
+    @MessageMapping("chat.send")
     public void handleChatMessage(ChatMessageSendRequest request) {
         String destinationPrefix = "/queue/room/";
         messagingTemplate.convertAndSend(destinationPrefix + request.roomId(), request);
