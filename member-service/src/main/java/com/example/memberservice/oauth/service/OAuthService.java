@@ -55,7 +55,7 @@ public class OAuthService {
     }
 
     private String getMemberCode(String refreshToken) {
-        Claims claims = jwtTokenValidator.validateRefreshTokenToken(refreshToken);
+        Claims claims = jwtTokenValidator.validateRefreshToken(refreshToken);
 
         String memberCode = jwtTokenParser.parseMemberCode(claims);
 
