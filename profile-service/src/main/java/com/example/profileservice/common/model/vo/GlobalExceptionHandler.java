@@ -1,5 +1,6 @@
 package com.example.profileservice.common.model.vo;
 
+import com.example.profileservice.common.model.vo.exception.CustomException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,19 +37,19 @@ public class GlobalExceptionHandler {
     }
 
     // CustomException 처리 (비즈니스 로직 예외)
-//    @ExceptionHandler(CustomException.class)
-//    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
-//        log.warn("Custom Exception Occurred: Status={}, Message={}", ex.getStatus(), ex.getMessage());
-//
-//        // TODO: 나중에 CustomException의 status와 code를 사용하도록 개선 예정
-//        ErrorResponse response = ErrorResponse.of(
-//                ex.getStatus(),
-//                "E_BIZ_001", // 임시 에러 코드
-//                ex.getMessage()
-//        );
-//
-//        return ResponseEntity.status(ex.getStatus()).body(response);
-//    }
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        log.warn("Custom Exception Occurred: Status={}, Message={}", ex.getStatus(), ex.getMessage());
+
+        // TODO: 나중에 CustomException의 status와 code를 사용하도록 개선 예정
+        ErrorResponse response = ErrorResponse.of(
+                ex.getStatus(),
+                "E_BIZ_001", // 임시 에러 코드
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(ex.getStatus()).body(response);
+    }
 
     // 기타 모든 예외 처리 (HTTP 500)
     @ExceptionHandler(Exception.class)

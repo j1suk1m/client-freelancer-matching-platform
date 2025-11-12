@@ -22,8 +22,8 @@ public class BaseResponse<T> {
     private final T result;
 
     // 요청에 성공한 경우 - 결과 값이 없을 때
-    public static BaseResponse<Empty> success() {
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, Empty.getInstance());
+    public static BaseResponse<Void> success() {
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, null);
     }
 
     // 요청에 성공한 경우 - 결과 값이 있을 때
