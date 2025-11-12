@@ -32,7 +32,7 @@ public class OAuthApiController implements OAuthApiControllerSwagger {
 
     @PostMapping("/reissue")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Null>> reissueAccessTokenByRefreshToken(
+    public void reissueAccessTokenByRefreshToken(
         HttpServletResponse httpServletResponse,
         @CookieValue(name = "refresh-token", required = false) String refreshToken) {
 
@@ -47,16 +47,15 @@ public class OAuthApiController implements OAuthApiControllerSwagger {
             CookieGenerator.createCookies("refresh-token", output.refreshToken(),
                 jwtProperties.getRefreshTokenTtl()));
 
-        return null;
     }
 
 
     @DeleteMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Null>> logoutMemberByRefreshToken(
+    public void logoutMemberByRefreshToken(
         @CookieValue("refresh-token") String refreshToken) {
 
-        return null;
+        oAuthService.deleteRefreshTokenToRedis(refreshToken);
     }
 
 }

@@ -38,7 +38,7 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     @Override
     public boolean deleteSingleData(String key) {
 
-        Boolean result = redisTemplate.delete(key);
+        Boolean result = redisTemplate.delete(buildKey(key));
 
         return Boolean.TRUE.equals(result);
     }
