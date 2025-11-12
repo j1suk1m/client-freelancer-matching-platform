@@ -191,7 +191,10 @@ public class ContractService {
     }
 
     private void saveSettlements(List<Contract> contracts) {
-        List<SettlementSaveRequest> settlementSaveRequests = contracts.stream().map(ContractSettlementMapper::toSaveRequest).toList();
+        List<SettlementSaveRequest> settlementSaveRequests = contracts.stream()
+                .map(ContractSettlementMapper::toSaveRequest)
+                .toList();
+
         settlementService.savePaidSettlements(settlementSaveRequests);
     }
 }
