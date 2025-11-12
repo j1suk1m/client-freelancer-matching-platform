@@ -33,18 +33,7 @@ public class OAuthService {
 
     @Transactional
     public TokensOutput reissueAccessTokenByRefreshToken(String refreshToken) {
-        Claims claims = jwtTokenValidator.validateRefreshTokenToken(refreshToken);
-
-        String memberCode = jwtTokenParser.parseMemberCode(claims);
-
-        Optional<String> optionalExistRefreshToken = redisSingleDataService.getSingleData(memberCode);
-
-        String existRefreshToken = optionalExistRefreshToken.orElseThrow(
-            () -> new BusinessException(ErrorCode.UNAUTHORIZATION));
-
-        if (!existRefreshToken.equals(refreshToken)) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZATION);
-        }
+        String memberCode = getMemberCode(refreshToken);
 
         String newRefreshToken = jwtTokenGenerator.generateRefreshToken(memberCode);
 
@@ -60,10 +49,24 @@ public class OAuthService {
 
     @Transactional
     public void deleteRefreshTokenToRedis(String refreshToken) {
+        String memberCode = getMemberCode(refreshToken);
+
+        redisSingleDataService.deleteSingleData(memberCode);
+    }
+
+    private String getMemberCode(String refreshToken) {
         Claims claims = jwtTokenValidator.validateRefreshTokenToken(refreshToken);
 
         String memberCode = jwtTokenParser.parseMemberCode(claims);
 
-        redisSingleDataService.deleteSingleData(memberCode);
+        Optional<String> optionalExistRefreshToken = redisSingleDataService.getSingleData(memberCode);
+
+        String existRefreshToken = optionalExistRefreshToken.orElseThrow(
+            () -> new BusinessException(ErrorCode.UNAUTHORIZATION));
+
+        if (!existRefreshToken.equals(refreshToken)) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZATION);
+        }
+        return memberCode;
     }
 }
