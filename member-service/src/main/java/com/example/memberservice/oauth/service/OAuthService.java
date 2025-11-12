@@ -1,10 +1,15 @@
 package com.example.memberservice.oauth.service;
 
+import com.example.memberservice.common.exception.BusinessException;
+import com.example.memberservice.common.exception.ErrorCode;
 import com.example.memberservice.common.redis.service.RedisSingleDataService;
 import com.example.memberservice.common.security.jwt.JwtTokenGenerator;
+import com.example.memberservice.common.security.jwt.JwtTokenParser;
 import com.example.memberservice.common.security.jwt.JwtTokenValidator;
 import com.example.memberservice.member.repository.MemberJpaRepository;
-import com.example.memberservice.socialmember.repository.SocialMemberJpaRepository;
+import com.example.memberservice.oauth.service.dto.output.TokensOutput;
+import io.jsonwebtoken.Claims;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +21,32 @@ public class OAuthService {
 
     private final MemberJpaRepository memberJpaRepository;
 
-    private final SocialMemberJpaRepository socialMemberJpaRepository;
-
     private final JwtTokenValidator jwtTokenValidator;
 
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public void reissueAccessTokenByRefreshToken(String refreshToken) {
+    private final JwtTokenParser jwtTokenParser;
+
+    public TokensOutput reissueAccessTokenByRefreshToken(String refreshToken) {
+        Claims claims = jwtTokenValidator.validateRefreshTokenToken(refreshToken);
+
+        String memberCode = jwtTokenParser.parseMemberCode(claims);
+
+        Optional<String> optionalExistRefreshToken = redisSingleDataService.getSingleData(memberCode);
+
+        String existRefreshToken = optionalExistRefreshToken.orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZATION));
+
+        if(!existRefreshToken.equals(refreshToken)){
+            throw new BusinessException(ErrorCode.UNAUTHORIZATION);
+        }
+
+        String newRefreshToken = jwtTokenGenerator.generateRefreshToken(memberCode);
+
+        boolean isSign = memberJpaRepository.existsByCode(memberCode);
+
+        String newAccessToken = jwtTokenGenerator.generateAccessToken(memberCode,isSign);
+
+        return new TokensOutput(newRefreshToken, newAccessToken);
 
     }
 
