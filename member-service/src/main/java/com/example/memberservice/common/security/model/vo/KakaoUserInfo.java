@@ -23,13 +23,13 @@ public class KakaoUserInfo implements OAuthUserInfo {
     @Override
     public String getEmail() {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-        String email = kakaoAccount.get("email").toString();
+        Object objectEmail = kakaoAccount.get("email");
 
         //카카오는 이메일을 받아오기 위해 프론트 화면 생성 이후 검수를 받아야함.
-        if (email == null) {
-            email = "noEmail@email.com";
+        if (objectEmail == null) {
+            throw new IllegalArgumentException("Email not found in attributes");
         }
 
-        return email;
+        return objectEmail.toString();
     }
 }
