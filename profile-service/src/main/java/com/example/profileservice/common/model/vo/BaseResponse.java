@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -31,7 +32,28 @@ public class BaseResponse<T> {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
     }
 
-    // 요청에 실패한 경우 - 결과 값이 없을 때 (ErrorResponse 사용 권장)
+    // 요청 실패 시 BaseResponse를 생성 (GlobalExceptionHandler에서 사용)
+    public static BaseResponse<Void> fail(String code, String message) {
+        // BaseResponse의 code(int)와 ErrorCode(String) 타입 불일치 해결을 위한 임시 변환 로직
+        int defaultCode = 9999;
+
+        try {
+            // "T101"에서 숫자 부분만 추출하여 int로 변환 시도
+            defaultCode = Integer.parseInt(code.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException ignored) {
+            // 변환 실패 시 기본값 사용
+        }
+
+        return new BaseResponse<>(
+                false,
+                defaultCode,
+                HttpStatus.BAD_REQUEST.value(),
+                message,
+                null
+        );
+    }
+
+    // 요청에 실패한 경우 - 결과 값이 없을 때
     public static BaseResponse<Empty> error(BaseResponseStatus status) {
         return new BaseResponse<>(status, Empty.getInstance());
     }

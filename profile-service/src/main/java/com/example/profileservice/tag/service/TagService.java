@@ -1,5 +1,6 @@
 package com.example.profileservice.tag.service;
 
+import com.example.profileservice.common.model.vo.ErrorCode;
 import com.example.profileservice.common.model.vo.exception.CustomException;
 import com.example.profileservice.tag.model.dto.request.TagRequest;
 import com.example.profileservice.tag.model.dto.response.TagResponse;
@@ -11,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,7 @@ public class TagService {
     public TagResponse createTag(TagRequest request) {
         // 1. 중복 등록 방지
         if (tagRepository.existsBySkillIgnoreCase(request.skill())) {
-            throw new CustomException(HttpStatus.CONFLICT, "이미 존재하는 기술명입니다: " + request.skill());
+            throw new CustomException(ErrorCode.TAG_ALREADY_EXISTS);
         }
 
         // 2. TagEntity 생성 및 저장
@@ -79,11 +79,12 @@ public class TagService {
     public void linkMemberTag(String memberCode, String tagCode) {
         // 1. 태그 존재 여부 확인
         TagEntity tag = tagRepository.findByCode(tagCode)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 태그 코드입니다: " + tagCode));
+                .orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND));
 
         // 2. 중복 연결 방지
         if (memberTagRepository.existsByMemberCodeAndTagCode(memberCode, tagCode)) {
-            throw new CustomException(HttpStatus.CONFLICT, "해당 회원은 이미 태그 [" + tag.getSkill() + "]를 연결했습니다.");
+            throw new CustomException(ErrorCode.MEMBER_TAG_ALREADY_CONNECTED,
+                    "해당 회원은 이미 태그 [" + tag.getSkill() + "]를 연결했습니다.");
         }
 
         // 3. MemberTagEntity 생성 및 저장
@@ -100,7 +101,7 @@ public class TagService {
     public void unlinkMemberTag(String memberCode, String tagCode) {
         // 1. 연결된 MemberTagEntity 조회
         MemberTagEntity memberTag = memberTagRepository.findByMemberCodeAndTagCode(memberCode, tagCode)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 회원과 태그의 연결 정보가 존재하지 않아 해제할 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_TAG_NOT_FOUND));
 
         // 2. 삭제
         memberTagRepository.delete(memberTag);
