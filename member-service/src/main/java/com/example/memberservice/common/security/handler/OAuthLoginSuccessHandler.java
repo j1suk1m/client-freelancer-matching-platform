@@ -1,5 +1,6 @@
 package com.example.memberservice.common.security.handler;
 
+import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.redis.service.RedisSingleDataService;
 import com.example.memberservice.common.security.jwt.JwtTokenGenerator;
 import com.example.memberservice.common.security.jwt.JwtTokenValidator;
@@ -51,13 +52,11 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         log.info("TOKEN:%s".formatted(memberCode));
         try {
-            if (0 == redisSingleDataService.setSingleData(memberCode, refreshToken, refreshTokenTtl)) {
-                //TODO redis refeshToken 저장에 실패했다.
-                throw new IOException();
-            }
-        } catch (IOException e) {
+            redisSingleDataService.setSingleData(memberCode, refreshToken, refreshTokenTtl);
+
+        } catch (BusinessException e) {
             oAuthLoginFailureHandler.onAuthenticationFailure(request, response,
-                new AuthenticationServiceException("Redis가 불안정합니다.", e));
+                new AuthenticationServiceException(e.getErrorCode().getMessage(), e));
 
             return;
         }

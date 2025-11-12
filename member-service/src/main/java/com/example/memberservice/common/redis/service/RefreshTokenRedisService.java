@@ -1,6 +1,8 @@
 package com.example.memberservice.common.redis.service;
 
 
+import com.example.memberservice.common.exception.BusinessException;
+import com.example.memberservice.common.exception.ErrorCode;
 import java.time.Duration;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,10 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     private final String REDIS_KEY_PREFIX = "TOKEN:";
 
     @Override
-    public int setSingleData(String key, Object value, long refreshTokenTTL) {
+    public void setSingleData(String key, Object value, long refreshTokenTTL) {
         Duration duration = Duration.ofMillis(refreshTokenTTL);
 
-        return this.executeOperation(() -> valueOperations().set(buildKey(key), value, duration));
+        this.executeOperation(() -> valueOperations().set(buildKey(key), value, duration));
     }
 
     @Override
@@ -52,14 +54,13 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     }
 
 
-    private int executeOperation(Runnable operation) {
+    private void executeOperation(Runnable operation) {
         try {
             operation.run();
             log.info("redis에 정상 저장하였습니다.");
-            return 1;
         } catch (Exception e) {
             log.info("Redis에 정상 저장되지 못했습니다.");
-            return 0;
+            throw new BusinessException(ErrorCode.DATA_SAVE_FAILED);
         }
     }
 

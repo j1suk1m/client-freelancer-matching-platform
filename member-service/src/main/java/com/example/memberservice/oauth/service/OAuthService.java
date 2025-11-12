@@ -48,10 +48,7 @@ public class OAuthService {
 
         String newRefreshToken = jwtTokenGenerator.generateRefreshToken(memberCode);
 
-        if (0 == redisSingleDataService.setSingleData(memberCode, newRefreshToken,
-            jwtProperties.getRefreshTokenTtl())) {
-            throw new BusinessException(ErrorCode.DATA_SAVE_FAILED);
-        }
+        redisSingleDataService.setSingleData(memberCode, newRefreshToken, jwtProperties.getRefreshTokenTtl());
 
         boolean isSign = memberJpaRepository.existsByCode(memberCode);
 
