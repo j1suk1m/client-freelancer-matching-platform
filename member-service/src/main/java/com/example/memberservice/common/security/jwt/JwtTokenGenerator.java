@@ -13,7 +13,6 @@ public class JwtTokenGenerator {
 
     private final JwtProperties jwtProperties;
 
-
     public String generateAccessToken(String memberCode, boolean isSign) {
         return Jwts.builder()
             .claim(jwtProperties.getMemberCodeClaims(), memberCode)

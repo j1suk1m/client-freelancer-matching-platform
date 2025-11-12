@@ -15,16 +15,16 @@ public class JwtKeyProvider {
     @Value("${jwt.refresh-token.secret}")
     private String refreshTokenSecret;
 
-    private SecretKey getSigningKey(String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     public SecretKey getAccessTokenSignKey() {
         return getSigningKey(accessTokenSecret);
     }
 
     public SecretKey getRefreshTokenSignKey() {
         return getSigningKey(refreshTokenSecret);
+    }
+
+    private SecretKey getSigningKey(String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
