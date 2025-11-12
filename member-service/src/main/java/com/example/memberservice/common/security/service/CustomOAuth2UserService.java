@@ -35,8 +35,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //해당 super.loadUser( ) 에서 정보 서버에서 사용자 정보를 요청 및 받아옵니다.
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        super.loadUser(userRequest);
-
         log.info("사용자 정보를 불러왔습니다.");
 
         String provider = userRequest.getClientRegistration().getClientName();
