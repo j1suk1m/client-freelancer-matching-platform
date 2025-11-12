@@ -17,8 +17,8 @@ public class JwtTokenGenerator {
         return Jwts.builder()
             .claim(jwtProperties.getMemberCodeClaims(), memberCode)
             .claim(jwtProperties.getIsSignClaims(), isSign)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenTtl()))
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenTtl()))
             .signWith(jwtKeyProvider.getAccessTokenSignKey())
             .compact();
     }
@@ -26,8 +26,8 @@ public class JwtTokenGenerator {
     public String generateRefreshToken(String memberCode) {
         return Jwts.builder()
             .claim(jwtProperties.getMemberCodeClaims(), memberCode)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenTtl()))
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenTtl()))
             .signWith(jwtKeyProvider.getRefreshTokenSignKey())
             .compact();
     }
