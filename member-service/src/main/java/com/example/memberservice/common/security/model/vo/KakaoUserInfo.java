@@ -25,7 +25,6 @@ public class KakaoUserInfo implements OAuthUserInfo {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Object objectEmail = kakaoAccount.get("email");
 
-        //카카오는 이메일을 받아오기 위해 프론트 화면 생성 이후 검수를 받아야함.
         if (objectEmail == null) {
             throw new IllegalArgumentException("Email not found in attributes");
         }
