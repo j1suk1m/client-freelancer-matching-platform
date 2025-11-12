@@ -20,7 +20,10 @@ public enum ErrorCode {
 
 
     // 4xx 클라이언트 에러 - resume
-
+    RESUME_NOT_FOUND(HttpStatus.NOT_FOUND, "R101", "해당 이력서를 찾을 수 없습니다."),
+    EXPERIENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "R102", "해당 경력/경험 항목을 찾을 수 없습니다."),
+    RESUME_ACCESS_DENIED(HttpStatus.FORBIDDEN, "R103", "해당 이력서에 접근 권한이 없습니다."),
+    EXPERIENCE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "R104", "해당 경력/경험 항목에 접근 권한이 없습니다."),
 
     // 4xx 클라이언트 에러 - selfPromotion
 
