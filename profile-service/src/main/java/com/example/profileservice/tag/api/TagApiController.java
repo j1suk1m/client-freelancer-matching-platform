@@ -1,9 +1,14 @@
 package com.example.profileservice.tag.api;
 
 import com.example.profileservice.common.model.vo.BaseResponse;
+import com.example.profileservice.common.model.vo.ErrorResponse;
 import com.example.profileservice.tag.model.dto.request.TagRequest;
 import com.example.profileservice.tag.model.dto.response.TagResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -20,27 +25,62 @@ public interface TagApiController {
 
     // 전체 태그 목록 조회
     @Operation(summary = "전체 태그 목록 조회", description = "시스템에 등록된 모든 기술 태그 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "태그 목록 조회 성공")
     @GetMapping
     ResponseEntity<BaseResponse<List<TagResponse>>> getAllTags();
 
     // 새 태그 등록
     @Operation(summary = "새 태그 등록", description = "새로운 기술 태그를 시스템에 등록합니다. (중복 등록 시 에러)")
+    @ApiResponse(responseCode = "201", description = "태그 등록 성공")
+    @ApiResponse(responseCode = "409", description = "이미 존재하는 태그",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"status\": 409, \"error\": \"Conflict\", \"code\": \"T102\","
+                            + " \"message\": \"이미 존재하는 기술 태그입니다.\"}")
+            ))
+    @ApiResponse(responseCode = "400", description = "잘못된 입력 값",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"status\": 400, \"error\": \"Bad Request\", \"code\": \"C001\","
+                            + " \"message\": \"입력 값이 유효하지 않습니다. (Field: skill)\"}")
+            ))
     @PostMapping
     ResponseEntity<BaseResponse<TagResponse>> createTag(@Valid @RequestBody TagRequest request);
 
     // 회원 태그 목록 조회
     @Operation(summary = "회원 태그 목록 조회", description = "로그인된 회원이 보유한 기술 태그 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "회원 태그 목록 조회 성공")
     @GetMapping("/me")
     ResponseEntity<BaseResponse<List<TagResponse>>> getMyTags(@RequestHeader(value = "X-User-Code") String memberCode);
 
     // 회원 태그 연결
     @Operation(summary = "회원 태그 연결", description = "로그인된 회원의 프로필에 특정 태그를 연결합니다. (MemberTagEntity 생성)")
+    @ApiResponse(responseCode = "200", description = "태그 연결 성공")
+    @ApiResponse(responseCode = "404", description = "존재하지 않는 태그 코드",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"status\": 404, \"error\": \"Not Found\", \"code\": \"T101\","
+                            + " \"message\": \"해당 기술 태그를 찾을 수 없습니다.\"}")
+            ))
+    @ApiResponse(responseCode = "409", description = "이미 연결된 태그",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"status\": 409, \"error\": \"Conflict\", \"code\": \"T103\","
+                            + " \"message\": \"이미 연결된 기술 태그입니다.\"}")
+            ))
     @PostMapping("/{tagCode}/members/me")
     ResponseEntity<BaseResponse<Void>> linkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code") String memberCode);
 
     // 회원 태그 연결 해제
     @Operation(summary = "회원 태그 연결 해제", description = "로그인된 회원의 프로필에서 특정 태그 연결을 해제합니다. (MemberTagEntity 삭제)")
+    @ApiResponse(responseCode = "200", description = "태그 연결 해제 성공")
+    @ApiResponse(responseCode = "404", description = "연결 정보 없음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"status\": 404, \"error\": \"Not Found\", \"code\": \"T104\","
+                            + " \"message\": \"해제할 기술 태그 연결을 찾을 수 없습니다.\"}")
+            ))
     @DeleteMapping("/{tagCode}/members/me")
     ResponseEntity<BaseResponse<Void>> unlinkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code") String memberCode);
