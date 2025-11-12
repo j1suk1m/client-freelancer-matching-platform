@@ -10,6 +10,7 @@ import com.example.memberservice.oauth.service.OAuthService;
 import com.example.memberservice.oauth.service.dto.output.TokensOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Null;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class OAuthApiController implements OAuthApiControllerSwagger {
         httpServletResponse.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + output.accessToken());
         httpServletResponse.addHeader(HttpHeaders.SET_COOKIE,
             CookieGenerator.createCookies("refresh-token", output.refreshToken(),
-                jwtProperties.getRefreshTokenTtl()));
+                TimeUnit.MILLISECONDS.toSeconds(jwtProperties.getRefreshTokenTtl())));
 
     }
 

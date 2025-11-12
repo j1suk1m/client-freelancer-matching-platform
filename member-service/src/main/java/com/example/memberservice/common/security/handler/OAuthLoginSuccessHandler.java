@@ -2,6 +2,7 @@ package com.example.memberservice.common.security.handler;
 
 import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.redis.service.RedisSingleDataService;
+import com.example.memberservice.common.security.jwt.JwtProperties;
 import com.example.memberservice.common.security.jwt.JwtTokenGenerator;
 import com.example.memberservice.common.security.jwt.JwtTokenValidator;
 import com.example.memberservice.common.security.model.dto.CustomOAuth2UserDto;
@@ -35,8 +36,8 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
     private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
 
-    @Value("${jwt.refresh-token.ttl}")
-    private Long refreshTokenTtl;
+    private final JwtProperties jwtProperties;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -52,7 +53,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         log.info("TOKEN:%s".formatted(memberCode));
         try {
-            redisSingleDataService.setSingleData(memberCode, refreshToken, refreshTokenTtl);
+            redisSingleDataService.setSingleData(memberCode, refreshToken, jwtProperties.getRefreshTokenTtl());
 
         } catch (BusinessException e) {
             oAuthLoginFailureHandler.onAuthenticationFailure(request, response,
@@ -71,7 +72,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         }
 
         response.addHeader(HttpHeaders.SET_COOKIE, CookieGenerator.createCookies("RefreshToken", refreshToken,
-            TimeUnit.MILLISECONDS.toSeconds(refreshTokenTtl)));
+            TimeUnit.MILLISECONDS.toSeconds(jwtProperties.getRefreshTokenTtl())));
         response.sendRedirect(redirectUri);
     }
 }
