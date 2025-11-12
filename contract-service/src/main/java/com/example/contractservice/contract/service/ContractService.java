@@ -97,6 +97,8 @@ public class ContractService {
 
         saveSettlements(contracts);
 
+        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractConfirmEvent(contract.getCode(), contract.getCreatedAt()))); // TODO: 추후 수정
+
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
                 .toList();
