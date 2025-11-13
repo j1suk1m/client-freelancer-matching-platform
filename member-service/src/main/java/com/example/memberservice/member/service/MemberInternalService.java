@@ -22,7 +22,7 @@ public class MemberInternalService {
     private final MemberJpaRepository memberJpaRepository;
 
     public List<MemberInfoOutput> getMemberInfos(List<String> memberCodes) {
-        List<Members> findMembers = memberJpaRepository.findAllByCode(memberCodes);
+        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(memberCodes);
 
         Set<String> setMemberCodes = new HashSet<>(memberCodes);
 
@@ -45,7 +45,7 @@ public class MemberInternalService {
     }
 
     public MemberExistOutput getMemberExists(List<String> memberCodes) {
-        List<Members> findMembers = memberJpaRepository.findAllByCode(memberCodes);
+        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(memberCodes);
 
         Set<String> existCodes = findMembers.stream()
             .map(Members::getCode)
