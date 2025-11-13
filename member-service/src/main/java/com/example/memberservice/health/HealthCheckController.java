@@ -3,6 +3,7 @@ package com.example.memberservice.health;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,9 +21,9 @@ public class HealthCheckController {
     }
 
     @GetMapping("/healthCheck")
-    public String healthCheck() {
+    public String healthCheck(@RequestHeader(name = "X-CODE") String memberCode) {
 
-        return "Member OK";
+        return "Member"+memberCode+" OK";
     }
 
     @GetMapping("/connectCheck")
