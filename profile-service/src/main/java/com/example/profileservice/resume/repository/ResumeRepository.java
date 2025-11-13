@@ -14,4 +14,7 @@ public interface ResumeRepository extends JpaRepository<ResumeEntity, Long> {
 
     // resumeCode로 이력서 상세 조회 (삭제되지 않은 것만)
     Optional<ResumeEntity> findByCodeAndIsDeletedFalse(String code);
+
+    // SelfPromotion에서 이력서 연결 시 유효성 검증용
+    boolean existsByCodeAndIsDeletedFalse(String code);
 }
