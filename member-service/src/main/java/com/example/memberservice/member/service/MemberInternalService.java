@@ -22,9 +22,9 @@ public class MemberInternalService {
     private final MemberJpaRepository memberJpaRepository;
 
     public List<MemberInfoOutput> getMemberInfos(List<String> memberCodes) {
-        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(memberCodes);
-
         Set<String> setMemberCodes = new HashSet<>(memberCodes);
+
+        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(setMemberCodes);
 
         if (setMemberCodes.size() > findMembers.size()) {
             //TODO BusinnessException 추가 이후
@@ -45,7 +45,9 @@ public class MemberInternalService {
     }
 
     public MemberExistOutput getMemberExists(List<String> memberCodes) {
-        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(memberCodes);
+        Set<String> setMemberCodes = new HashSet<>(memberCodes);
+
+        List<Members> findMembers = memberJpaRepository.findAllByCodeIn(setMemberCodes);
 
         Set<String> existCodes = findMembers.stream()
             .map(Members::getCode)
@@ -59,6 +61,6 @@ public class MemberInternalService {
             .filter(code -> !existCodes.contains(code))
             .toList();
 
-        return new MemberExistOutput(exists,notExists);
+        return new MemberExistOutput(exists, notExists);
     }
 }
