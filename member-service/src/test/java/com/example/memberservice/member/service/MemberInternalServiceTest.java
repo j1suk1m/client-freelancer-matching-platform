@@ -108,8 +108,8 @@ class MemberInternalServiceTest {
 
         // Then
         System.out.println(result);
-        assertThat(result.exist()).containsExactlyInAnyOrder(code1, code2);
-        assertThat(result.notExist()).containsExactly(code3);
+        assertThat(result.exists()).containsExactlyInAnyOrder(code1, code2);
+        assertThat(result.notExists()).containsExactly(code3);
     }
 
     private Members createMember(String code, String email,String nickName, boolean canWork) {
