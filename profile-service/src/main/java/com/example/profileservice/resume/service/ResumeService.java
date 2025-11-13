@@ -48,11 +48,6 @@ public class ResumeService {
 
         resumeRepository.save(resume);
 
-        /// TODO: 2. 최초 이력서 등록 시 Member 모듈에 can_work 상태 변경 이벤트 발행 가정을 위한 주석 처리
-        // if (!resumeRepository.existsByMemberCodeAndIsDeletedFalse(memberCode)) {
-        //     memberEventPublisher.publishCanWorkStatusUpdate(memberCode, true);
-        // }
-
         return toDetailResponse(resume, List.of());
     }
 
@@ -96,12 +91,6 @@ public class ResumeService {
 
         // 2. Soft Delete 처리
         resume.delete();
-
-        // TODO: 3. 이력서가 모두 삭제된 경우 Member 모듈의 can_work 상태 변경 이벤트 발행 가정을 위한 주석 처리
-        // boolean hasRemainingResumes = resumeRepository.existsByMemberCodeAndIsDeletedFalse(memberCode);
-        // if (!hasRemainingResumes) {
-        //     memberEventPublisher.publishCanWorkStatusUpdate(memberCode, false);
-        // }
     }
 
     // 특정 이력서에 경력/경험을 등록
