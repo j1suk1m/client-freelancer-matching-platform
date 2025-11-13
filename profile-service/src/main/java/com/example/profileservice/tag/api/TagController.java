@@ -1,6 +1,6 @@
 package com.example.profileservice.tag.api;
 
-import com.example.profileservice.common.model.vo.BaseResponse;
+import com.example.profileservice.common.model.vo.ResponseDto;
 import com.example.profileservice.tag.model.dto.request.TagRequest;
 import com.example.profileservice.tag.model.dto.response.TagResponse;
 import com.example.profileservice.tag.service.TagService;
@@ -27,45 +27,45 @@ public class TagController implements TagApiController {
 
     // 전체 태그 목록 조회
     @Override
-    public ResponseEntity<BaseResponse<List<TagResponse>>> getAllTags() {
+    public ResponseEntity<ResponseDto<List<TagResponse>>> getAllTags() {
         List<TagResponse> tags = tagService.getAllTags();
 
-        return ResponseEntity.ok(BaseResponse.success(tags));
+        return ResponseEntity.ok(ResponseDto.success(tags));
     }
 
     // 새 태그 등록
     @Override
-    public ResponseEntity<BaseResponse<TagResponse>> createTag(@Valid @RequestBody TagRequest request) {
+    public ResponseEntity<ResponseDto<TagResponse>> createTag(@Valid @RequestBody TagRequest request) {
         TagResponse newTag = tagService.createTag(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(newTag));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.success(newTag));
     }
 
     // 회원 태그 목록 조회
     @Override
-    public ResponseEntity<BaseResponse<List<TagResponse>>> getMyTags(
+    public ResponseEntity<ResponseDto<List<TagResponse>>> getMyTags(
             @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode
     ) {
         List<TagResponse> myTags = tagService.getMyTags(memberCode);
 
-        return ResponseEntity.ok(BaseResponse.success(myTags));
+        return ResponseEntity.ok(ResponseDto.success(myTags));
     }
 
     // 회원 태그 연결
     @Override
-    public ResponseEntity<BaseResponse<Void>> linkMemberTag(@PathVariable String tagCode,
+    public ResponseEntity<ResponseDto<Void>> linkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
         tagService.linkMemberTag(memberCode, tagCode);
 
-        return ResponseEntity.ok(BaseResponse.success());
+        return ResponseEntity.ok(ResponseDto.success());
     }
 
     // 회원 태그 연결 해제
     @Override
-    public ResponseEntity<BaseResponse<Void>> unlinkMemberTag(@PathVariable String tagCode,
+    public ResponseEntity<ResponseDto<Void>> unlinkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
         tagService.unlinkMemberTag(memberCode, tagCode);
 
-        return ResponseEntity.ok(BaseResponse.success());
+        return ResponseEntity.ok(ResponseDto.success());
     }
 }
