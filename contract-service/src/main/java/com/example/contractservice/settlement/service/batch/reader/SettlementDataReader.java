@@ -30,16 +30,20 @@ public class SettlementDataReader extends JpaCursorItemReader<SettlementEntity> 
         FROM
             SettlementEntity s
         WHERE
-            s.progressingAt >= :startDate AND s.progressingAt < :endDate
+            s.progressingAt >= :start AND s.progressingAt < :end
         """); // 쿼리 설정
 
         setHintValues(Map.of("org.hibernate.fetchSize", fetchSize)); // 하이버네이트에서 DB 레코드를 한 번에 가져오는 사이즈
 
-        Instant curTime = Instant.parse(dateStr);
-        LocalDate endDate = LocalDate.ofInstant(curTime, UTC); // Instant -> Date(년-월-일)
-        LocalDate startDate = endDate.minusMonths(MONTH_INTERVAL);
+        Instant curInstant = Instant.parse(dateStr);
+        LocalDate endLocalDate = curInstant.atZone(UTC).toLocalDate(); // Instant -> LocalDate(년-월-일)
 
-        Map<String, Object> paramMap = Map.of("startDate", startDate, "endDate", endDate);
+        Instant endInstant = endLocalDate.atStartOfDay(UTC).toInstant(); // LocalDate(년-월-일) 자정 -> Instant
+        Instant startInstant = endLocalDate.minusMonths(MONTH_INTERVAL) // 한 달 전 LocalDate
+                .atStartOfDay().toInstant(UTC); // 한 달 전 자정 -> Instant
+
+
+        Map<String, Object> paramMap = Map.of("start", startInstant, "end", endInstant);
         setParameterValues(paramMap);
     }
 }
