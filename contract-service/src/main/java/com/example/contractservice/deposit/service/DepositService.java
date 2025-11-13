@@ -59,4 +59,10 @@ public class DepositService {
     public void withdraw(Deposit deposit, Long amount) {
         deposit.withdraw(amount);
     }
+
+    /** 입금 action
+     */
+    public void transfer(Deposit deposit, Long amount) {
+        deposit.transfer(amount);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.contractservice.deposit.domain;
 
+import static com.example.contractservice.deposit.domain.exception.DepositErrorCode.INVALID_AMOUNT;
 import static com.example.contractservice.deposit.domain.exception.DepositErrorCode.NOT_ENOUGH_AMOUNT;
 
 import com.example.contractservice.deposit.domain.exception.DepositException;
@@ -41,5 +42,13 @@ public class Deposit {
 
     private String generateCode() {
         return UUID.randomUUID().toString();
+    }
+
+    public void transfer(Long amount) {
+        if (amount < 0) {
+            throw new DepositException(INVALID_AMOUNT);
+        }
+
+        this.amount += amount;
     }
 }
