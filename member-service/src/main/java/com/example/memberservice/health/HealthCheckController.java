@@ -21,7 +21,10 @@ public class HealthCheckController {
     }
 
     @GetMapping("/healthCheck")
-    public String healthCheck(@RequestHeader(name = "X-CODE") String memberCode) {
+    public String healthCheck(@RequestHeader(name = "X-CODE", required = false) String memberCode) {
+        if(memberCode==null){
+            memberCode=" Internal API ";
+        }
 
         return "Member"+memberCode+" OK";
     }
