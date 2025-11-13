@@ -34,11 +34,14 @@ public class ResponseDto<T> {
 
     // 요청에 성공한 경우 (결과 값 있음)
     public static <T> ResponseDto<T> success(T data) {
+        // data가 null이 아니지만, Empty.getInstance()인 경우 data: {}로 출력하기 위해 Empty 인스턴스를 유지
+        T result = (data instanceof Empty) ? data : data;
+
         return new ResponseDto<>(
                 SUCCESS_CODE,
                 HttpStatus.OK.value(),
                 SUCCESS_MESSAGE,
-                data
+                result
         );
     }
 
