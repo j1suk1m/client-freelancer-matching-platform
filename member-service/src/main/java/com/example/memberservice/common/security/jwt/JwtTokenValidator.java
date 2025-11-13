@@ -26,6 +26,7 @@ public class JwtTokenValidator {
         } catch (JwtException e) {
             //TODO JwtToken 관련 비지니스 Exception으로 변경
             throw new BusinessException(BusinessCode.UNAUTHORIZATION);
+
         }
     }
 }

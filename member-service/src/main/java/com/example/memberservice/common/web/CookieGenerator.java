@@ -7,7 +7,7 @@ public class CookieGenerator {
     public static String createCookies(String key, String value, long age) {
         ResponseCookie cookie = ResponseCookie.from(key, value)
             .path("/")
-            .maxAge(3600)
+            .maxAge(age)
             .secure(false)
             .httpOnly(false)
             // .sameSite("None")

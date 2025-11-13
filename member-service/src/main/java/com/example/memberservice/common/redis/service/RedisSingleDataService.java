@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RedisSingleDataService {
 
+
     void setSingleData(String key, Object value,
         long refreshTokenTtl); // Redis 단일 데이터 값을 등록/수정합니다. 이때 단일값은 JWT 설정에 따라 지정
 

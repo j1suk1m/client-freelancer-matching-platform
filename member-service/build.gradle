@@ -60,6 +60,7 @@ dependencies {
 
     //테스트용 h2 관련 의존성
     testRuntimeOnly 'com.h2database:h2'
+
 }
 
 dependencyManagement {

@@ -1,6 +1,5 @@
 package com.example.memberservice.common.redis.service;
 
-
 import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.exception.BusinessCode;
 import java.time.Duration;
@@ -22,6 +21,7 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     private final String REDIS_KEY_PREFIX = "TOKEN:";
 
     @Override
+
     public void setSingleData(String key, Object value, long refreshTokenTTL) {
         Duration duration = Duration.ofMillis(refreshTokenTTL);
 
@@ -51,6 +51,7 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
     private ListOperations<String, Object> listOperations() {
         return redisTemplate.opsForList();
     }
+
 
 
     private void executeOperation(Runnable operation) {

@@ -11,6 +11,7 @@ public class JwtTokenGenerator {
 
     private final JwtKeyProvider jwtKeyProvider;
 
+
     private final JwtProperties jwtProperties;
 
     public String generateAccessToken(String memberCode, boolean isSignedUp) {
@@ -19,6 +20,7 @@ public class JwtTokenGenerator {
             .claim(jwtProperties.getIsSignedUpClaims(), isSignedUp)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenTtl()))
+
             .signWith(jwtKeyProvider.getAccessTokenSignKey())
             .compact();
     }

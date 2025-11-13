@@ -22,10 +22,10 @@ public class GoogleUserInfo implements OAuthUserInfo {
 
     @Override
     public String getEmail() {
-        String email = attributes.get("email").toString();
-        if (email == null) {
+        Object emailObject = attributes.get("email");
+        if (emailObject == null) {
             throw new IllegalArgumentException("Email not found in attributes");
         }
-        return email;
+        return emailObject.toString();
     }
 }

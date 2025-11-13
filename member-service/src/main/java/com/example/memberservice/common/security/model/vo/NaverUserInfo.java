@@ -24,10 +24,11 @@ public class NaverUserInfo implements OAuthUserInfo {
     @Override
     public String getEmail() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-        String email = response.get("email").toString();
-        if (email == null) {
+
+        Object emailObject = response.get("email");
+        if (emailObject == null) {
             throw new IllegalArgumentException("Email not found in attributes");
         }
-        return email;
+        return emailObject.toString();
     }
 }

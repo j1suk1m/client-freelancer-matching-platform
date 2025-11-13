@@ -1,5 +1,6 @@
 package com.example.memberservice.common.security.handler;
 
+
 import com.example.memberservice.common.exception.BusinessCode;
 import com.example.memberservice.common.model.vo.Empty;
 import com.example.memberservice.common.model.vo.ResponseDto;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Null;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
+
+    @Value("${redirect-url.login.failure}")
+    private String failureRedirectUrl;
 
     private final ObjectMapper om;
 
@@ -29,13 +35,11 @@ public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHand
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        BusinessCode businessCode = BusinessCode.UNAUTHORIZATION;
 
-        ResponseDto<Empty> responseBody = new ResponseDto<>(businessCode.getCode(), businessCode.getHttpStatusCode(),
-            businessCode.getMessage(),
-            Empty.getInstance());
+        ResponseDto<Null> responseBody = new ResponseDto<>(401, 401, null,null);
 
-        response.sendRedirect("http://localhost:8000/login");
+        response.sendRedirect(failureRedirectUrl);
+
         response.getWriter().write(om.writeValueAsString(responseBody));
     }
 }
