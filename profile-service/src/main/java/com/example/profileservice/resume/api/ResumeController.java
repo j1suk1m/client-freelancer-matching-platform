@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,30 +32,40 @@ public class ResumeController implements ResumeApiController {
     private final ResumeSimpleResponse mockResumeSimple = new ResumeSimpleResponse("res-001", "백엔드 이력서 1",
             Instant.now());
 
+    private static final String DEFAULT_MEMBER_CODE = "member-uuid-code-001";
+
     @Override
     @GetMapping("/me")
-    public ResponseEntity<List<ResumeSimpleResponse>> getMyResumes() {
+    public ResponseEntity<List<ResumeSimpleResponse>> getMyResumes(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode
+    ) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(List.of(mockResumeSimple));
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<ResumeDetailResponse> createResume(@Valid @RequestBody ResumeCreateRequest request) {
+    public ResponseEntity<ResumeDetailResponse> createResume(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @Valid @RequestBody ResumeCreateRequest request) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(mockResumeDetail);
     }
 
     @Override
     @GetMapping("/{resumeCode}")
-    public ResponseEntity<ResumeDetailResponse> getResumeDetail(@PathVariable String resumeCode) {
+    public ResponseEntity<ResumeDetailResponse> getResumeDetail(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(mockResumeDetail);
     }
 
     @Override
     @PatchMapping("/{resumeCode}")
-    public ResponseEntity<ResumeDetailResponse> updateResume(@PathVariable String resumeCode,
+    public ResponseEntity<ResumeDetailResponse> updateResume(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode,
             @Valid @RequestBody ResumeUpdateRequest request) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(mockResumeDetail);
@@ -62,30 +73,44 @@ public class ResumeController implements ResumeApiController {
 
     @Override
     @DeleteMapping("/{resumeCode}")
-    public ResponseEntity<Void> deleteResume(@PathVariable String resumeCode) {
+    public ResponseEntity<Void> deleteResume(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode
+    ) {
         // TODO: 실제 로직 구현
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @PostMapping("/{resumeCode}/experiences")
-    public ResponseEntity<ExperienceResponse> createExperience(@PathVariable String resumeCode,
-            @Valid @RequestBody ExperienceRequest request) {
+    public ResponseEntity<ExperienceResponse> createExperience(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode,
+            @Valid @RequestBody ExperienceRequest request
+    ) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(mockExperience);
     }
 
     @Override
     @PatchMapping("/{resumeCode}/experiences/{experienceCode}")
-    public ResponseEntity<ExperienceResponse> updateExperience(@PathVariable String resumeCode,
-            @PathVariable String experienceCode, @Valid @RequestBody ExperienceRequest request) {
+    public ResponseEntity<ExperienceResponse> updateExperience(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode,
+            @PathVariable String experienceCode,
+            @Valid @RequestBody ExperienceRequest request
+    ) {
         // TODO: 실제 로직 구현
         return ResponseEntity.ok(mockExperience);
     }
 
     @Override
     @DeleteMapping("/{resumeCode}/experiences/{experienceCode}")
-    public ResponseEntity<Void> deleteExperience(@PathVariable String resumeCode, @PathVariable String experienceCode) {
+    public ResponseEntity<Void> deleteExperience(
+            @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @PathVariable String resumeCode,
+            @PathVariable String experienceCode
+    ) {
         // TODO: 실제 로직 구현
         return ResponseEntity.noContent().build();
     }

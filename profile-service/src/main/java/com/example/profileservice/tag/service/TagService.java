@@ -9,7 +9,9 @@ import com.example.profileservice.tag.model.entity.TagEntity;
 import com.example.profileservice.tag.repository.MemberTagRepository;
 import com.example.profileservice.tag.repository.TagRepository;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -105,5 +107,51 @@ public class TagService {
 
         // 2. 삭제
         memberTagRepository.delete(memberTag);
+    }
+
+    // 회원 태그 목록 동기화
+    @Transactional
+    public void syncMemberTags(String memberCode, List<String> requestedTagCodesList) {
+        // 1. 요청된 태그 코드가 DB에 실제로 존재하는지 일괄 확인 (데이터 무결성)
+        List<TagEntity> validTags = tagRepository.findAllByCodeIn(requestedTagCodesList);
+        Set<String> existingTagCodesInDb = validTags.stream()
+                .map(TagEntity::getCode)
+                .collect(Collectors.toSet());
+
+        // 2. 현재 회원의 태그 코드 목록 조회
+        Set<String> currentTagCodes = memberTagRepository.findAllByMemberCode(memberCode).stream()
+                .map(MemberTagEntity::getTagCode)
+                .collect(Collectors.toSet());
+
+        // 3. 요청된 태그 코드 목록 (Set으로 변환하여 비교 용이하게)
+        Set<String> requestedTagCodes = new HashSet<>(requestedTagCodesList);
+
+        // 4. [삭제할 태그] 찾기: 현재 태그에는 있지만 요청 목록에는 없는 태그 (Current - Requested)
+        Set<String> tagsToRemove = new HashSet<>(currentTagCodes);
+        tagsToRemove.removeAll(requestedTagCodes);
+
+        // 5. [추가할 태그] 찾기: 요청 목록에는 있지만 현재 태그에는 없는 태그 (Requested - Current)
+        Set<String> tagsToAdd = new HashSet<>(requestedTagCodes);
+        tagsToAdd.removeAll(currentTagCodes);
+
+        // 6. DB에 없는 태그 코드는 추가 목록에서 제외 (요청은 왔지만 DB에 없는 경우 방지)
+        tagsToAdd.retainAll(existingTagCodesInDb);
+
+        // 7. 삭제 작업 실행
+        if (!tagsToRemove.isEmpty()) {
+            memberTagRepository.deleteAllByMemberCodeAndTagCodeIn(memberCode, tagsToRemove);
+        }
+
+        // 8. 추가 작업 실행
+        if (!tagsToAdd.isEmpty()) {
+            List<MemberTagEntity> newConnections = tagsToAdd.stream()
+                    .map(tagCode -> MemberTagEntity.builder()
+                            .memberCode(memberCode)
+                            .tagCode(tagCode)
+                            .build())
+                    .collect(Collectors.toList());
+
+            memberTagRepository.saveAll(newConnections);
+        }
     }
 }

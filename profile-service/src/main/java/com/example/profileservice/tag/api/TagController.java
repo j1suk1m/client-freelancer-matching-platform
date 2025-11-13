@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +51,7 @@ public class TagController implements TagApiController {
     @Override
     @GetMapping("/me")
     public ResponseEntity<ResponseDto<List<TagResponse>>> getMyTags(
-            @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode
+            @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode
     ) {
         List<TagResponse> myTags = tagService.getMyTags(memberCode);
 
@@ -61,7 +62,7 @@ public class TagController implements TagApiController {
     @Override
     @PostMapping("/{tagCode}/members/me")
     public ResponseEntity<ResponseDto<Void>> linkMemberTag(@PathVariable String tagCode,
-            @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
+            @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
         tagService.linkMemberTag(memberCode, tagCode);
 
         return ResponseEntity.ok(ResponseDto.success());
@@ -71,8 +72,19 @@ public class TagController implements TagApiController {
     @Override
     @DeleteMapping("/{tagCode}/members/me")
     public ResponseEntity<ResponseDto<Void>> unlinkMemberTag(@PathVariable String tagCode,
-            @RequestHeader(value = "X-User-Code", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
+            @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode) {
         tagService.unlinkMemberTag(memberCode, tagCode);
+
+        return ResponseEntity.ok(ResponseDto.success());
+    }
+
+    // 회원 태그 동기화
+    @Override
+    @PutMapping("/members/me")
+    public ResponseEntity<ResponseDto<Void>> syncMemberTags(
+            @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
+            @RequestBody List<String> tagCodes) {
+        tagService.syncMemberTags(memberCode, tagCodes);
 
         return ResponseEntity.ok(ResponseDto.success());
     }
