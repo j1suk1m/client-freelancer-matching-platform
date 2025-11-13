@@ -25,10 +25,6 @@ public class TagService {
     private final TagRepository tagRepository;
     private final MemberTagRepository memberTagRepository;
 
-    private TagResponse toResponse(TagEntity entity) {
-        return new TagResponse(entity.getCode(), entity.getSkill());
-    }
-
     // 전체 태그 목록 조회
     public List<TagResponse> getAllTags() {
         return tagRepository.findAll().stream()
@@ -85,15 +81,11 @@ public class TagService {
 
         // 2. 중복 연결 방지
         if (memberTagRepository.existsByMemberCodeAndTagCode(memberCode, tagCode)) {
-            throw new CustomException(ErrorCode.MEMBER_TAG_ALREADY_CONNECTED,
-                    "해당 회원은 이미 태그 [" + tag.getSkill() + "]를 연결했습니다.");
+            return;
         }
 
         // 3. MemberTagEntity 생성 및 저장
-        MemberTagEntity memberTag = MemberTagEntity.builder()
-                .memberCode(memberCode)
-                .tagCode(tagCode)
-                .build();
+        MemberTagEntity memberTag = MemberTagEntity.create(memberCode, tagCode);
 
         memberTagRepository.save(memberTag);
     }
@@ -153,5 +145,9 @@ public class TagService {
 
             memberTagRepository.saveAll(newConnections);
         }
+    }
+
+    private TagResponse toResponse(TagEntity entity) {
+        return new TagResponse(entity.getCode(), entity.getSkill());
     }
 }

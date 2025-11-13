@@ -23,7 +23,7 @@ public class RatingEntity {
     private Long id;
 
     // 평가를 받은 회원의 코드 FK
-    @Column(name = "receiver_code", columnDefinition = "VARCHAR(36)", nullable = false, updatable = false)
+    @Column(name = "receiver_code", columnDefinition = "VARCHAR(36)", nullable = false, updatable = false, unique = true)
     private String receiverCode;
 
     // 받은 '만족' 개수

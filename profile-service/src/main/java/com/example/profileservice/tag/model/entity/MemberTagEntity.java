@@ -9,6 +9,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberTagEntity {
 
     // 고유 아이디 PK
@@ -49,5 +51,10 @@ public class MemberTagEntity {
     public MemberTagEntity(String memberCode, String tagCode) {
         this.memberCode = memberCode;
         this.tagCode = tagCode;
+    }
+
+    // 정적 팩토리 메서드로 생성 로직 캡슐화
+    public static MemberTagEntity create(String memberCode, String tagCode) {
+        return new MemberTagEntity(null, memberCode, tagCode);
     }
 }
