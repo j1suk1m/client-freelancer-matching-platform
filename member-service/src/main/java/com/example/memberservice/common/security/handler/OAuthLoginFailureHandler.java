@@ -1,5 +1,7 @@
 package com.example.memberservice.common.security.handler;
 
+import com.example.memberservice.common.exception.BusinessCode;
+import com.example.memberservice.common.model.vo.Empty;
 import com.example.memberservice.common.model.vo.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -27,7 +29,11 @@ public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHand
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        ResponseDto<Null> responseBody = new ResponseDto<>(401, "로그인에 실패하였습니다.", null);
+        BusinessCode businessCode = BusinessCode.UNAUTHORIZATION;
+
+        ResponseDto<Empty> responseBody = new ResponseDto<>(businessCode.getCode(), businessCode.getHttpStatusCode(),
+            businessCode.getMessage(),
+            Empty.getInstance());
 
         response.sendRedirect("http://localhost:8000/login");
         response.getWriter().write(om.writeValueAsString(responseBody));

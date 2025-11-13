@@ -1,20 +1,17 @@
 package com.example.memberservice.oauth.controller;
 
 import com.example.memberservice.common.exception.BusinessException;
-import com.example.memberservice.common.exception.ErrorCode;
-import com.example.memberservice.common.model.vo.ResponseDto;
+import com.example.memberservice.common.exception.BusinessCode;
 import com.example.memberservice.common.security.jwt.JwtProperties;
 import com.example.memberservice.common.web.CookieGenerator;
 import com.example.memberservice.oauth.controller.swagger.OAuthApiControllerSwagger;
 import com.example.memberservice.oauth.service.OAuthService;
 import com.example.memberservice.oauth.service.dto.output.TokensOutput;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Null;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +35,7 @@ public class OAuthApiController implements OAuthApiControllerSwagger {
         @CookieValue(name = "refresh-token", required = false) String refreshToken) {
 
         if (refreshToken == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZATION);
+            throw new BusinessException(BusinessCode.UNAUTHORIZATION);
         }
 
         TokensOutput output = oAuthService.reissueAccessTokenByRefreshToken(refreshToken);

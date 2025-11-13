@@ -4,9 +4,7 @@ import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.redis.service.RedisSingleDataService;
 import com.example.memberservice.common.security.jwt.JwtProperties;
 import com.example.memberservice.common.security.jwt.JwtTokenGenerator;
-import com.example.memberservice.common.security.jwt.JwtTokenValidator;
 import com.example.memberservice.common.security.model.dto.CustomOAuth2UserDto;
-import com.example.memberservice.common.security.service.CustomOAuth2UserService;
 import com.example.memberservice.common.web.CookieGenerator;
 import com.example.memberservice.member.repository.MemberJpaRepository;
 import jakarta.servlet.ServletException;
@@ -16,7 +14,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -57,7 +54,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         } catch (BusinessException e) {
             oAuthLoginFailureHandler.onAuthenticationFailure(request, response,
-                new AuthenticationServiceException(e.getErrorCode().getMessage(), e));
+                new AuthenticationServiceException(e.getBusinessCode().getMessage(), e));
 
             return;
         }

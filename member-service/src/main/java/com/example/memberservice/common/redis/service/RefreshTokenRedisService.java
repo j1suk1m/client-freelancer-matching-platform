@@ -2,12 +2,11 @@ package com.example.memberservice.common.redis.service;
 
 
 import com.example.memberservice.common.exception.BusinessException;
-import com.example.memberservice.common.exception.ErrorCode;
+import com.example.memberservice.common.exception.BusinessCode;
 import java.time.Duration;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -60,7 +59,7 @@ public class RefreshTokenRedisService implements RedisSingleDataService {
             log.info("redis에 정상 저장하였습니다.");
         } catch (Exception e) {
             log.info("Redis에 정상 저장되지 못했습니다.");
-            throw new BusinessException(ErrorCode.DATA_SAVE_FAILED);
+            throw new BusinessException(BusinessCode.DATA_SAVE_FAILED);
         }
     }
 
