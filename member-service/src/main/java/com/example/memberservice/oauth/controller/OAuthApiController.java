@@ -40,8 +40,8 @@ public class OAuthApiController implements OAuthApiControllerSwagger {
 
         TokensOutput output = oAuthService.reissueAccessTokenByRefreshToken(refreshToken);
 
-        httpServletResponse.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + output.accessToken());
-        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE,
+        httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, "Bearer "+output.accessToken());
+        httpServletResponse.setHeader(HttpHeaders.SET_COOKIE,
             CookieGenerator.createCookies("refresh-token", output.refreshToken(),
                 TimeUnit.MILLISECONDS.toSeconds(jwtProperties.getRefreshTokenTtl())));
 
