@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Null;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    @Value("${redirect-url.login.failure}")
+    private String failureRedirectUrl;
     private final ObjectMapper om;
 
     @Override
@@ -29,7 +32,7 @@ public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHand
 
         ResponseDto<Null> responseBody = new ResponseDto<>(401, "로그인에 실패하였습니다.", null);
 
-        response.sendRedirect("http://localhost:8000/login");
+        response.sendRedirect(failureRedirectUrl);
         response.getWriter().write(om.writeValueAsString(responseBody));
     }
 }

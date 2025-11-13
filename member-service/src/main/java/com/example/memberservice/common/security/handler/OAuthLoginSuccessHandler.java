@@ -2,9 +2,7 @@ package com.example.memberservice.common.security.handler;
 
 import com.example.memberservice.common.redis.service.RedisSingleDataService;
 import com.example.memberservice.common.security.jwt.JwtTokenGenerator;
-import com.example.memberservice.common.security.jwt.JwtTokenValidator;
 import com.example.memberservice.common.security.model.dto.CustomOAuth2UserDto;
-import com.example.memberservice.common.security.service.CustomOAuth2UserService;
 import com.example.memberservice.common.web.CookieGenerator;
 import com.example.memberservice.member.repository.MemberJpaRepository;
 import jakarta.servlet.ServletException;
@@ -37,6 +35,12 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     @Value("${jwt.refresh-token.ttl}")
     private Long refreshTokenTtl;
 
+    @Value("${redirect-url.login.success}")
+    private String successRedirectUrl;
+
+    @Value("${redirect-url.login.need-signup}")
+    private String needSignUpRedirectUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException, ServletException {
@@ -66,9 +70,9 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         //소셜로그인에 회원가입까지 완료했다면
         if (memberJpaRepository.existsByCode(memberCode)) {
-            redirectUri = "http://localhost:8000/api/members/healthCheck";
+            redirectUri = successRedirectUrl;
         } else {
-            redirectUri = "http://localhost:8000/api/members/connectCheck";
+            redirectUri = needSignUpRedirectUrl;
         }
 
         response.addHeader(HttpHeaders.SET_COOKIE, CookieGenerator.createCookies("RefreshToken", refreshToken,
