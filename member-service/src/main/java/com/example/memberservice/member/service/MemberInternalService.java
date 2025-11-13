@@ -28,7 +28,7 @@ public class MemberInternalService {
 
         if (setMemberCodes.size() > findMembers.size()) {
             //TODO BusinnessException 추가 이후
-            throw new IllegalArgumentException("요청하신 memberCode 중 없는 memberCode가 존재합니다.");
+            throw new IllegalArgumentException("요청하신 memberCode 중 잘못된 memberCode가 존재합니다.");
         }
 
         return List.of(
@@ -44,13 +44,21 @@ public class MemberInternalService {
         );
     }
 
-    public List<MemberExistOutput> getMemberExists(List<String> memberCodes) {
+    public MemberExistOutput getMemberExists(List<String> memberCodes) {
         List<Members> findMembers = memberJpaRepository.findAllByCode(memberCodes);
 
-        List<String> exists = new ArrayList<>();
+        Set<String> existCodes = findMembers.stream()
+            .map(Members::getCode)
+            .collect(Collectors.toSet());
 
-        List<String> notExists = new ArrayList<>();
+        List<String> exists = memberCodes.stream()
+            .filter(existCodes::contains)
+            .toList();
 
-        return null;
+        List<String> notExists = memberCodes.stream()
+            .filter(code -> !existCodes.contains(code))
+            .toList();
+
+        return new MemberExistOutput(exists,notExists);
     }
 }
