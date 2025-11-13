@@ -18,6 +18,20 @@ public abstract class SettlementMapper {
 
     private SettlementMapper() {}
 
+    public static Settlement toDomain(SettlementEntity settlementEntity) {
+        SettlementReference reference = new SettlementReference(settlementEntity.getReceiverCode(),
+                settlementEntity.getContractCode());
+
+        SettlementStatusInfo statusInfo = new SettlementStatusInfo(settlementEntity.getOriginalAmount(),
+                settlementEntity.getSettledAmount(), settlementEntity.getStatus(),
+                settlementEntity.getSettlementRate());
+
+        SettlementTimeline timeline = new SettlementTimeline(settlementEntity.getCreatedAt(),
+                settlementEntity.getSettledAt(), settlementEntity.getProgressingAt());
+
+        return new Settlement(reference, statusInfo, timeline);
+    }
+
     public static List<Settlement> toDomains(SettlementSaveRequest request) {
         SettlementReference reference = new SettlementReference(request.receiverCode(), request.contractCode());
         SettlementStatusInfo statusInfo = getStatusInfo(request.amount());
@@ -100,4 +114,5 @@ public abstract class SettlementMapper {
     private static SettlementStatusInfo getStatusInfo(Long amount) {
         return new SettlementStatusInfo(amount);
     }
+
 }
