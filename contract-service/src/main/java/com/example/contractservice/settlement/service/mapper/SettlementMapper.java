@@ -58,6 +58,15 @@ public abstract class SettlementMapper {
                 .build();
     }
 
+    public static void applyToEntity(Settlement settlement, SettlementEntity settlementEntity) {
+        SettlementStatusInfo statusInfo = settlement.getSettlementStatusInfo();
+
+        settlementEntity.updateInfo(statusInfo.settledAmount(),
+                statusInfo.settlementRate(),
+                settlement.getSettlementTimeline().settledAt(),
+                statusInfo.status());
+    }
+
     /** 단 건 타입인 경우, 프로젝트 종료일에 처리되는 정산 데이터가 생성됩니다.
      */
     private static List<Settlement> getDomain(SettlementSaveRequest request, SettlementReference reference,
