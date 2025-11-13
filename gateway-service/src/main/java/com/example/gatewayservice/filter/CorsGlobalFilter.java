@@ -1,5 +1,7 @@
 package com.example.gatewayservice.filter;
 
+import jakarta.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -17,7 +19,15 @@ import reactor.core.publisher.Mono;
 public class CorsGlobalFilter implements GlobalFilter {
 
     @Value("${cors.allowed.origin}")
-    private List<String> allowedOrigin;
+    private String allowedOrigin;
+
+    private List<String> allowedOriginList;
+
+
+    @PostConstruct
+    public void init() {
+        allowedOriginList = Arrays.asList(allowedOrigin.split(","));
+    }
 
 
     @Override
@@ -26,7 +36,7 @@ public class CorsGlobalFilter implements GlobalFilter {
         HttpHeaders headers = response.getHeaders();
 
         String requestOrigin = exchange.getRequest().getHeaders().getOrigin();
-        if (requestOrigin != null && allowedOrigin.contains(requestOrigin)) {
+        if (requestOrigin != null && allowedOriginList.contains(requestOrigin)) {
             headers.add("Access-Control-Allow-Origin", requestOrigin);
         }
 
