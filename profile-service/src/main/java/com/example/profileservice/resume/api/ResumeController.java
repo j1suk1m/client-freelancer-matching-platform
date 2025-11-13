@@ -6,9 +6,10 @@ import com.example.profileservice.resume.model.dto.request.ResumeCreateRequest;
 import com.example.profileservice.resume.model.dto.request.ResumeUpdateRequest;
 import com.example.profileservice.resume.model.dto.response.ResumeDetailResponse;
 import com.example.profileservice.resume.model.dto.response.ResumeSimpleResponse;
+import com.example.profileservice.resume.service.ResumeService;
 import jakarta.validation.Valid;
-import java.time.Instant;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,16 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/resumes")
+@RequiredArgsConstructor
 public class ResumeController implements ResumeApiController {
 
-    // 임시 Mock 데이터 생성 (Swagger 출력을 위해)
-    private final ExperienceResponse mockExperience = new ExperienceResponse("exp-001", "헥사곤 프로젝트", "헥사곤", "MSA 개발",
-            Instant.now().minusSeconds(3600), null);
-    private final ResumeDetailResponse mockResumeDetail = new ResumeDetailResponse("res-001", "백엔드 개발자 이력서 1",
-            "최신 기술 스택 활용", "http://github.com/test", Instant.now(), Instant.now(), List.of(mockExperience));
-    private final ResumeSimpleResponse mockResumeSimple = new ResumeSimpleResponse("res-001", "백엔드 이력서 1",
-            Instant.now());
-
+    private final ResumeService resumeService;
     private static final String DEFAULT_MEMBER_CODE = "member-uuid-code-001";
 
     @Override
@@ -39,8 +34,9 @@ public class ResumeController implements ResumeApiController {
     public ResponseEntity<List<ResumeSimpleResponse>> getMyResumes(
             @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode
     ) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(List.of(mockResumeSimple));
+        List<ResumeSimpleResponse> resumes = resumeService.getMyResumes(memberCode);
+
+        return ResponseEntity.ok(resumes);
     }
 
     @Override
@@ -48,8 +44,9 @@ public class ResumeController implements ResumeApiController {
     public ResponseEntity<ResumeDetailResponse> createResume(
             @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @Valid @RequestBody ResumeCreateRequest request) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(mockResumeDetail);
+        ResumeDetailResponse response = resumeService.createResume(memberCode, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -57,8 +54,9 @@ public class ResumeController implements ResumeApiController {
     public ResponseEntity<ResumeDetailResponse> getResumeDetail(
             @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String resumeCode) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(mockResumeDetail);
+        ResumeDetailResponse response = resumeService.getResumeDetail(memberCode, resumeCode);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -67,8 +65,9 @@ public class ResumeController implements ResumeApiController {
             @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String resumeCode,
             @Valid @RequestBody ResumeUpdateRequest request) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(mockResumeDetail);
+        ResumeDetailResponse response = resumeService.updateResume(memberCode, resumeCode, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -77,7 +76,8 @@ public class ResumeController implements ResumeApiController {
             @RequestHeader(value = MEMBER_CODE_HEADER, defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String resumeCode
     ) {
-        // TODO: 실제 로직 구현
+        resumeService.deleteResume(memberCode, resumeCode);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -88,8 +88,9 @@ public class ResumeController implements ResumeApiController {
             @PathVariable String resumeCode,
             @Valid @RequestBody ExperienceRequest request
     ) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(mockExperience);
+        ExperienceResponse response = resumeService.createExperience(memberCode, resumeCode, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -100,8 +101,9 @@ public class ResumeController implements ResumeApiController {
             @PathVariable String experienceCode,
             @Valid @RequestBody ExperienceRequest request
     ) {
-        // TODO: 실제 로직 구현
-        return ResponseEntity.ok(mockExperience);
+        ExperienceResponse response = resumeService.updateExperience(memberCode, resumeCode, experienceCode, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -111,7 +113,8 @@ public class ResumeController implements ResumeApiController {
             @PathVariable String resumeCode,
             @PathVariable String experienceCode
     ) {
-        // TODO: 실제 로직 구현
+        resumeService.deleteExperience(memberCode, resumeCode, experienceCode);
+
         return ResponseEntity.noContent().build();
     }
 }

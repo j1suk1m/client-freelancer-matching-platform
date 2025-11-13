@@ -63,7 +63,7 @@ public class ExperienceEntity extends BaseEntity {
                 .build();
     }
 
-    public void update(String title, String organization, String description, Instant startedAt, Instant endedAt, String job, String position) {
+    public void update(String title, String organization, String description, Instant startedAt, Instant endedAt) {
         this.title = title;
         this.organization = organization;
         this.description = description;
