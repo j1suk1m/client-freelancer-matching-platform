@@ -2,6 +2,7 @@ package com.example.contractservice.settlement.service.batch.reader;
 
 import static java.time.ZoneOffset.UTC;
 
+import com.example.contractservice.settlement.common.SettlementStatus;
 import com.example.contractservice.settlement.entity.SettlementEntity;
 import jakarta.persistence.EntityManagerFactory;
 import java.time.Instant;
@@ -30,8 +31,8 @@ public class SettlementDataReader extends JpaCursorItemReader<SettlementEntity> 
         FROM
             SettlementEntity s
         WHERE
-            s.progressingAt >= :start AND s.progressingAt < :end
-        """); // 쿼리 설정
+            s.progressingAt >= :start AND s.progressingAt < :end AND s.status = :status
+        """); // 인덱스 (status, processing_at)
 
         setHintValues(Map.of("org.hibernate.fetchSize", fetchSize)); // 하이버네이트에서 DB 레코드를 한 번에 가져오는 사이즈
 
@@ -43,7 +44,7 @@ public class SettlementDataReader extends JpaCursorItemReader<SettlementEntity> 
                 .atStartOfDay().toInstant(UTC); // 한 달 전 자정 -> Instant
 
 
-        Map<String, Object> paramMap = Map.of("start", startInstant, "end", endInstant);
+        Map<String, Object> paramMap = Map.of("start", startInstant, "end", endInstant, "status", SettlementStatus.BEFORE.name());
         setParameterValues(paramMap);
     }
 }
