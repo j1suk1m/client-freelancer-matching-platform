@@ -10,6 +10,7 @@ import com.example.memberservice.member.service.model.dto.output.MemberInfoOutpu
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatReflectiveOperationException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -32,6 +31,10 @@ class MemberInternalServiceTest {
     @Autowired
     private MemberJpaRepository memberJpaRepository;
 
+    @AfterEach
+    void tearDown() {
+        memberJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("Member Code List를 파라미터로 받았을 때 해당 Code에 유저에 대한 NickName, code, canWork가 주어진다. ")
