@@ -21,7 +21,7 @@ public class MemberInternalService {
 
     private final MemberJpaRepository memberJpaRepository;
 
-    public List<MemberInfoOutput> getMemberInfos(List<String> memberCodes) {
+    public MemberInfoOutput getMemberInfos(List<String> memberCodes) {
         Set<String> setMemberCodes = new HashSet<>(memberCodes);
 
         List<Members> findMembers = memberJpaRepository.findAllByCodeIn(setMemberCodes);
@@ -31,8 +31,7 @@ public class MemberInternalService {
             throw new IllegalArgumentException("요청하신 memberCode 중 잘못된 memberCode가 존재합니다.");
         }
 
-        return List.of(
-            new MemberInfoOutput(
+        return new MemberInfoOutput(
                 findMembers.stream()
                     .map(m -> new MemberInfo(
                         m.getCode(),
@@ -40,8 +39,7 @@ public class MemberInternalService {
                         m.getCanWork()
                     ))
                     .toList()
-            )
-        );
+            );
     }
 
     public MemberExistOutput getMemberExists(List<String> memberCodes) {
