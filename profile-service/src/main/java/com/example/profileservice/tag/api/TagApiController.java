@@ -13,10 +13,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -26,7 +23,6 @@ public interface TagApiController {
     // 전체 태그 목록 조회
     @Operation(summary = "전체 태그 목록 조회", description = "시스템에 등록된 모든 기술 태그 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "태그 목록 조회 성공")
-    @GetMapping
     ResponseEntity<ResponseDto<List<TagResponse>>> getAllTags();
 
     // 새 태그 등록
@@ -44,13 +40,11 @@ public interface TagApiController {
                     examples = @ExampleObject(value = "{\"status\": 400, \"error\": \"Bad Request\", \"code\": \"C001\","
                             + " \"message\": \"입력 값이 유효하지 않습니다. (Field: skill)\"}")
             ))
-    @PostMapping
     ResponseEntity<ResponseDto<TagResponse>> createTag(@Valid @RequestBody TagRequest request);
 
     // 회원 태그 목록 조회
     @Operation(summary = "회원 태그 목록 조회", description = "로그인된 회원이 보유한 기술 태그 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "회원 태그 목록 조회 성공")
-    @GetMapping("/me")
     ResponseEntity<ResponseDto<List<TagResponse>>> getMyTags(@RequestHeader(value = "X-User-Code") String memberCode);
 
     // 회원 태그 연결
@@ -68,7 +62,6 @@ public interface TagApiController {
                     examples = @ExampleObject(value = "{\"status\": 409, \"error\": \"Conflict\", \"code\": \"T103\","
                             + " \"message\": \"이미 연결된 기술 태그입니다.\"}")
             ))
-    @PostMapping("/{tagCode}/members/me")
     ResponseEntity<ResponseDto<Void>> linkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code") String memberCode);
 
@@ -81,7 +74,6 @@ public interface TagApiController {
                     examples = @ExampleObject(value = "{\"status\": 404, \"error\": \"Not Found\", \"code\": \"T104\","
                             + " \"message\": \"해제할 기술 태그 연결을 찾을 수 없습니다.\"}")
             ))
-    @DeleteMapping("/{tagCode}/members/me")
     ResponseEntity<ResponseDto<Void>> unlinkMemberTag(@PathVariable String tagCode,
             @RequestHeader(value = "X-User-Code") String memberCode);
 }
