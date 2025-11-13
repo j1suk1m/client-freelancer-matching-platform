@@ -14,7 +14,7 @@ public record ResponseDto<T>(
         @Schema(description = "상태 메시지", defaultValue = "이상없음")
         String message,
 
-        @Schema(description = "응답 내용", defaultValue = "XXX")
+        @Schema(description = "응답 내용")
         T data
 ) {
 
