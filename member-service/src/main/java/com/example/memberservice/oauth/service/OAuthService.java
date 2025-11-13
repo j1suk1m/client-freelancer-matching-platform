@@ -39,9 +39,9 @@ public class OAuthService {
 
         redisSingleDataService.setSingleData(memberCode, newRefreshToken, jwtProperties.getRefreshTokenTtl());
 
-        boolean isSign = memberJpaRepository.existsByCode(memberCode);
+        boolean isSignedUp = memberJpaRepository.existsByCode(memberCode);
 
-        String newAccessToken = jwtTokenGenerator.generateAccessToken(memberCode, isSign);
+        String newAccessToken = jwtTokenGenerator.generateAccessToken(memberCode, isSignedUp);
 
         return new TokensOutput(newAccessToken, newRefreshToken);
 

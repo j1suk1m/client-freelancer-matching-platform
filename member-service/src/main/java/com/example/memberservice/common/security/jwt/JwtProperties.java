@@ -18,5 +18,5 @@ public class JwtProperties {
     private String memberCodeClaims;
 
     @Value("${jwt.claims.is-sign}")
-    private String isSignClaims;
+    private String isSignedUpClaims;
 }
