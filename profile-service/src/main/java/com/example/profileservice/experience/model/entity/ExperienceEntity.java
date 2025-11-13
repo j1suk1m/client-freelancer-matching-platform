@@ -51,6 +51,18 @@ public class ExperienceEntity extends BaseEntity {
         this.endedAt = endedAt;
     }
 
+    // 정적 팩토리 메서드로 생성 로직 캡슐화
+    public static ExperienceEntity create(String resumeCode, String title, String organization, String description, Instant startedAt, Instant endedAt) {
+        return ExperienceEntity.builder()
+                .resumeCode(resumeCode)
+                .title(title)
+                .organization(organization)
+                .description(description)
+                .startedAt(startedAt)
+                .endedAt(endedAt)
+                .build();
+    }
+
     public void update(String title, String organization, String description, Instant startedAt, Instant endedAt, String job, String position) {
         this.title = title;
         this.organization = organization;
