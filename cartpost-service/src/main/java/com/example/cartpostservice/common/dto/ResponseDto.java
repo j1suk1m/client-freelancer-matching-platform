@@ -1,7 +1,12 @@
 package com.example.cartpostservice.common.dto;
 
+import com.example.cartpostservice.common.exception.BusinessException;
+import com.example.cartpostservice.common.exception.ErrorCode;
+import com.example.cartpostservice.common.exception.FieldErrorDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import org.springframework.validation.BindingResult;
 
 public record ResponseDto<T>(
         @Schema(description = "성공 및 실패에 대한 구체적인 개별 커스텀 코드", defaultValue = "0")
@@ -18,5 +23,24 @@ public record ResponseDto<T>(
         T data
 ) {
 
+    //data가 없는 에러 응답 (BusinessException)
+    public static ResponseDto<EmptyDto> of(ErrorCode errorCode) {
+        return new ResponseDto<>(
+                errorCode.getCode(),
+                errorCode.getStatus().value(),
+                errorCode.getMessage(),
+                EmptyDto.getInstance()
+        );
+    }
+
+    //@Valid 유효성 검사 에러 응답 (MethodArgumentNotValidException)
+    public static ResponseDto<List<FieldErrorDetail>> of(ErrorCode errorCode, BindingResult bindingResult) {
+        return new ResponseDto<>(
+                errorCode.getCode(),
+                errorCode.getStatus().value(),
+                errorCode.getMessage(),
+                FieldErrorDetail.of(bindingResult) // data에 필드 에러 목록 추가
+        );
+    }
 }
 
