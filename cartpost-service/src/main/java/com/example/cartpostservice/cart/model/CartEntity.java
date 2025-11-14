@@ -18,7 +18,4 @@ public class CartEntity extends BaseEntity {
     @Column(name = "member_code", nullable = false, updatable = false)
     private String memberCode;
 
-    @Column(name = "item_code", nullable = false, updatable = false)
-    private String itemCode;
-
 }
