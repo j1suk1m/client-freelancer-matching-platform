@@ -28,6 +28,14 @@ public class Deposit {
         this.amount -= amount;
     }
 
+    public void transfer(Long amount) {
+        if (amount < 0) {
+            throw new DepositException(INVALID_AMOUNT);
+        }
+
+        this.amount += amount;
+    }
+
     public String getCode() {
         return code;
     }
@@ -44,11 +52,4 @@ public class Deposit {
         return UUID.randomUUID().toString();
     }
 
-    public void transfer(Long amount) {
-        if (amount < 0) {
-            throw new DepositException(INVALID_AMOUNT);
-        }
-
-        this.amount += amount;
-    }
 }
