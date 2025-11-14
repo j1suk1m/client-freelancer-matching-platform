@@ -1,6 +1,5 @@
 package com.example.cartpostservice.common.dto;
 
-import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.ErrorCode;
 import com.example.cartpostservice.common.exception.FieldErrorDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,12 +23,12 @@ public record ResponseDto<T>(
 ) {
 
     //data가 없는 에러 응답 (BusinessException)
-    public static ResponseDto<EmptyDto> of(ErrorCode errorCode) {
+    public static ResponseDto<EmptyResponse> of(ErrorCode errorCode) {
         return new ResponseDto<>(
                 errorCode.getCode(),
                 errorCode.getStatus().value(),
                 errorCode.getMessage(),
-                EmptyDto.getInstance()
+                EmptyResponse.getInstance()
         );
     }
 
