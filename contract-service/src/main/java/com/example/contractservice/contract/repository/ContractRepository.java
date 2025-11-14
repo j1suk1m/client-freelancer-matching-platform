@@ -47,8 +47,8 @@ public class ContractRepository {
         if (cursorDate != null && cursorCode != null) {
             BooleanExpression cursorPredicate = getCursorPredicate(cursorDate, cursorCode, order, qContractEntity);
 
-            requestorPredicate.and(cursorPredicate);
-            contractorPredicate.and(cursorPredicate);
+            requestorPredicate = requestorPredicate.and(cursorPredicate);
+            contractorPredicate = contractorPredicate.and(cursorPredicate);
         }
 
         // ORDER BY 동적 설정
@@ -60,7 +60,7 @@ public class ContractRepository {
         List<ContractEntity> contractorFetch = fetch(qContractEntity, contractorPredicate, orderSpecifiers, limit);
 
         // 둘을 UNION ALL
-        return unionAndSort(requestorFetch, contractorFetch, order);
+        return unionAndSort(requestorFetch, contractorFetch, order, limit);
     }
 
     private List<ContractEntity> fetch(QContractEntity qContractEntity, BooleanExpression predicate, OrderSpecifier<?>[] orderSpecifiers, int limit) {
@@ -73,14 +73,15 @@ public class ContractRepository {
     }
 
     private List<ContractEntity> unionAndSort(List<ContractEntity> requestorFetch,
-            List<ContractEntity> contractorFetch, Order order) {
+            List<ContractEntity> contractorFetch, Order order, int limit) {
 
         return ListUtils.union(requestorFetch, contractorFetch)
                 .stream()
                 .sorted(switch (order) {
-                    case ASC -> Comparator.comparing(ContractEntity::getCreatedAt);
-                    case DESC -> Comparator.comparing(ContractEntity::getCreatedAt).reversed();
+                    case ASC -> Comparator.comparing(ContractEntity::getCreatedAt).thenComparing(ContractEntity::getCode);
+                    case DESC -> Comparator.comparing(ContractEntity::getCreatedAt).reversed().thenComparing(ContractEntity::getCode);
                 })
+                .limit(limit + 1L)
                 .toList();
     }
 
