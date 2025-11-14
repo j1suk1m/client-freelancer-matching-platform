@@ -94,6 +94,10 @@ public abstract class SettlementMapper {
     private static Long getMonthAmount(Long amount, Instant startedAt, Instant endedAt) {
         long days = Duration.between(startedAt, endedAt).toDays();
 
+        if (days < DAYS_PER_MONTH) { // 월급이 될 수 없다면 그대로 반환
+            return amount;
+        }
+
         return amount * DAYS_PER_MONTH / days;
     }
 
