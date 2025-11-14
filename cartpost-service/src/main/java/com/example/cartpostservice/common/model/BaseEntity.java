@@ -26,6 +26,7 @@ public abstract class BaseEntity {
     @Column(nullable = false, unique = true)
     private String code;
 
+    @Column(nullable = false)
     private boolean is_deleted = false;
 
     @CreatedDate
