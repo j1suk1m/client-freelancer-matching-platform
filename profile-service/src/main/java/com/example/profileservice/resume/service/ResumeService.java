@@ -28,7 +28,7 @@ public class ResumeService {
 
     // 회원이 작성한 모든 이력서를 조회
     public List<ResumeSimpleResponse> getMyResumes(String memberCode) {
-        List<ResumeEntity> resumes = resumeRepository.findAllByMemberCodeAndIsDeletedFalseOrderByCreatedAtDesc(memberCode);
+        List<ResumeEntity> resumes = resumeRepository.findActiveListByMemberCode(memberCode);
 
         return resumes.stream()
                 .map(this::toSimpleResponse)
@@ -154,7 +154,7 @@ public class ResumeService {
         ResumeEntity resume = resumeRepository.findByCodeAndIsDeletedFalse(resumeCode)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESUME_NOT_FOUND));
 
-        if (!resume.isOwner(memberCode)) {
+        if (!resume.isOwnedBy(memberCode)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_RESUME_ACCESS);
         }
         return resume;
