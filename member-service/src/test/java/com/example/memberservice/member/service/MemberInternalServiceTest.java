@@ -46,8 +46,8 @@ class MemberInternalServiceTest {
 
 
         List<Members> members = List.of(
-            createMember(code1, "AAA@gmail.com","FirstUser", true),
-            createMember(code2, "BBB@gmail.com","SecondUser", false)
+            createMember(code1, "AAA@gmail.com","FirstUser", true,false),
+            createMember(code2, "BBB@gmail.com","SecondUser", false,false)
         );
 
         memberJpaRepository.saveAll(members);
@@ -65,6 +65,28 @@ class MemberInternalServiceTest {
                 tuple("SecondUser", code2, false)
             );
     }
+    @Test
+    @DisplayName("Member Code List를 파라미터로 받았을 때 isDeleted 인 회원이 포함되어 있을 경우 IlligalArgument 예외가 발생한다.")
+    void getMemberInfosTestNotConatainsIsDeletedTrue(){
+        //Given
+        String code1 = UUID.randomUUID().toString();
+
+        String code2 = UUID.randomUUID().toString();
+
+
+        List<Members> members = List.of(
+            createMember(code1, "AAA@gmail.com","FirstUser", true,false),
+            createMember(code2, "BBB@gmail.com","SecondUser", false,true)
+        );
+
+        memberJpaRepository.saveAll(members);
+
+        //When&Then
+        assertThatThrownBy(() ->
+            memberInternalService.getMemberInfos(List.of(code1, code2))
+        ).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("요청하신 memberCode 중 잘못된 memberCode가 존재합니다.");
+    }
 
     @Test
     @DisplayName("Member Code를 List로 받았는 데 없는 유저에 대한 Code가 포함된 경우 IlligalArgument 예외가 발생한다.")
@@ -76,8 +98,8 @@ class MemberInternalServiceTest {
 
         String code3 = UUID.randomUUID().toString();
         List<Members> members = List.of(
-            createMember(code1, "AAA@gmail.com","FirstUser", true),
-            createMember(code2, "BBB@gmail.com","SecondUser", false)
+            createMember(code1, "AAA@gmail.com","FirstUser", true,false),
+            createMember(code2, "BBB@gmail.com","SecondUser", false,false)
         );
 
         memberJpaRepository.saveAll(members);
@@ -98,8 +120,8 @@ class MemberInternalServiceTest {
         String code3 = UUID.randomUUID().toString(); // DB에 없는 코드
 
         List<Members> members = List.of(
-            createMember(code1, "AAA@gmail.com", "FirstUser", true),
-            createMember(code2, "BBB@gmail.com", "SecondUser", false)
+            createMember(code1, "AAA@gmail.com", "FirstUser", true,false),
+            createMember(code2, "BBB@gmail.com", "SecondUser", false,false)
         );
 
         memberJpaRepository.saveAll(members);
@@ -115,7 +137,7 @@ class MemberInternalServiceTest {
         assertThat(result.notExists()).containsExactly(code3);
     }
 
-    private Members createMember(String code, String email,String nickName, boolean canWork) {
+    private Members createMember(String code, String email,String nickName, boolean canWork, boolean isDeleted) {
         return Members.builder()
             .code(code)
             .name(nickName)
@@ -126,7 +148,7 @@ class MemberInternalServiceTest {
             .provider(Provider.KAKAO)
             .providerId("kakao-67890")
             .canWork(canWork)
-            .isDeleted(false)
+            .isDeleted(isDeleted)
             .build();
     }
 }
