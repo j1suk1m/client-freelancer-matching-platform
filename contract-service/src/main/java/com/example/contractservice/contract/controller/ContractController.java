@@ -2,6 +2,7 @@ package com.example.contractservice.contract.controller;
 
 import com.example.contractservice.common.ResponseDto;
 import com.example.contractservice.common.PaymentType;
+import com.example.contractservice.contract.common.Order;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCancelApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractConfirmApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCreateApi;
@@ -10,12 +11,14 @@ import com.example.contractservice.contract.common.swagger.annotation.GetContrac
 import com.example.contractservice.contract.common.swagger.annotation.GetContractsApi;
 import com.example.contractservice.contract.controller.dto.request.ContractCreateRequest;
 import com.example.contractservice.contract.controller.dto.request.ContractPayRequest;
-import com.example.contractservice.contract.controller.dto.response.ContractBriefResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractCreateResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractDetailResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractInfoResponse;
+import com.example.contractservice.contract.controller.dto.response.ContractListWithCursorResponse;
+import com.example.contractservice.contract.service.ContractReadService;
 import com.example.contractservice.contract.service.ContractService;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
+import com.example.contractservice.contract.service.dto.request.ContractReadCursorRequest;
 import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,19 +43,17 @@ public class ContractController {
     private static final int DAYS_OF_MONTH = 30;
 
     private final ContractService contractService;
+    private final ContractReadService contractReadService;
 
     @GetContractsApi
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ContractBriefResponse> getContracts(@RequestHeader(name = "X-CODE") String xCode,
-            @RequestParam(value = "cursor-date", required = false) String cursorDate,
-            @RequestParam(value = "cursor-code", required = false) String cursorCode) {
+    public ContractListWithCursorResponse getContracts(@RequestHeader(name = "X-CODE") String xCode,
+            @RequestParam(value = "cursor", required = false) Instant cursor,
+            @RequestParam(value = "cursor-code", required = false) String cursorCode,
+            @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
 
-        return List.of(
-                new ContractBriefResponse("클라이언트 이름1", "프리랜서 이름1", Instant.now(), Instant.now(), "PAID",
-                        "계약명1"),
-                new ContractBriefResponse("클라이언트 이름2", "프리랜서 이름2", Instant.now(), Instant.now(),
-                        "IN_PROGRESS", "계약명2"));
+        return contractReadService.findAllBy(new ContractReadCursorRequest(xCode, cursor, cursorCode, getOrder(order)));
     }
 
     @GetContractByCodeApi
@@ -96,7 +97,7 @@ public class ContractController {
         ContractPayProcessRequest serviceRequest = new ContractPayProcessRequest(xCode, request.codes());
 
         return ResponseDto.ok(contractService.payContracts(serviceRequest));
-    }
+    } // TODO: 추후 따로 결제용 컨트롤러로 분리
 
     @ContractCancelApi
     @PostMapping("/{code}/cancel")
@@ -135,6 +136,14 @@ public class ContractController {
 
     private boolean canCreateContract(String xCode, ContractCreateRequest request) {
         return request.contractorCode().equals(xCode) || request.requestorCode().equals(xCode);
+    }
+
+    private Order getOrder(String order) {
+        return switch (order.toLowerCase()) {
+            case "asc" -> Order.ASC;
+            case "desc" -> Order.DESC;
+            default -> throw new IllegalArgumentException("잘못된 정렬 방향입니다.");
+        };
     }
 
 }
