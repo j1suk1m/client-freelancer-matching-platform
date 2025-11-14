@@ -19,7 +19,7 @@ import com.example.contractservice.contract.service.dto.response.MemberInfoRespo
 import com.example.contractservice.contract.service.dto.response.MemberInfoResponse.MemberInfo;
 import com.example.contractservice.contract.service.mapper.ContractMapper;
 import com.example.contractservice.contract.service.mapper.ContractSettlementMapper;
-import com.example.contractservice.deposit.service.dto.request.DepositProcessRequest;
+import com.example.contractservice.deposit.service.dto.request.DepositWithdrawRequest;
 import com.example.contractservice.deposit.service.DepositService;
 import com.example.contractservice.settlement.service.SettlementService;
 import com.example.contractservice.settlement.service.dto.request.SettlementSaveRequest;
@@ -66,7 +66,7 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractInfoResponse confirmContract(ContractConfirmRequest request) {
+    public ContractInfoResponse confirmContract(ContractConfirmRequest request) { // TODO: 동시성 테스트 필요
         ContractEntity contractEntity = contractRepository.findByCode(request.contractCode());
         Contract contract = toDomain(contractEntity);
 
@@ -91,9 +91,9 @@ public class ContractService {
 
         validatePayments(request.xCode(), contracts);
 
-        changeStatusToPay(contracts, contractEntities);
-
         withdrawDeposit(request, contracts);
+
+        changeStatusToPay(contracts, contractEntities);
 
         saveSettlements(contracts);
 
@@ -188,8 +188,8 @@ public class ContractService {
                 .map(contract -> contract.getInfo().unitAmount())
                 .reduce(0L, Long::sum); // 총 금액
 
-        DepositProcessRequest depositProcessRequest = new DepositProcessRequest(request.xCode(), totalAmount, PAYMENT_COMMENT);
-        depositService.process(depositProcessRequest, depositService::withdraw);
+        DepositWithdrawRequest depositWithdrawRequest = new DepositWithdrawRequest(request.xCode(), totalAmount, PAYMENT_COMMENT);
+        depositService.process(depositWithdrawRequest, depositService::withdraw);
     }
 
     private void saveSettlements(List<Contract> contracts) {
