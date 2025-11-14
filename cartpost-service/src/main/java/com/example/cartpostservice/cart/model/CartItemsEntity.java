@@ -24,6 +24,9 @@ public class CartItemsEntity {
     @Column(name = "contract_code", nullable = false, updatable = false)
     private String contractCode;
 
+    @Column(name = "cart_code", nullable = false, updatable = false)
+    private String cartCode;
+
     @Column(name = "status", nullable = false, updatable = false)
     private String status;
 }
