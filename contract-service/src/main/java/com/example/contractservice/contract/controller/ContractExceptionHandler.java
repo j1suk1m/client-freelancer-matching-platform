@@ -17,7 +17,7 @@ public class ContractExceptionHandler {
         ContractErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseDto<>(errorCode.getStatusCode(), errorCode.getMessage(), Empty.getInstance()));
+                .body(new ResponseDto<>(errorCode.getStatusCode(), errorCode.getHttpStatusCode(), errorCode.getMessage(), Empty.getInstance()));
     }
 
 }
