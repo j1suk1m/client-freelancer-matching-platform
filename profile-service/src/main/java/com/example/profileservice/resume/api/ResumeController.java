@@ -1,5 +1,6 @@
 package com.example.profileservice.resume.api;
 
+import com.example.profileservice.common.model.vo.Empty;
 import com.example.profileservice.common.model.vo.ResponseDto;
 import com.example.profileservice.experience.model.dto.request.ExperienceRequest;
 import com.example.profileservice.experience.model.dto.response.ExperienceResponse;
@@ -81,13 +82,13 @@ public class ResumeController implements ResumeApiController {
     // 이력서 삭제
     @Override
     @DeleteMapping("/{resumeCode}")
-    public ResponseEntity<ResponseDto<Void>> deleteResume(
+    public ResponseEntity<ResponseDto<Empty>> deleteResume(
             @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String resumeCode
     ) {
         resumeService.deleteResume(memberCode, resumeCode);
 
-        return ResponseEntity.ok(ResponseDto.success());
+        return ResponseEntity.ok(ResponseDto.success(Empty.getInstance()));
     }
 
     // 경력/경험 등록
@@ -120,13 +121,13 @@ public class ResumeController implements ResumeApiController {
     // 경력/경험 삭제
     @Override
     @DeleteMapping("/{resumeCode}/experiences/{experienceCode}")
-    public ResponseEntity<ResponseDto<Void>> deleteExperience(
+    public ResponseEntity<ResponseDto<Empty>> deleteExperience(
             @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String resumeCode,
             @PathVariable String experienceCode
     ) {
         resumeService.deleteExperience(memberCode, resumeCode, experienceCode);
 
-        return ResponseEntity.ok(ResponseDto.success());
+        return ResponseEntity.ok(ResponseDto.success(Empty.getInstance()));
     }
 }

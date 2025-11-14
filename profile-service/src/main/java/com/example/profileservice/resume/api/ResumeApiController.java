@@ -1,6 +1,7 @@
 package com.example.profileservice.resume.api;
 
 
+import com.example.profileservice.common.model.vo.Empty;
 import com.example.profileservice.common.model.vo.ResponseDto;
 import com.example.profileservice.experience.model.dto.request.ExperienceRequest;
 import com.example.profileservice.experience.model.dto.response.ExperienceResponse;
@@ -81,7 +82,7 @@ public interface ResumeApiController {
             content = @Content(schema = @Schema(implementation = ResponseDto.class)))
     @ApiResponse(responseCode = "403", description = "접근 권한 없음 (UNAUTHORIZED_RESUME_ACCESS)",
             content = @Content(schema = @Schema(implementation = ResponseDto.class)))
-    ResponseEntity<ResponseDto<Void>> deleteResume(
+    ResponseEntity<ResponseDto<Empty>> deleteResume(
             @Parameter(in = ParameterIn.HEADER, required = true, name = "X-CODE", description = "회원 고유 코드")
             @RequestHeader(value = "X-CODE") String memberCode,
             @PathVariable String resumeCode);
@@ -125,7 +126,7 @@ public interface ResumeApiController {
             content = @Content(schema = @Schema(implementation = ResponseDto.class)))
     @ApiResponse(responseCode = "403", description = "이력서 접근 권한 없음 (UNAUTHORIZED_RESUME_ACCESS)",
             content = @Content(schema = @Schema(implementation = ResponseDto.class)))
-    ResponseEntity<ResponseDto<Void>> deleteExperience(
+    ResponseEntity<ResponseDto<Empty>> deleteExperience(
             @Parameter(in = ParameterIn.HEADER, required = true, name = "X-CODE", description = "회원 고유 코드")
             @RequestHeader(value = "X-CODE") String memberCode,
             @PathVariable String resumeCode,
