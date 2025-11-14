@@ -1,15 +1,9 @@
 package com.example.cartpostservice.common.exception;
 
-import com.example.cartpostservice.common.dto.EmptyDto;
+import com.example.cartpostservice.common.dto.EmptyResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
-import jakarta.validation.Valid;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ResponseDto<EmptyDto>> handleBusinessException(BusinessException ex) {
+    protected ResponseEntity<ResponseDto<EmptyResponse>> handleBusinessException(BusinessException ex) {
         log.warn("handleBusinessException: {}", ex.getMessage());
 
         ErrorCode errorCode = ex.getErrorCode();
