@@ -1,14 +1,13 @@
 package com.example.cartpostservice.cart.service;
 
-import com.example.cartpostservice.cart.service.dto.request.CartItemDeleteCommand;
-import com.example.cartpostservice.cart.service.dto.request.CartItemGetCommand;
+import com.example.cartpostservice.cart.service.dto.response.CartItemDeleteResult;
 import com.example.cartpostservice.cart.service.dto.response.CartItemGetResult;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface CartService {
 
-    public CartItemGetResult getCartItems(CartItemGetCommand cartItemGetCommand);
+    public CartItemGetResult getCartItems(String xCode);
 
-    public CartItemDeleteCommand deleteCartItems(CartItemDeleteCommand cartItemDeleteCommand);
+    public CartItemDeleteResult deleteCartItems(String xCode, String itemCode);
 }
