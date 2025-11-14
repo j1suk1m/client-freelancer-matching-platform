@@ -1,5 +1,6 @@
 package com.example.profileservice.selfPromotion.api;
 
+import com.example.profileservice.common.model.vo.Empty;
 import com.example.profileservice.common.model.vo.ResponseDto;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionCreateRequest;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionUpdateRequest;
@@ -88,11 +89,11 @@ public class SelfPromotionController implements SelfPromotionApiController {
     // 프로모션 삭제
     @Override
     @DeleteMapping("/{promotionCode}")
-    public ResponseEntity<ResponseDto<Void>> deletePromotion(
+    public ResponseEntity<ResponseDto<Empty>> deletePromotion(
             @RequestHeader(value = "X-CODE", defaultValue = DEFAULT_MEMBER_CODE) String memberCode,
             @PathVariable String promotionCode) {
         selfPromotionService.deletePromotion(memberCode, promotionCode);
 
-        return ResponseEntity.ok(ResponseDto.success());
+        return ResponseEntity.ok(ResponseDto.success(Empty.getInstance()));
     }
 }

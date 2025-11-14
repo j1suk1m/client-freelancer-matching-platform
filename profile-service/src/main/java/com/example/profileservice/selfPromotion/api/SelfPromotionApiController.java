@@ -1,5 +1,6 @@
 package com.example.profileservice.selfPromotion.api;
 
+import com.example.profileservice.common.model.vo.Empty;
 import com.example.profileservice.common.model.vo.ResponseDto;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionCreateRequest;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionUpdateRequest;
@@ -79,7 +80,7 @@ public interface SelfPromotionApiController {
                     schema = @Schema(implementation = ResponseDto.class),
                     examples = @ExampleObject(name = "Unauthorized Access",
                             value = "{\"code\": 3402, \"httpStatus\": 403, \"message\": \"해당 셀프 프로모션 게시글에 대한 접근 권한이 없습니다.\", \"data\": null}")))
-    ResponseEntity<ResponseDto<Void>> deletePromotion(
+    ResponseEntity<ResponseDto<Empty>> deletePromotion(
             @Parameter(in = ParameterIn.HEADER, required = true, name = "X-CODE", description = "회원 고유 코드")
             @RequestHeader(value = "X-CODE") String memberCode,
             @PathVariable String promotionCode);
