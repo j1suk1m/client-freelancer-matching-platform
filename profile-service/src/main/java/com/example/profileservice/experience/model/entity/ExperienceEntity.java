@@ -72,7 +72,7 @@ public class ExperienceEntity extends BaseEntity {
     }
 
     // 경력/경험 항목이 해당 이력서에 속하는지 확인
-    public boolean isOwner(String resumeCode) {
+    public boolean belongsTo(String resumeCode) {
         return this.resumeCode.equals(resumeCode);
     }
 }

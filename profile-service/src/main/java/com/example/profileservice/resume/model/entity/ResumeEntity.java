@@ -46,7 +46,7 @@ public class ResumeEntity extends BaseEntity {
     }
 
     // 권한 검사 메서드 (BaseEntity.code를 사용)
-    public boolean isOwner(String memberCode) {
+    public boolean isOwnedBy(String memberCode) {
         return this.memberCode.equals(memberCode);
     }
 }
