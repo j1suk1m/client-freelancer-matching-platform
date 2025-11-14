@@ -66,7 +66,7 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractInfoResponse confirmContract(ContractConfirmRequest request) {
+    public ContractInfoResponse confirmContract(ContractConfirmRequest request) { // TODO: 동시성 테스트 필요
         ContractEntity contractEntity = contractRepository.findByCode(request.contractCode());
         Contract contract = toDomain(contractEntity);
 
@@ -91,9 +91,9 @@ public class ContractService {
 
         validatePayments(request.xCode(), contracts);
 
-        changeStatusToPay(contracts, contractEntities);
-
         withdrawDeposit(request, contracts);
+
+        changeStatusToPay(contracts, contractEntities);
 
         saveSettlements(contracts);
 
