@@ -3,7 +3,6 @@ package com.example.contractservice.contract.controller;
 import com.example.contractservice.contract.common.swagger.annotation.GetContractInternalApi;
 import com.example.contractservice.contract.controller.dto.response.ContractBriefResponse;
 import com.example.contractservice.contract.service.ContractService;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +22,7 @@ public class ContractInternalController {
     @ResponseStatus(HttpStatus.OK)
     public ContractBriefResponse getBriefInfo(@PathVariable String code) {
 
-        return new ContractBriefResponse("클라이언트 이름", "프리랜서 이름", Instant.now(), Instant.now(),
-            "DONE", "계약명");
+        throw new UnsupportedOperationException(); // 임시 조치
     }
 
 }

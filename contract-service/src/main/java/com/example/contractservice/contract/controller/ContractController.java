@@ -49,11 +49,11 @@ public class ContractController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ContractListWithCursorResponse getContracts(@RequestHeader(name = "X-CODE") String xCode,
-            @RequestParam(value = "cursor", required = false) Instant cursor,
+            @RequestParam(value = "cursor-date", required = false) Instant cursorDate,
             @RequestParam(value = "cursor-code", required = false) String cursorCode,
             @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
 
-        return contractReadService.findAllBy(new ContractReadCursorRequest(xCode, cursor, cursorCode, getOrder(order)));
+        return contractReadService.findAllBy(new ContractReadCursorRequest(xCode, cursorDate, cursorCode, getOrder(order)));
     }
 
     @GetContractByCodeApi

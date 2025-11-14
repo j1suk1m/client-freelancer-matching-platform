@@ -10,7 +10,7 @@ public record ContractListWithCursorResponse(
         @Schema(description = "계약 목록")
         List<ContractBriefResponse> contracts,
         @Schema(description = "마지막 커서 정보")
-        Instant cursor,
+        Instant cursorDate,
         @Schema(description = "마지막 커서 계약 코드", example = "4cd54740-91dc-4bcd-856c-1b776fc227b6")
         String cursorCode,
         @Schema(description = "다음 페이지 존재 여부", example = "true")
@@ -31,7 +31,7 @@ public record ContractListWithCursorResponse(
             );
         }
 
-        ContractBriefResponse lastData = briefResponses.get(briefResponses.size() - 1);
+        ContractBriefResponse lastData = briefResponses.get(pageSize - 1);
 
         return new ContractListWithCursorResponse(
                 briefResponses.subList(0, pageSize), // 페이지만큼 자름
