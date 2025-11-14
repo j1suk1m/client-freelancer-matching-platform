@@ -22,13 +22,22 @@ public record ContractListWithCursorResponse(
                 .map(ContractBriefResponse::from)
                 .toList();
 
+        if (briefResponses.size() <= pageSize) { // 마지막 지점
+            return new ContractListWithCursorResponse(
+                    briefResponses,
+                    briefResponses.get(briefResponses.size() - 1).createdAt(),
+                    briefResponses.get(briefResponses.size() - 1).contractCode(),
+                    false
+            );
+        }
+
         ContractBriefResponse lastData = briefResponses.get(briefResponses.size() - 1);
 
         return new ContractListWithCursorResponse(
-                briefResponses,
+                briefResponses.subList(0, pageSize), // 페이지만큼 자름
                 lastData.createdAt(),
                 lastData.contractCode(),
-                briefResponses.size() >= pageSize
+                true
         );
     }
 }
