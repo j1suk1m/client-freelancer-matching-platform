@@ -30,11 +30,12 @@ public abstract class BaseEntity {
     private boolean is_deleted = false;
 
     @CreatedDate
-    @Column(updatable = false)
-    private Instant createdDate;
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 
     @LastModifiedDate
-    private Instant lastModifiedDate;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @PrePersist
     public void generateCode() {
