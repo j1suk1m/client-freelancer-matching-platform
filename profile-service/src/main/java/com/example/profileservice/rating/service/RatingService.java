@@ -42,11 +42,10 @@ public class RatingService {
         }
 
         // 3. 원자적 업데이트 쿼리 실행
-        int updatedCount;
         if (request.satisfied()) {
-            updatedCount = ratingRepository.incrementSatisfiedCount(receiverCode);
+            ratingRepository.incrementSatisfiedCount(receiverCode);
         } else {
-            updatedCount = ratingRepository.incrementUnsatisfiedCount(receiverCode);
+            ratingRepository.incrementUnsatisfiedCount(receiverCode);
         }
 
         // 4. 업데이트된 최신 데이터 조회 후 반환
