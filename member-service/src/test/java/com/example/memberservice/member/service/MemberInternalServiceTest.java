@@ -58,7 +58,7 @@ class MemberInternalServiceTest {
         System.out.println(resultMemberInfos);
         //Then
         assertThat(resultMemberInfos.memberInfos())
-            .hasSize(2)
+            .hasSize(members.size())
             .extracting("nickName", "memberCode", "canWork")
             .containsExactlyInAnyOrder(
                 tuple("FirstUser", code1, true),

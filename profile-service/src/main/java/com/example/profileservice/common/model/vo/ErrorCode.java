@@ -15,14 +15,20 @@ public enum ErrorCode {
     INVALID_MEMBER_CODE(HttpStatus.BAD_REQUEST, 3006, "유효하지 않은 사용자 코드입니다."),
 
     // 4xx 클라이언트 에러 - experience (3100 ~ 3199)
+    EXPERIENCE_NOT_FOUND(HttpStatus.NOT_FOUND, 3101, "요청하신 경력/경험 항목을 찾을 수 없습니다."),
+    UNAUTHORIZED_EXPERIENCE_ACCESS(HttpStatus.FORBIDDEN, 3102, "해당 경력/경험 항목에 대한 접근 권한이 없습니다."),
 
     // 4xx 클라이언트 에러 - rating (3200 ~ 3299)
 
 
     // 4xx 클라이언트 에러 - resume (3300 ~ 3399)
-
+    RESUME_NOT_FOUND(HttpStatus.NOT_FOUND, 3301, "요청하신 이력서를 찾을 수 없습니다."),
+    UNAUTHORIZED_RESUME_ACCESS(HttpStatus.FORBIDDEN, 3302, "해당 이력서에 대한 접근 권한이 없습니다."),
 
     // 4xx 클라이언트 에러 - selfPromotion (3400 ~ 3499)
+    PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, 3401, "요청하신 셀프 프로모션 게시글을 찾을 수 없습니다."),
+    UNAUTHORIZED_PROMOTION_ACCESS(HttpStatus.FORBIDDEN, 3402, "해당 셀프 프로모션 게시글에 대한 접근 권한이 없습니다."),
+    INVALID_RESUME_CODE_LINK(HttpStatus.BAD_REQUEST, 3403, "연결하려는 이력서 코드가 유효하지 않거나 존재하지 않습니다."),
 
     // 4xx 클라이언트 에러 - Tag (3500 ~ 3599)
     TAG_NOT_FOUND(HttpStatus.NOT_FOUND, 3501, "해당 기술 태그를 찾을 수 없습니다."),
