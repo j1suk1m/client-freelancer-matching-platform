@@ -1,9 +1,7 @@
 package com.example.memberservice.common.security.handler;
 
 
-import com.example.memberservice.common.exception.BusinessCode;
-import com.example.memberservice.common.model.vo.Empty;
-import com.example.memberservice.common.model.vo.ResponseDto;
+import com.example.memberservice.common.web.model.dto.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,7 @@
 package com.example.memberservice.common.exception;
 
-public enum BusinessCode {
+public enum ErrorCode {
 
-    SUCCESS(0, 200, "요청을 성공적으로 처리했습니다."),
 
     UNAUTHORIZATION(2400, 401, "인증되지 않은 요청입니다."),
 
@@ -16,7 +15,7 @@ public enum BusinessCode {
 
     private final String message;
 
-    BusinessCode(int code, int httpStatusCode, String message) {
+    ErrorCode(int code, int httpStatusCode, String message) {
         this.code = code;
         this.httpStatusCode = httpStatusCode;
         this.message = message;

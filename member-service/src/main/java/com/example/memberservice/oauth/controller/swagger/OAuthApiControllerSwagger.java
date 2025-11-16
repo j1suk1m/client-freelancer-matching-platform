@@ -1,11 +1,10 @@
 package com.example.memberservice.oauth.controller.swagger;
 
-import com.example.memberservice.common.model.vo.ResponseDto;
+import com.example.memberservice.common.web.model.dto.ResponseDto;
+import com.example.memberservice.common.web.model.vo.Empty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Null;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +14,13 @@ public interface OAuthApiControllerSwagger {
 
     @PostMapping("/reissue")
     @Operation(summary = "AccessToken 재발급 Api", description = "RefreshToken을 통해 AccessToken을 재발급합니다.")
-    void reissueAccessTokenByRefreshToken(
+    ResponseDto<Empty> reissueAccessTokenByRefreshToken(
         HttpServletResponse httpServletResponse,
         @CookieValue("refresh-token") String refreshToken);
 
 
     @DeleteMapping("/logout")
     @Operation(summary = "로그아웃 API", description = "관리 중이던 Refresh Token을 제거해주어 로그아웃 시킵니다.")
-    void logoutMemberByRefreshToken(
+    ResponseDto<Empty> logoutMemberByRefreshToken(
         @CookieValue("refresh-token") String refreshToken);
 }
