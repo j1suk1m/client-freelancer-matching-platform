@@ -1,19 +1,67 @@
 package com.example.cartpostservice.cart.service;
 
-import com.example.cartpostservice.cart.service.dto.response.CartItemDeleteResult;
-import com.example.cartpostservice.cart.service.dto.response.CartItemGetResult;
+import com.example.cartpostservice.cart.controller.dto.response.CartItemsGetResponse;
+import com.example.cartpostservice.cart.model.CartItemsEntity;
+import com.example.cartpostservice.cart.model.CartsEntity;
+import com.example.cartpostservice.cart.repository.CartItemsRepository;
+import com.example.cartpostservice.cart.repository.CartsRepository;
+import com.example.cartpostservice.common.dto.EmptyResponse;
+import com.example.cartpostservice.common.exception.BusinessException;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
+import com.example.cartpostservice.common.model.vo.PaymentType;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements  CartService {
 
+    private final CartsRepository cartsRepository;
+    private final CartItemsRepository cartItemsRepository;
+
     @Override
-    public CartItemGetResult getCartItems(String xCode) {
-        return null;
+    public List<CartItemsGetResponse> getCartItems(String xCode) {
+
+        CartsEntity cart = cartsRepository.findByMemberCode(xCode).orElseThrow(() -> new BusinessException(
+                CustomStatusCode.NOT_FOUND_MEMBER));
+
+        List<CartItemsEntity> cartItems = cartItemsRepository.findByCartCode(cart.getCode());
+
+        if(cartItems.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<CartItemsGetResponse> cartItemsGetResponses = cartItems.stream()
+                .map(entity -> new CartItemsGetResponse(
+                        entity.getContractCode(),
+                        entity.getStartedAt(),
+                        entity.getEndedAt(),
+                        entity.getPaymentType().toString(),
+                        calculateTotalAmount(entity.getStartedAt(), entity.getEndedAt(), entity.getPaymentType(),
+                                entity.getAmount())
+                ))
+                .toList();
+
+        return cartItemsGetResponses;
     }
 
     @Override
-    public CartItemDeleteResult deleteCartItems(String xCode, String itemCode) {
+    public EmptyResponse deleteCartItems(String xCode, String itemCode) {
         return null;
+    }
+
+    private int calculateTotalAmount(Instant startedAt, Instant endedAt, PaymentType paymentType, String amount) {
+        Duration duration = Duration.between(startedAt, endedAt);
+        long days = duration.toDays();
+
+        if(paymentType == PaymentType.PER_JOB){
+            return  Integer.parseInt(amount);
+        }
+
+        return (int)(days * Integer.parseInt(amount));
     }
 }
