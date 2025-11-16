@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PaymentType {
-    MONTH("월급"), PER_JOB("건당");
+    MONTHLY("월급"), PER_JOB("건당");
 
     private final String description;
 }
