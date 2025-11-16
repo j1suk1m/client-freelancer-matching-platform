@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
 
 CREATE TABLE IF NOT EXISTS `cart_items` (
     `id` BIGINT NOT NULL,
+    `code` VARCHAR(36) NOT NULL,
     `contract_code` VARCHAR(255) NOT NULL,
     `cart_code` VARCHAR(255) NOT NULL,
     `status` VARCHAR(50) NOT NULL,
