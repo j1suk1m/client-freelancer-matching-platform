@@ -6,11 +6,9 @@ import com.example.contractservice.contract.common.Order;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCancelApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractConfirmApi;
 import com.example.contractservice.contract.common.swagger.annotation.ContractCreateApi;
-import com.example.contractservice.contract.common.swagger.annotation.ContractPayApi;
 import com.example.contractservice.contract.common.swagger.annotation.GetContractByCodeApi;
 import com.example.contractservice.contract.common.swagger.annotation.GetContractsApi;
 import com.example.contractservice.contract.controller.dto.request.ContractCreateRequest;
-import com.example.contractservice.contract.controller.dto.request.ContractPayRequest;
 import com.example.contractservice.contract.controller.dto.response.ContractCreateResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractDetailResponse;
 import com.example.contractservice.contract.controller.dto.response.ContractInfoResponse;
@@ -19,10 +17,8 @@ import com.example.contractservice.contract.service.ContractReadService;
 import com.example.contractservice.contract.service.ContractService;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.request.ContractReadCursorRequest;
-import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -87,17 +83,6 @@ public class ContractController {
 
         return ResponseDto.ok(contractService.confirmContract(request));
     }
-
-    @ContractPayApi
-    @PostMapping("/pay")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<List<ContractInfoResponse>> payContract(@RequestHeader(name = "X-CODE") String xCode,
-            @RequestBody ContractPayRequest request) {
-
-        ContractPayProcessRequest serviceRequest = new ContractPayProcessRequest(xCode, request.codes());
-
-        return ResponseDto.ok(contractService.payContracts(serviceRequest));
-    } // TODO: 추후 따로 결제용 컨트롤러로 분리
 
     @ContractCancelApi
     @PostMapping("/{code}/cancel")
