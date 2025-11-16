@@ -29,7 +29,7 @@ public class IsSignCheckFilter extends AbstractGatewayFilterFactory<Config> {
             Claims claims = (Claims) exchange.getAttribute("claims");
 
             if (claims == null) {
-                throw new BusinessException(ErrorCode.NEED_SIGNUP);
+                throw new BusinessException(ErrorCode.UNAUTHORIZATION);
             }
 
             Boolean isSign = jwtTokenParser.parseIsSign(claims);
