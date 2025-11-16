@@ -15,10 +15,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ResponseDto<EmptyResponse>> handleBusinessException(BusinessException ex) {
         log.warn("handleBusinessException: {}", ex.getMessage());
 
-        ErrorCode errorCode = ex.getErrorCode();
-        ResponseDto response = ResponseDto.of(errorCode);
+        CustomStatusCode customStatusCode = ex.getCustomStatusCode();
+        ResponseDto response = ResponseDto.createEmptyErrorResponse(customStatusCode);
 
-        return new ResponseEntity<>(response, errorCode.getStatus());
+        return new ResponseEntity<>(response, customStatusCode.getStatus());
     }
 
 

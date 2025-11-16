@@ -1,6 +1,6 @@
 package com.example.cartpostservice.common.dto;
 
-import com.example.cartpostservice.common.exception.ErrorCode;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
 import com.example.cartpostservice.common.exception.FieldErrorDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,21 +23,21 @@ public record ResponseDto<T>(
 ) {
 
     //data가 없는 에러 응답 (BusinessException)
-    public static ResponseDto<EmptyResponse> of(ErrorCode errorCode) {
+    public static ResponseDto<EmptyResponse> createEmptyErrorResponse(CustomStatusCode customStatusCode) {
         return new ResponseDto<>(
-                errorCode.getCode(),
-                errorCode.getStatus().value(),
-                errorCode.getMessage(),
+                customStatusCode.getCode(),
+                customStatusCode.getStatus().value(),
+                customStatusCode.getMessage(),
                 EmptyResponse.getInstance()
         );
     }
 
     //@Valid 유효성 검사 에러 응답 (MethodArgumentNotValidException)
-    public static ResponseDto<List<FieldErrorDetail>> of(ErrorCode errorCode, BindingResult bindingResult) {
+    public static ResponseDto<List<FieldErrorDetail>> createValidationErrorResponse(CustomStatusCode customStatusCode, BindingResult bindingResult) {
         return new ResponseDto<>(
-                errorCode.getCode(),
-                errorCode.getStatus().value(),
-                errorCode.getMessage(),
+                customStatusCode.getCode(),
+                customStatusCode.getStatus().value(),
+                customStatusCode.getMessage(),
                 FieldErrorDetail.of(bindingResult) // data에 필드 에러 목록 추가
         );
     }
