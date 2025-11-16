@@ -6,6 +6,7 @@ import com.example.cartpostservice.commissions.service.dto.response.CommissionFi
 import com.example.cartpostservice.commissions.service.dto.response.CommissionReadResult;
 import com.example.cartpostservice.commissions.service.dto.response.CommissionSortReadResult;
 import com.example.cartpostservice.commissions.service.dto.response.CommissionUpdateResult;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,5 +25,5 @@ public interface CommissionsService {
 
     public CommissionFinishResult finishCommission(String code);
 
-    public CommissionSortReadResult readOwnCommissions(String code, int page, int size, String sort);
+    public CommissionSortReadResult readOwnCommissions(String code, Pageable pageable);
 }

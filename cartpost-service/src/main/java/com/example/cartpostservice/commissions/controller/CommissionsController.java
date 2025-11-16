@@ -6,6 +6,7 @@ import com.example.cartpostservice.commissions.controller.dto.response.Commissio
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,9 +61,7 @@ public class CommissionsController implements CommissionsApi {
     @GetMapping("/total")
     public ResponseEntity<ResponseDto<CommissionsReadResponse>> readOwnCommissions(
             @RequestHeader("X-CODE") String code,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "isOpen,asc") String sort) {
+            Pageable pageable) {
         return null;
     }
 }

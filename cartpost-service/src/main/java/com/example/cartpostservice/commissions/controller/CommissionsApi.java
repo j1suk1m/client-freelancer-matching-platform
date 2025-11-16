@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -94,9 +95,7 @@ public interface CommissionsApi {
     })
     ResponseEntity<ResponseDto<CommissionsReadResponse>> readOwnCommissions(
             @RequestHeader("X-CODE") String code,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "isOpen,asc") String sort
+            Pageable pageable
     );
 
 
