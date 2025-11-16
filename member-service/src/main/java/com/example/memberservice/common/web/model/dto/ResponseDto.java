@@ -55,6 +55,15 @@ public record ResponseDto<T>(
         );
     }
 
+    public static ResponseDto<Empty> fail(ErrorCode errorCode, String message){
+        return new ResponseDto<>(
+            errorCode.getCode(),
+            errorCode.getHttpStatusCode(),
+            message,
+            Empty.getInstance()
+        );
+    }
+
     public static ResponseDto<Empty> fail(ErrorCode errorCode) {
         return new ResponseDto<>(
             errorCode.getCode(),
@@ -62,6 +71,10 @@ public record ResponseDto<T>(
             errorCode.getMessage(),
             Empty.getInstance()
         );
+    }
+
+    public static ResponseDto<Empty> fail(){
+        return ResponseDto.fail(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
 }
