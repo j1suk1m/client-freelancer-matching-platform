@@ -86,7 +86,7 @@ public class ApiErrorResponsesAdaptor {
             ApiResponse apiResponse = new ApiResponse();
 
             holders.forEach(holder -> {
-                mediaType.addExamples(String.valueOf(holder.httpStatusCode()), holder.holder());
+                mediaType.addExamples(String.valueOf(holder.code()), holder.holder());
             });
 
             content.addMediaType("application/json", mediaType);
@@ -101,7 +101,7 @@ public class ApiErrorResponsesAdaptor {
         MediaType mediaType = new MediaType();
         ApiResponse apiResponse = new ApiResponse();
 
-        mediaType.addExamples(String.valueOf(exampleHolder.httpStatusCode()), exampleHolder.holder());
+        mediaType.addExamples(String.valueOf(exampleHolder.code()), exampleHolder.holder());
         content.addMediaType("application/json", mediaType);
         apiResponse.setContent(content);
 
