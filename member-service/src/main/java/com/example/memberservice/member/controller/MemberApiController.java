@@ -2,14 +2,13 @@ package com.example.memberservice.member.controller;
 
 import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.common.web.model.dto.ResponseDto;
-import com.example.memberservice.member.controller.dto.request.UserCreateRequest;
-import com.example.memberservice.member.controller.dto.request.UserUpdateRequest;
+import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
+import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
 import com.example.memberservice.member.controller.dto.response.UserGetResponse;
 import com.example.memberservice.member.controller.swagger.MemberApiControllerSwagger;
 import com.example.memberservice.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -47,15 +46,15 @@ public class MemberApiController implements MemberApiControllerSwagger {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDto<Empty> createMember(@RequestHeader(name = "X-CODE") String memberCode,
-        @RequestBody UserCreateRequest request) {
+        @RequestBody MemberCreateRequest request) {
 
-        return ResponseDto.success(HttpStatus.CREATED.value());
+        return ResponseDto.success(HttpStatus.CREATED);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<Empty> updateMember(@RequestHeader(name = "X-CODE") String memberCode,
-        @RequestBody UserUpdateRequest request) {
+        @RequestBody MemberUpdateRequest request) {
 
         return ResponseDto.success();
     }

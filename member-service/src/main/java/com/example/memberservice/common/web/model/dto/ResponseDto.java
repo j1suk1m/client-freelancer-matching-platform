@@ -4,6 +4,7 @@ import com.example.memberservice.common.exception.ErrorCode;
 import com.example.memberservice.common.web.model.vo.Empty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 
 public record ResponseDto<T>(
@@ -36,10 +37,10 @@ public record ResponseDto<T>(
     }
 
     // 요청에 성공한 경우 (Http Status 값 있음)
-    public static ResponseDto<Empty> success(int httpStatusCode) {
+    public static ResponseDto<Empty> success(HttpStatus httpStatusCode) {
         return new ResponseDto<>(
             SUCCESS_CODE,
-            httpStatusCode,
+            httpStatusCode.value(),
             SUCCESS_MESSAGE,
             Empty.getInstance()
         );
