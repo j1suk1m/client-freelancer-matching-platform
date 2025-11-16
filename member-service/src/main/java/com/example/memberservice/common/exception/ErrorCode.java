@@ -2,6 +2,7 @@ package com.example.memberservice.common.exception;
 
 public enum ErrorCode {
 
+    FAIL_LOGIN(2000, 401, "로그인에 실패하였습니다."),
 
     UNAUTHORIZATION(2400, 401, "인증되지 않은 요청입니다."),
 

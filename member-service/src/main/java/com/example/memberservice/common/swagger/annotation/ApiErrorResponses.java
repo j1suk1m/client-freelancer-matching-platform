@@ -10,5 +10,5 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface ApiErrorResponses {
 
-    Class<ErrorCode>[] exceptions() default {};
+    ErrorCode[] exceptions() default {};
 }

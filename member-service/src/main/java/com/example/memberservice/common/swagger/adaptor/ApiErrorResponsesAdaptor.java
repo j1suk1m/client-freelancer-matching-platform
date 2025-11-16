@@ -18,15 +18,14 @@ import java.util.stream.Collectors;
 @Component
 public class ApiErrorResponsesAdaptor {
 
-    public void generateErrorCodeResponseExample(Operation operation, Class<ErrorCode>[] exceptions) {
+    public void generateErrorCodeResponseExample(Operation operation, ErrorCode[] exceptions) {
         ApiResponses responses = operation.getResponses();
 
         // statusCode별 ExampleHolder 리스트
         Map<Integer, List<ExampleHolder>> statusWithExampleHolders = Arrays.stream(exceptions)
             .map(ex -> {
                 try {
-                    ErrorCode instance = ex.getDeclaredConstructor().newInstance();
-                    ResponseDto<Empty> res = ResponseDto.fail(instance);
+                    ResponseDto<Empty> res = ResponseDto.fail(ex);
                     return new ExampleHolder(
                         getSwaggerExample(res),
                         res.code(),
@@ -36,7 +35,7 @@ public class ApiErrorResponsesAdaptor {
                     throw new RuntimeException(e);
                 }
             })
-            .collect(Collectors.groupingBy(ExampleHolder::code));
+            .collect(Collectors.groupingBy(ExampleHolder::httpStatusCode));
 
         // addExamples
         Map<Integer, List<ExampleHolder>> mutableMap =
@@ -50,11 +49,10 @@ public class ApiErrorResponsesAdaptor {
     }
 
 
-    public void generateErrorCodeResponseExample(Operation operation, Class<ErrorCode> exception) {
+    public void generateErrorCodeResponseExample(Operation operation, ErrorCode instance) {
         ApiResponses responses = operation.getResponses();
 
         try {
-            ErrorCode instance = exception.getDeclaredConstructor().newInstance();
             ResponseDto<Empty> res = ResponseDto.fail(instance);
 
             ExampleHolder exampleHolder = new ExampleHolder(
@@ -88,7 +86,7 @@ public class ApiErrorResponsesAdaptor {
             ApiResponse apiResponse = new ApiResponse();
 
             holders.forEach(holder -> {
-                mediaType.addExamples(String.valueOf(holder.code()), holder.holder());
+                mediaType.addExamples(String.valueOf(holder.httpStatusCode()), holder.holder());
             });
 
             content.addMediaType("application/json", mediaType);
@@ -103,10 +101,10 @@ public class ApiErrorResponsesAdaptor {
         MediaType mediaType = new MediaType();
         ApiResponse apiResponse = new ApiResponse();
 
-        mediaType.addExamples(String.valueOf(exampleHolder.code()), exampleHolder.holder());
+        mediaType.addExamples(String.valueOf(exampleHolder.httpStatusCode()), exampleHolder.holder());
         content.addMediaType("application/json", mediaType);
         apiResponse.setContent(content);
 
-        responses.addApiResponse(String.valueOf(exampleHolder.code()), apiResponse);
+        responses.addApiResponse(String.valueOf(exampleHolder.httpStatusCode()), apiResponse);
     }
 }

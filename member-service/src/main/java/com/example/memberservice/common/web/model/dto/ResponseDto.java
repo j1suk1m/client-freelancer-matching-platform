@@ -7,13 +7,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 public record ResponseDto<T>(
-    @Schema(description = "front - server 간 상태코드", defaultValue = "2000")
+    @Schema(description = "front - server 간 상태코드", defaultValue = "0")
     int code,
 
     @JsonProperty("httpStatus")
+    @Schema(description = "Http Status 코드", defaultValue = "200")
     int httpStatusCode,
 
-    @Schema(description = "상태 메시지", defaultValue = "요청이 성공적으로 이루어졌습니다")
+    @Schema(description = "상태 메시지", defaultValue = SUCCESS_MESSAGE)
     String message,
 
     @Schema(description = "응답 내용", defaultValue = "XXX")

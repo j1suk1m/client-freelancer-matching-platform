@@ -7,13 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.customizers.OperationCustomizer;
 
@@ -50,7 +47,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 handlerMethod.getMethodAnnotation(ApiErrorResponses.class);
 
             if (apiErrorResponses != null) {
-                Class<ErrorCode>[] exceptions = apiErrorResponses.exceptions();
+                ErrorCode[] exceptions = apiErrorResponses.exceptions();
                 if (exceptions.length == 1) {
                     apiErrorResponsesAdaptor.generateErrorCodeResponseExample(operation, exceptions[0]);
                 } else {
