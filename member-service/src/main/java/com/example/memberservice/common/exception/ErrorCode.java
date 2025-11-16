@@ -44,5 +44,4 @@ public enum ErrorCode {
         return message;
     }
 
-
 }

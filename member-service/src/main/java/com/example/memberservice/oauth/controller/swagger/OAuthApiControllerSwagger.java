@@ -16,7 +16,7 @@ public interface OAuthApiControllerSwagger {
 
     @PostMapping("/reissue")
     @Operation(summary = "AccessToken 재발급 Api", description = "RefreshToken을 통해 AccessToken을 재발급합니다.")
-    @ApiErrorResponses(exceptions = {ErrorCode.UNAUTHORIZATION,  ErrorCode.DATA_SAVE_FAILED})
+    @ApiErrorResponses(exceptions = {ErrorCode.UNAUTHORIZATION, ErrorCode.DATA_SAVE_FAILED})
     ResponseDto<Empty> reissueAccessTokenByRefreshToken(
         HttpServletResponse httpServletResponse,
         @CookieValue("refresh-token") String refreshToken);
