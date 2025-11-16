@@ -1,0 +1,11 @@
+### Cart Items 조회 - 성공/데이터 있음
+GET http://localhost:8000/api/carts/items
+X-CODE: 1c19bec6-23ed-4e10-b583-5f5ef144186b
+Accept: application/json
+
+###
+
+### Cart Items 조회 - 데이터 없음
+GET http://localhost:8000/api/carts/items
+X-CODE: empty-code
+Accept: application/json
