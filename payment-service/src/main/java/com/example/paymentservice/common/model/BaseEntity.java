@@ -27,7 +27,7 @@ public abstract class BaseEntity {
     private String code;
 
     @Column(nullable = false)
-    private boolean is_deleted = false;
+    private boolean isDeleted;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -38,9 +38,18 @@ public abstract class BaseEntity {
     private Instant updatedAt;
 
     @PrePersist
-    public void generateCode() {
+    public void runPrePersist() {
         if (this.code == null) {
             this.code = UUID.randomUUID().toString();
         }
+        if(this.isDeleted) {
+            this.isDeleted = false;
+        }
     }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    protected void prePersistHook() {}
 }
