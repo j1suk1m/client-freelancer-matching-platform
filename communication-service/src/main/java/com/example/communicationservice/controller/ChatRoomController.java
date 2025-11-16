@@ -4,9 +4,13 @@ import com.example.communicationservice.common.response.ResponseDto;
 import com.example.communicationservice.controller.api.ChatRoomControllerApi;
 import com.example.communicationservice.controller.dto.request.ChatRoomCreateRequest;
 import com.example.communicationservice.controller.dto.response.ChatRoomCreateResponse;
+import com.example.communicationservice.controller.dto.response.ChatRoomListReadResponse;
 import com.example.communicationservice.service.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,24 @@ public class ChatRoomController implements ChatRoomControllerApi {
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
+            .body(ResponseDto.success(response));
+    }
+
+    // 채팅방 목록 조회 API
+    @GetMapping
+    public ResponseEntity<ResponseDto<ChatRoomListReadResponse>> findRooms(
+        @PageableDefault(
+            size = 10,
+            sort = "updatedAt",
+            direction = Sort.Direction.DESC
+        )
+        Pageable pageable,
+        @RequestHeader(name = "X-CODE") String currentMemberCode
+    ) {
+        ChatRoomListReadResponse response = chatRoomService.findAllChatRooms(currentMemberCode, pageable);
+
+        return ResponseEntity
+            .ok()
             .body(ResponseDto.success(response));
     }
 
