@@ -26,23 +26,29 @@ public class CartController implements CartApi {
 
     @Override
     @GetMapping("/items")
-    public ResponseEntity<ResponseDto<List<CartItemsGetResponse>>> getCartItems(@RequestHeader(name = "X-CODE") String xCode) {
+    public ResponseEntity<ResponseDto<List<CartItemsGetResponse>>> getCartItems(
+            @RequestHeader(name = "X-CODE") String xCode) {
 
         List<CartItemsGetResponse> cartItemsGetResponses = cartService.getCartItems(xCode);
 
-        if(cartItemsGetResponses.isEmpty()){
-            return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS_NO_DATA, cartItemsGetResponses), CustomStatusCode.SUCCESS_NO_DATA.getStatus());
+        if (cartItemsGetResponses.isEmpty()) {
+            return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS_NO_DATA, cartItemsGetResponses),
+                    CustomStatusCode.SUCCESS_NO_DATA.getStatus());
         }
 
-        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, cartItemsGetResponses), CustomStatusCode.SUCCESS.getStatus());
+        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, cartItemsGetResponses),
+                CustomStatusCode.SUCCESS.getStatus());
     }
 
     @Override
     @DeleteMapping("/items/{item-code}")
     public ResponseEntity<ResponseDto<EmptyResponse>> deleteCartItem(@RequestHeader(name = "X-CODE") String xCode,
-            @PathVariable String itemCode) {
-        
-        return null;
+            @PathVariable(name = "item-code") String itemCode) {
+
+        EmptyResponse emptyResponse = cartService.deleteCartItems(xCode, itemCode);
+
+        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, emptyResponse),
+                CustomStatusCode.SUCCESS.getStatus());
     }
 }
 
