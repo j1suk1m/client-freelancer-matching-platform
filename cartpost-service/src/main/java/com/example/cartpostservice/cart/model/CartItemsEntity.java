@@ -1,5 +1,6 @@
 package com.example.cartpostservice.cart.model;
 
+import com.example.cartpostservice.cart.model.vo.ContractStatus;
 import com.example.cartpostservice.common.model.vo.PaymentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +30,10 @@ public class CartItemsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 필드명 소문자로 수정 권장
+    private Long id;
+
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
 
     @Column(name = "contract_code", nullable = false, updatable = false)
     private String contractCode;
@@ -36,8 +41,9 @@ public class CartItemsEntity {
     @Column(name = "cart_code", nullable = false, updatable = false)
     private String cartCode;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private ContractStatus status;
 
     @Column(name = "started_at", nullable = false)
     private Instant startedAt;
@@ -51,5 +57,12 @@ public class CartItemsEntity {
 
     @Column(name = "amount", nullable = false)
     private String amount;
+
+    @PrePersist
+    public void prePersist() {
+        if (code == null) {
+            code = UUID.randomUUID().toString();
+        }
+    }
 }
 
