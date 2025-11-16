@@ -6,6 +6,9 @@ import java.time.Instant;
 @Schema(description = "장바구니 아이템 목록 조회 응답 DTO")
 public record CartItemsGetResponse(
 
+        @Schema(description = "아이템 코드", example = "UUID")
+        String code,
+
         @Schema(description = "계약 코드", example = "UUID")
         String contractCode,
 
