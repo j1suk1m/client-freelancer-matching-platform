@@ -1,5 +1,7 @@
 package com.example.memberservice.member.controller.swagger;
 
+import com.example.memberservice.common.exception.ErrorCode;
+import com.example.memberservice.common.swagger.annotation.ApiErrorResponses;
 import com.example.memberservice.common.web.model.dto.ResponseDto;
 import com.example.memberservice.member.controller.dto.vo.MemberInfo;
 import com.example.memberservice.member.service.model.dto.output.MemberExistOutput;
@@ -21,6 +23,7 @@ public interface MemberInternalControllerSwagger {
     @Parameters({
         @Parameter(name = "member-code", description = "조회할 사용자 코드", in = ParameterIn.QUERY, required = false)
     })
+    @ApiErrorResponses(exceptions = ErrorCode.INTERNAL_ILLEGAL_MEMBER_CODE)
     ResponseDto<MemberInfoOutput> getMemberInfoByCode(
         @RequestParam(name = "member-code", required = false) List<String> paramMemberCode
     );

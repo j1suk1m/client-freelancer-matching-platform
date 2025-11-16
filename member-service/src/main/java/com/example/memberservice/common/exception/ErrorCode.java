@@ -4,9 +4,12 @@ public enum ErrorCode {
 
     FAIL_LOGIN(2000, 401, "로그인에 실패하였습니다."),
 
+
+
     UNAUTHORIZATION(2400, 401, "인증되지 않은 요청입니다."),
 
     MEMBER_NOT_FOUND(2401, 404, "요청하신 사용자를 찾을 수 없습니다."),
+    INTERNAL_ILLEGAL_MEMBER_CODE(2402, 404, "존재하지 않는 멤버 코드가 포함되어 있습니다."),
 
     DATA_SAVE_FAILED(2500, 500, "데이터 저장에 실패했습니다.");
 
