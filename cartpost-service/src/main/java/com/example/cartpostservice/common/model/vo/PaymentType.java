@@ -1,6 +1,5 @@
-package com.example.cartpostservice.commissions.model.vo;
+package com.example.cartpostservice.common.model.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
