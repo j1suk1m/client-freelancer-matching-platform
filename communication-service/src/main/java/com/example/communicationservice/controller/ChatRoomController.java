@@ -41,6 +41,7 @@ public class ChatRoomController implements ChatRoomControllerApi {
 
     // 채팅방 목록 조회 API
     @GetMapping
+    @Override
     public ResponseEntity<ResponseDto<ChatRoomListReadResponse>> findRooms(
         @PageableDefault(
             size = 10,
