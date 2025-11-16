@@ -3,6 +3,7 @@ package com.example.cartpostservice.cart.service;
 import com.example.cartpostservice.cart.controller.dto.response.CartItemsGetResponse;
 import com.example.cartpostservice.cart.model.CartItemsEntity;
 import com.example.cartpostservice.cart.model.CartsEntity;
+import com.example.cartpostservice.cart.model.vo.ContractStatus;
 import com.example.cartpostservice.cart.repository.CartItemsRepository;
 import com.example.cartpostservice.cart.repository.CartsRepository;
 import com.example.cartpostservice.common.dto.EmptyResponse;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CartServiceImpl implements  CartService {
+public class CartServiceImpl implements CartService {
 
     private final CartsRepository cartsRepository;
     private final CartItemsRepository cartItemsRepository;
@@ -31,12 +32,14 @@ public class CartServiceImpl implements  CartService {
 
         List<CartItemsEntity> cartItems = cartItemsRepository.findByCartCode(cart.getCode());
 
-        if(cartItems.isEmpty()){
+        if (cartItems.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<CartItemsGetResponse> cartItemsGetResponses = cartItems.stream()
+                .filter(entity -> entity.getStatus() == ContractStatus.CONFIRMED)
                 .map(entity -> new CartItemsGetResponse(
+                        entity.getCode(),
                         entity.getContractCode(),
                         entity.getStartedAt(),
                         entity.getEndedAt(),
@@ -51,6 +54,15 @@ public class CartServiceImpl implements  CartService {
 
     @Override
     public EmptyResponse deleteCartItems(String xCode, String itemCode) {
+
+        CartsEntity cart = cartsRepository.findByMemberCode(xCode).orElseThrow(() -> new BusinessException(
+                CustomStatusCode.NOT_FOUND_MEMBER));
+
+        CartItemsEntity cartItem = cartItemsRepository.findByCode(itemCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_ITEM));
+
+        cartItemsRepository.delete(cartItem);
+
         return null;
     }
 
@@ -58,10 +70,10 @@ public class CartServiceImpl implements  CartService {
         Duration duration = Duration.between(startedAt, endedAt);
         long days = duration.toDays();
 
-        if(paymentType == PaymentType.PER_JOB){
-            return  Integer.parseInt(amount);
+        if (paymentType == PaymentType.PER_JOB) {
+            return Integer.parseInt(amount);
         }
 
-        return (int)(days * Integer.parseInt(amount));
+        return (int) (days * Integer.parseInt(amount));
     }
 }
