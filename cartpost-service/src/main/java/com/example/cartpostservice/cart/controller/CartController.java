@@ -24,7 +24,7 @@ public class CartController implements CartApi {
     }
 
     @Override
-    @DeleteMapping("/{item_code}")
+    @DeleteMapping("/items/{item-code}")
     public ResponseEntity<ResponseDto<EmptyResponse>> deleteCartItem(@RequestHeader(name = "X-CODE") String xCode,
             @PathVariable String itemCode) {
         
