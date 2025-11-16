@@ -61,9 +61,13 @@ public class CartServiceImpl implements CartService {
         CartItemsEntity cartItem = cartItemsRepository.findByCode(itemCode)
                 .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_ITEM));
 
+        if (!cart.getCode().equals(cartItem.getCartCode())) {
+            throw new BusinessException(CustomStatusCode.FORBIDDEN_ITEM);
+        }
+
         cartItemsRepository.delete(cartItem);
 
-        return null;
+        return EmptyResponse.getInstance();
     }
 
     private int calculateTotalAmount(Instant startedAt, Instant endedAt, PaymentType paymentType, String amount) {
