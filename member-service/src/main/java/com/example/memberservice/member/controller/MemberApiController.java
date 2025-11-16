@@ -6,6 +6,7 @@ import com.example.memberservice.member.controller.dto.request.MemberCreateReque
 import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
 import com.example.memberservice.member.controller.dto.response.UserGetResponse;
 import com.example.memberservice.member.controller.swagger.MemberApiControllerSwagger;
+import com.example.memberservice.member.mapper.MemberServiceInputMapper;
 import com.example.memberservice.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,13 +41,16 @@ public class MemberApiController implements MemberApiControllerSwagger {
         @RequestHeader(name = "X-CODE", required = false) String xCode,
         @RequestParam(name = "member-code", required = false) String paramCode) {
 
-        return null;
+        return ResponseDto.success(
+            memberService.getMemberByCode(MemberServiceInputMapper.toGetMemberInput(xCode, paramCode)));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDto<Empty> createMember(@RequestHeader(name = "X-CODE") String memberCode,
         @RequestBody MemberCreateRequest request) {
+
+        memberService.createMember(MemberServiceInputMapper.toCreateMemberInput(memberCode, request));
 
         return ResponseDto.success(HttpStatus.CREATED);
     }
@@ -56,12 +60,16 @@ public class MemberApiController implements MemberApiControllerSwagger {
     public ResponseDto<Empty> updateMember(@RequestHeader(name = "X-CODE") String memberCode,
         @RequestBody MemberUpdateRequest request) {
 
+        memberService.updateMember(MemberServiceInputMapper.toUpdateMemberInput(memberCode, request));
+
         return ResponseDto.success();
     }
 
     @PatchMapping("/state")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode) {
+
+        memberService.updateMemberWorkState(MemberServiceInputMapper.toUpdateMemberWorkStateInput(memberCode));
 
         return ResponseDto.success();
     }
@@ -71,15 +79,18 @@ public class MemberApiController implements MemberApiControllerSwagger {
     public ResponseDto<Empty> deleteMember(@RequestHeader("X-CODE") String memberCode
     ) {
 
+        memberService.deleteMember(MemberServiceInputMapper.toDeleteMemberInput(memberCode));
+
         return ResponseDto.success();
     }
 
     @GetMapping("/check-name")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode, @RequestParam(name = "name") String name) {
+    public ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode,
+        @RequestParam(name = "name") String name) {
+
+        memberService.existMemberByName(MemberServiceInputMapper.toExistMemberByNameInput(memberCode, name));
 
         return ResponseDto.success();
     }
-
-
 }

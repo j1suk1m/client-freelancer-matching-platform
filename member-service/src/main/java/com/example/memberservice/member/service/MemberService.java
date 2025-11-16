@@ -4,6 +4,7 @@ package com.example.memberservice.member.service;
 import com.example.memberservice.member.controller.dto.response.UserGetResponse;
 import com.example.memberservice.member.service.model.dto.input.MemberCreateInput;
 import com.example.memberservice.member.service.model.dto.input.MemberDeleteInput;
+import com.example.memberservice.member.service.model.dto.input.MemberExistByNameInput;
 import com.example.memberservice.member.service.model.dto.input.MemberGetInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateWorkStateInput;
@@ -40,5 +41,5 @@ public interface MemberService {
     /**
      * 닉네임 중복 확인
      */
-    void existMemberByName(ExistMemberByNameInput input);
+    void existMemberByName(MemberExistByNameInput input);
 }
