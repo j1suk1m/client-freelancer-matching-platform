@@ -24,37 +24,38 @@ public interface MemberApiControllerSwagger {
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true),
         @Parameter(name = "member-code", description = "검색할 사용자 Code(없을 경우 본인 정보 검색)", in = ParameterIn.QUERY)
     })
-    ResponseDto<UserGetResponse> getMemberById(
-        @RequestParam(name = "member-code", required = false) String memberCode);
+    ResponseDto<UserGetResponse> getMemberByCode(
+        @RequestHeader(name = "X-CODE", required = false) String xCode,
+        @RequestParam(name = "member-code", required = false) String paramCode);
 
     @Operation(summary = "사용자 생성", description = "새로운 사용자를 생성합니다.")
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
-    ResponseDto<Empty> createUser(@RequestBody UserCreateRequest request);
+    ResponseDto<Empty> createMember(@RequestHeader("X-CODE") String memberCode, @RequestBody UserCreateRequest request);
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 정보를 수정합니다.")
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
-    ResponseDto<Empty> updateUser(@RequestBody UserUpdateRequest request);
+    ResponseDto<Empty> updateMember(@RequestHeader("X-CODE") String memberCode, @RequestBody UserUpdateRequest request);
 
     @Operation(summary = "사용자 판매자 등록", description = "사용자의 판매자 등록을 진행합니다")
     @Parameters({
         @Parameter(name = "X-CODE",description = "로그인한 사용자 코드",in = ParameterIn.HEADER, required = true)
     })
-    ResponseDto<Empty> updateUserWorkState(@RequestHeader("X-CODE") String memberCode);
+    ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode);
 
     @Operation(summary = "사용자 삭제", description = "사용자를 삭제합니다.")
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
-    ResponseDto<Empty> deleteUser();
+    ResponseDto<Empty> deleteMember(@RequestHeader("X-CODE") String memberCode);
 
     @Operation(summary = "사용자 이름 중복 체크", description = "사용자 이름이 이미 존재하는지 확인합니다.")
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true),
         @Parameter(name = "name", description = "체크할 사용자 이름", in = ParameterIn.QUERY, required = true)
     })
-    ResponseDto<Empty> existMemberByName(@RequestParam(name = "name") String name);
+    ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode, @RequestParam(name = "name") String name);
 }

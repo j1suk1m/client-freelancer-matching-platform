@@ -37,43 +37,47 @@ public class MemberApiController implements MemberApiControllerSwagger {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<UserGetResponse> getMemberById(
-        @RequestParam(name = "member-code", required = false) String memberCode) {
+    public ResponseDto<UserGetResponse> getMemberByCode(
+        @RequestHeader(name = "X-CODE", required = false) String xCode,
+        @RequestParam(name = "member-code", required = false) String paramCode) {
 
         return null;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDto<Empty> createUser(@RequestBody UserCreateRequest request) {
+    public ResponseDto<Empty> createMember(@RequestHeader(name = "X-CODE") String memberCode,
+        @RequestBody UserCreateRequest request) {
 
         return ResponseDto.success(HttpStatus.CREATED.value());
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<Empty> updateUser(@RequestBody UserUpdateRequest request) {
+    public ResponseDto<Empty> updateMember(@RequestHeader(name = "X-CODE") String memberCode,
+        @RequestBody UserUpdateRequest request) {
 
         return ResponseDto.success();
     }
 
     @PatchMapping("/state")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<Empty> updateUserWorkState(@RequestHeader("X-CODE") String memberCode) {
+    public ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode) {
 
         return ResponseDto.success();
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<Empty> deleteUser() {
+    public ResponseDto<Empty> deleteMember(@RequestHeader("X-CODE") String memberCode
+    ) {
 
         return ResponseDto.success();
     }
 
     @GetMapping("/check-name")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<Empty> existMemberByName(@RequestParam(name = "name") String name) {
+    public ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode, @RequestParam(name = "name") String name) {
 
         return ResponseDto.success();
     }
