@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "cart_itmes")
+@Table(name = "carts")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
