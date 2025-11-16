@@ -7,10 +7,6 @@ import java.time.Instant;
 public record ContractBriefResponse(
         @Schema(description = "계약 코드", example = "8172516b-2076-460f-805d-e60cbc0463a9")
         String contractCode,
-        @Schema(description = "계약 요청 회원 이름", example = "계약 요청자 이름")
-        String requestorName,
-        @Schema(description = "계약 성립자 회원 이름", example = "계약 상대방 이름")
-        String contractorName,
         @Schema(description = "해당 계약 생성 일자", example = "2023-08-31T01:07:25.295Z")
         Instant createdAt,
         @Schema(description = "프로젝트 시작일", example = "2023-08-31T01:07:25.295Z")
@@ -28,8 +24,6 @@ public record ContractBriefResponse(
     public static ContractBriefResponse from(ContractEntity contractEntity) {
         return new ContractBriefResponse(
                 contractEntity.getCode(),
-                contractEntity.getRequestorCode(),
-                contractEntity.getContractorCode(),
                 contractEntity.getCreatedAt(),
                 contractEntity.getStartedAt(),
                 contractEntity.getEndedAt(),
