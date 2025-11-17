@@ -9,10 +9,12 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "commissions")
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommissionsEntity extends BaseEntity {
 
@@ -53,5 +55,9 @@ public class CommissionsEntity extends BaseEntity {
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.writerName = writerName;
+    }
+
+    public void closed(){
+        this.isOpen = false;
     }
 }
