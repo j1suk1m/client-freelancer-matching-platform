@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class TagServiceTest {
+public class TagControllerTest {
 
     private static final String BASE_URL = "/api/tags";
     private static final String TEST_MEMBER_CODE = "member-test-uuid-001";
