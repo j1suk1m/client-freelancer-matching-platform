@@ -25,6 +25,7 @@ import com.example.memberservice.socialmember.entity.SocialMembers;
 import com.example.memberservice.socialmember.repository.SocialMemberJpaRepository;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -53,8 +54,6 @@ public class MemberServiceImpl implements MemberService {
 
     //멤버 업데이트 시 받을 이벤트 발생 주체
     private final MemberUpdateKafkaEventProducer memberUpdateKafkaEventProducer;
-
-    private final MemberService memberService;
 
     private final RequestURIGenerator requestURIGenerator;
 
@@ -98,7 +97,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         //회원 가입을 하기 전 이미 해당 nick name을 사용하는 사람이 있는 지 확인.
-        checkNickNameDuplicate(input.name());
+        checkNickNameDuplicate(input.memberCode(), input.name());
 
         //소셜 로그인을 통한 socialMember 찾기 없으면 회원가입이 불가.
         SocialMembers socialMembers = socialMemberJpaRepository.findSocialMembersByCode(input.memberCode())
@@ -127,7 +126,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updateMember(MemberUpdateInput input) {
         //회원 가입을 하기 전 이미 해당 nick name을 사용하는 사람이 있는 지 확인.
-        checkNickNameDuplicate(input.name());
+        checkNickNameDuplicate(input.memberCode(), input.name());
 
         Members existMember = findMembers(input.memberCode());
 
@@ -164,7 +163,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void existMemberByNickName(MemberExistByNameInput input) {
-        checkNickNameDuplicate(input.name());
+        checkNickNameDuplicate(input.memberCode(), input.name());
     }
 
     private List<MemberTag> getMemberTags(String findMemberCode) {
@@ -189,17 +188,6 @@ public class MemberServiceImpl implements MemberService {
         return memberTags;
     }
 
-    private Members findMembers(String input) {
-        return memberJpaRepository.findByCode(input)
-            .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    private void checkNickNameDuplicate(String nickname) {
-        if (memberJpaRepository.existsMembersByNickName(nickname)) {
-            throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
-        }
-    }
-
     private MemberRating getMemberRating(String findMemberCode) {
         MemberRating memberRating;
         try {
@@ -217,5 +205,20 @@ public class MemberServiceImpl implements MemberService {
         }
         return memberRating;
     }
+
+    private Members findMembers(String code) {
+        return memberJpaRepository.findMembersByCodeAndIsDeletedFalse(code)
+            .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    private void checkNickNameDuplicate(String code, String nickname) {
+        memberJpaRepository.findMembersByNickName(nickname)
+            .ifPresent(member -> {
+                if (!code.equals(member.getCode())) {
+                    throw new BusinessException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+                }
+            });
+    }
+
 
 }
