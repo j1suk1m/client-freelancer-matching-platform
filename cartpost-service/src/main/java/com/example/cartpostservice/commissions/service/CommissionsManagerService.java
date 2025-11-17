@@ -2,16 +2,17 @@ package com.example.cartpostservice.commissions.service;
 
 import com.example.cartpostservice.commissions.controller.dto.request.CommissionCreateRequest;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionDeleteResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.MemberResponse;
 import com.example.cartpostservice.commissions.controller.internal.MemberClient;
-import com.example.cartpostservice.commissions.service.dto.request.CommissionsSaveCommand;
-import com.example.cartpostservice.commissions.service.dto.request.TagSaveCommand;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionCreateResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionDeleteResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionFinishResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionReadResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionSortReadResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionUpdateResult;
+import com.example.cartpostservice.commissions.service.dto.request.CommissionsServiceCommand;
+import com.example.cartpostservice.commissions.service.dto.request.TagServiceCommand;
+import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
+import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class CommissionsManagerService {
         MemberResponse member = memberClient.getMember(memberCode);
 
         // request에서 온 것을 커미션과 태그 용 리퀘스트로 분리
-        CommissionsSaveCommand commissionsSaveCommand = new CommissionsSaveCommand(
+        CommissionsServiceCommand commissionsServiceCommand = new CommissionsServiceCommand(
                 memberCode,
                 request.title(),
                 request.content(),
@@ -43,15 +44,15 @@ public class CommissionsManagerService {
         );
 
         // 커미션 서비스에 리퀘스트 데이터를 저장 데이터 받기
-        String commissionsCode = commissionsService.create(commissionsSaveCommand);
+        String commissionsCode = commissionsService.create(commissionsServiceCommand);
 
         // 태그 서비스에 리퀘스트 데이터 저장
-        TagSaveCommand tagSaveCommand = new TagSaveCommand(
+        TagServiceCommand tagServiceCommand = new TagServiceCommand(
                 commissionsCode,
                 request.tagCode()
         );
 
-        commissionsTagService.create(tagSaveCommand);
+        commissionsTagService.create(tagServiceCommand);
 
         // 응답 데이터에 commissionscode 전달
         CommissionCreateResponse commissionCreateResponse = new CommissionCreateResponse(commissionsCode);
@@ -59,23 +60,39 @@ public class CommissionsManagerService {
         return commissionCreateResponse;
     }
 
-    public CommissionReadResult readCommission(String commissionsCode) {
+    public CommissionReadResponse readCommission(String commissionsCode) {
+
+        CommissionsServiceResult commissionResult = commissionsService.read(commissionsCode);
+        TagServiceResult tagResult = commissionsTagService.read(commissionResult.code());
+
+        CommissionReadResponse response = new CommissionReadResponse(
+                commissionResult.title(),
+                commissionResult.content(),
+                commissionResult.paymentType(),
+                commissionResult.unitAmount(),
+                commissionResult.startedAt(),
+                commissionResult.endedAt(),
+                commissionResult.isOpen(),
+                commissionResult.writerName(),
+                tagResult.tagCodes()
+        );
+
+        return response;
+    }
+
+    public CommissionUpdateResponse updateCommission(String code, String commissionsCode) {
         return null;
     }
 
-    public CommissionUpdateResult updateCommission(String code, String commissionsCode) {
+    public CommissionDeleteResponse deleteCommission(String code, String commissionsCode) {
         return null;
     }
 
-    public CommissionDeleteResult deleteCommission(String code, String commissionsCode) {
+    public CommissionFinishResponse finishCommission(String code) {
         return null;
     }
 
-    public CommissionFinishResult finishCommission(String code) {
-        return null;
-    }
-
-    public CommissionSortReadResult readOwnCommissions(String code, Pageable pageable) {
+    public CommissionsReadResponse readOwnCommissions(String code, Pageable pageable) {
         return null;
     }
 }
