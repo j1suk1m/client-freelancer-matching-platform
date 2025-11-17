@@ -1,0 +1,53 @@
+package com.example.contractservice.deposit.domain;
+
+import com.example.contractservice.deposit.domain.vo.DepositChange;
+import java.time.Instant;
+import java.util.UUID;
+
+public class DepositHistory {
+    private String code;
+    private String depositCode;
+
+    private DepositChange depositChange;
+
+    private String summary;
+
+    private Instant createdAt;
+
+    public DepositHistory(String depositCode, DepositChange depositChange, String summary) {
+        this(null, depositCode, depositChange, summary, null);
+    }
+
+    public DepositHistory(String code, String depositCode, DepositChange depositChange,
+        String summary, Instant createdAt) {
+        this.code = (code == null) ? generateCode() : code;
+        this.depositCode = depositCode;
+        this.depositChange = depositChange;
+        this.summary = summary;
+        this.createdAt = (createdAt == null) ? Instant.now() : createdAt;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getDepositCode() {
+        return depositCode;
+    }
+
+    public DepositChange getDepositChange() {
+        return depositChange;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    private String generateCode() {
+        return UUID.randomUUID().toString();
+    }
+}
