@@ -17,14 +17,12 @@ import com.example.memberservice.member.service.model.dto.input.MemberExistByNam
 import com.example.memberservice.member.service.model.dto.input.MemberGetInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateWorkStateInput;
-import com.example.memberservice.member.service.model.dto.output.MemberGetOutput;
 import com.example.memberservice.member.service.model.vo.ApiMemberInfo;
 import com.example.memberservice.member.service.model.vo.MemberRating;
 import com.example.memberservice.member.service.model.vo.MemberTag;
 import com.example.memberservice.member.service.util.RequestURIGenerator;
 import com.example.memberservice.socialmember.entity.SocialMembers;
 import com.example.memberservice.socialmember.repository.SocialMemberJpaRepository;
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -137,9 +135,9 @@ public class MemberServiceImpl implements MemberService {
 
         Members updatedMember = memberJpaRepository.save(existMember);
 
-        memberUpdateKafkaEventProducer.sendEvent(new MemberUpdateEvent(updatedMember.getCode(), updatedMember.getNickName()));
+        memberUpdateKafkaEventProducer.sendEvent(
+            new MemberUpdateEvent(updatedMember.getCode(), updatedMember.getNickName()));
     }
-
 
 
     @Override
@@ -147,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
     public void updateMemberWorkState(MemberUpdateWorkStateInput input) {
         Members existMember = findMembers(input.memberCode());
 
-        if(existMember.canEnableWork()){
+        if (existMember.canEnableWork()) {
             existMember.updateCanWork(true);
         }
 

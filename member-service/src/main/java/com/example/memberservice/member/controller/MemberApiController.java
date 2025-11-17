@@ -89,7 +89,7 @@ public class MemberApiController implements MemberApiControllerSwagger {
     public ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode,
         @RequestParam(name = "name") String name) {
 
-        memberService.existMemberByName(MemberServiceInputMapper.toExistMemberByNameInput(memberCode, name));
+        memberService.existMemberByNickName(MemberServiceInputMapper.toExistMemberByNameInput(memberCode, name));
 
         return ResponseDto.success();
     }
