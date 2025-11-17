@@ -12,7 +12,7 @@ public class OpenApiConfig {
     public OpenAPI openAPI() {
 
         Info info = new Info()
-                .title("CartPost API")
+                .title("Payment API")
                 .version("v1.0.0")
                 .description("결제 API 명세서입니다.");
 
