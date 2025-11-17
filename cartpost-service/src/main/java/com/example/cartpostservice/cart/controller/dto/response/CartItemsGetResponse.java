@@ -22,7 +22,7 @@ public record CartItemsGetResponse(
         String paymentType,
 
         @Schema(description = "결제 금액", example = "100000")
-        int amount
+        Long amount
 
 ) {}
 

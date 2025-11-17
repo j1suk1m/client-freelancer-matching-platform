@@ -73,14 +73,14 @@ public class CartServiceImpl implements CartService {
         return EmptyResponse.getInstance();
     }
 
-    private int calculateTotalAmount(Instant startedAt, Instant endedAt, PaymentType paymentType, String amount) {
+    private Long calculateTotalAmount(Instant startedAt, Instant endedAt, PaymentType paymentType, String amount) {
         Duration duration = Duration.between(startedAt, endedAt);
         long days = duration.toDays();
 
         if (paymentType == PaymentType.PER_JOB) {
-            return Integer.parseInt(amount);
+            return Long.parseLong(amount);
         }
 
-        return (int) (days * Integer.parseInt(amount));
+        return days * Long.parseLong(amount);
     }
 }
