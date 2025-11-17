@@ -3,8 +3,10 @@ package com.example.communicationservice.controller;
 import com.example.communicationservice.common.response.ResponseDto;
 import com.example.communicationservice.controller.api.ChatRoomControllerApi;
 import com.example.communicationservice.controller.dto.request.ChatRoomCreateRequest;
+import com.example.communicationservice.controller.dto.response.ChatMessageListReadResponse;
 import com.example.communicationservice.controller.dto.response.ChatRoomCreateResponse;
 import com.example.communicationservice.controller.dto.response.ChatRoomListReadResponse;
+import com.example.communicationservice.service.ChatMessageService;
 import com.example.communicationservice.service.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatRoomController implements ChatRoomControllerApi {
 
     private final ChatRoomService chatRoomService;
+    private final ChatMessageService chatMessageService;
 
     // 채팅방 생성 API
     @PostMapping
@@ -52,6 +55,25 @@ public class ChatRoomController implements ChatRoomControllerApi {
         @RequestHeader(name = "X-CODE") String currentMemberCode
     ) {
         ChatRoomListReadResponse response = chatRoomService.findAllChatRooms(currentMemberCode, pageable);
+
+        return ResponseEntity
+            .ok()
+            .body(ResponseDto.success(response));
+    }
+
+    // 채팅방 메시지 목록 조회 API
+    @GetMapping("/{room-id}/messages")
+    public ResponseEntity<ResponseDto<ChatMessageListReadResponse>> findMessages(
+        @PathVariable(name = "room-id") String roomId,
+        @RequestHeader(name = "X-CODE") String currentMemberCode,
+        @PageableDefault(
+            size = 50,
+            sort = "sentAt",
+            direction = Sort.Direction.ASC
+        )
+        Pageable pageable
+    ) {
+        ChatMessageListReadResponse response = chatMessageService.findMessagesByRoomId(roomId, currentMemberCode, pageable);
 
         return ResponseEntity
             .ok()
