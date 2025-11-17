@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum CustomStatusCode {
     SUCCESS(HttpStatus.OK, 0, "성공"),
+    CREATED(HttpStatus.CREATED, 6201, "저장되었습니다."),
+
     SUCCESS_NO_DATA(HttpStatus.NO_CONTENT, 6204, "데이터가 존재하지 않습니다"),
 
     FORBIDDEN_ITEM(HttpStatus.FORBIDDEN, 6403, "소유하고 있는 아이템이 아닙니다" ),
