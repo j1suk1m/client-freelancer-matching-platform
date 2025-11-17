@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 @Service
 public interface CrudService<Req, Res, code> {
 
-    public String create(Req requestDto);
+    String create(Req requestDto);
 
-    public Res read(code code);
+    Res read(code code);
 
-    public void update(Req requestDto, code code);
+    void update(Req requestDto, code code);
 
-    public void delete(code code);
+    void delete(code code);
 
-    public boolean exist(code ownerCode, code targetCode);
+    boolean exist(code ownerCode, code targetCode);
 }
