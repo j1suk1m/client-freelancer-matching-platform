@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "commissions", createIndex = false)
+@Setting(settingPath = "elasticsearch/commissions-settings.json")
 public class CommissionDocumentEntity {
 
     @Id
@@ -31,6 +33,9 @@ public class CommissionDocumentEntity {
 
     @Field(type = FieldType.Text)
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    private String memberCode;
 
     @Field(type = FieldType.Keyword, name = "member_nickname")
     private String memberNickname;
@@ -53,7 +58,7 @@ public class CommissionDocumentEntity {
     @Field(type = FieldType.Boolean, name = "is_closed")
     private Boolean isClosed;
 
-    @Field(type = FieldType.Date, format = DateFormat.strict_date_optional_time_nanos, name = "updated_at")
+    @Field(type = FieldType.Date, format = DateFormat.date_time, name = "updated_at")
     private Instant updatedAt;
 
 }
