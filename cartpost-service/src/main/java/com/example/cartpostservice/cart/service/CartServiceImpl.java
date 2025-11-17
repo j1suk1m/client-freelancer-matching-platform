@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemsRepository cartItemsRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CartItemsGetResponse> getCartItems(String xCode) {
 
         CartsEntity cart = cartsRepository.findByMemberCode(xCode).orElseThrow(() -> new BusinessException(
@@ -53,6 +55,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public EmptyResponse deleteCartItems(String xCode, String itemCode) {
 
         CartsEntity cart = cartsRepository.findByMemberCode(xCode).orElseThrow(() -> new BusinessException(
