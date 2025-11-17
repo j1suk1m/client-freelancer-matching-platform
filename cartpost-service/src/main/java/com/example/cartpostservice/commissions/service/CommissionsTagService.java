@@ -2,17 +2,20 @@ package com.example.cartpostservice.commissions.service;
 
 import com.example.cartpostservice.commissions.model.CommissionsTagEntity;
 import com.example.cartpostservice.commissions.repository.CommissionsTagRepository;
-import com.example.cartpostservice.commissions.service.dto.request.TagSaveCommand;
+import com.example.cartpostservice.commissions.service.dto.request.TagServiceCommand;
+import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommissionsTagService implements CrudService<TagSaveCommand, String>{
+public class CommissionsTagService implements CrudService<TagServiceCommand, TagServiceResult, String>{
 
     private CommissionsTagRepository commissionsTagRepository;
 
     @Override
-    public String create(TagSaveCommand requestDto) {
+    public String create(TagServiceCommand requestDto) {
         for(String tagCode : requestDto.tagCodes()){
             CommissionsTagEntity commissionsTagEntity = CommissionsTagEntity.builder()
                     .commissionCode(requestDto.commissionsCode())
@@ -25,12 +28,24 @@ public class CommissionsTagService implements CrudService<TagSaveCommand, String
     }
 
     @Override
-    public Optional<TagSaveCommand> read(String s) {
-        return Optional.empty();
+    public TagServiceResult read(String commissionCode) {
+        List<CommissionsTagEntity> tags = commissionsTagRepository.findByCommissionCode(commissionCode);
+
+        List<String> tagCodes = tags.stream()
+                .map(entity -> entity.getTagCode())
+                .toList();
+
+
+        TagServiceResult result = new TagServiceResult(
+                commissionCode,
+                tagCodes
+        );
+
+        return result;
     }
 
     @Override
-    public void update(TagSaveCommand requestDto, String s) {
+    public void update(TagServiceCommand requestDto, String s) {
 
     }
 
