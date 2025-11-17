@@ -20,6 +20,8 @@ public class MemberServiceImpl implements MemberService {
     // 멤버 조회에서 태그 정보와 평가 정보를 받아올 RestTemplate
     private final RestTemplate restTemplate;
 
+    private final
+
     @Override
     public UserGetResponse getMemberByCode(MemberGetInput input) {
         return null;
