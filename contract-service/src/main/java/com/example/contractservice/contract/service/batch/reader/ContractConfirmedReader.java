@@ -22,12 +22,12 @@ public class ContractConfirmedReader extends JpaCursorItemReader<ContractEntity>
         setQueryString("""
             SELECT c
             FROM ContractEntity c
-            WHERE c.status = :status AND c.endedAt >= :time
+            WHERE c.status = :status AND c.startedAt <= :time
         """);
 
         setHintValues(Map.of("org.hibernate.fetchSize", fetchSize));
         Instant todayMidnight = Instant.parse(dateStr);
 
-        setParameterValues(Map.of("time", todayMidnight, "status", ContractStatus.CONFIRMED.name()));
+        setParameterValues(Map.of("time", todayMidnight, "status", ContractStatus.CONFIRMED));
     }
 }

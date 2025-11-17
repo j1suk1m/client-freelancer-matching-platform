@@ -28,6 +28,6 @@ public class ContractInProgressReader extends JpaCursorItemReader<ContractEntity
         setHintValues(Map.of("org.hibernate.fetchSize", fetchSize));
         Instant todayMidnight = Instant.parse(dateStr);
 
-        setParameterValues(Map.of("time", todayMidnight, "status", ContractStatus.IN_PROGRESS.name()));
+        setParameterValues(Map.of("time", todayMidnight, "status", ContractStatus.IN_PROGRESS));
     }
 }
