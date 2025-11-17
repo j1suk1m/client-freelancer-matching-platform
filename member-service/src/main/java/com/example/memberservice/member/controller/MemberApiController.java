@@ -4,7 +4,7 @@ import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.common.web.model.dto.ResponseDto;
 import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
 import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
-import com.example.memberservice.member.controller.dto.response.UserGetResponse;
+import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
 import com.example.memberservice.member.controller.swagger.MemberApiControllerSwagger;
 import com.example.memberservice.member.mapper.MemberServiceInputMapper;
 import com.example.memberservice.member.service.MemberService;
@@ -37,7 +37,7 @@ public class MemberApiController implements MemberApiControllerSwagger {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<UserGetResponse> getMemberByCode(
+    public ResponseDto<MemberGetResponse> getMemberByCode(
         @RequestHeader(name = "X-CODE", required = false) String xCode,
         @RequestParam(name = "member-code", required = false) String paramCode) {
 

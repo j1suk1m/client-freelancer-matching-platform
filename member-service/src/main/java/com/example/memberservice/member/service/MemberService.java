@@ -1,7 +1,7 @@
 package com.example.memberservice.member.service;
 
 
-import com.example.memberservice.member.controller.dto.response.UserGetResponse;
+import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
 import com.example.memberservice.member.service.model.dto.input.MemberCreateInput;
 import com.example.memberservice.member.service.model.dto.input.MemberDeleteInput;
 import com.example.memberservice.member.service.model.dto.input.MemberExistByNameInput;
@@ -16,7 +16,7 @@ public interface MemberService {
     /**
      * 마이페이지 회원 조회 (X-CODE 또는 member-code 기준)
      */
-    UserGetResponse getMemberByCode(MemberGetInput input);
+    MemberGetResponse getMemberByCode(MemberGetInput input);
 
     /**
      * 회원 생성
@@ -41,5 +41,5 @@ public interface MemberService {
     /**
      * 닉네임 중복 확인
      */
-    void existMemberByName(MemberExistByNameInput input);
+    void existMemberByNickName(MemberExistByNameInput input);
 }

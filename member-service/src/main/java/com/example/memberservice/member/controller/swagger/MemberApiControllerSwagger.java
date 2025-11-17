@@ -4,7 +4,7 @@ import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.common.web.model.dto.ResponseDto;
 import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
 import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
-import com.example.memberservice.member.controller.dto.response.UserGetResponse;
+import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -23,7 +23,7 @@ public interface MemberApiControllerSwagger {
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true),
         @Parameter(name = "member-code", description = "검색할 사용자 Code(없을 경우 본인 정보 검색)", in = ParameterIn.QUERY)
     })
-    ResponseDto<UserGetResponse> getMemberByCode(
+    ResponseDto<MemberGetResponse> getMemberByCode(
         @RequestHeader(name = "X-CODE", required = false) String xCode,
         @RequestParam(name = "member-code", required = false) String paramCode);
 
