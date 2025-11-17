@@ -67,7 +67,7 @@
     function connect() {
         appendMessage('Connecting...');
 
-        const socket = new SockJS('http://localhost:8080/chat');
+        const socket = new SockJS('http://localhost:8080/ws/chat');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, function(frame) {
