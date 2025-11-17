@@ -6,10 +6,14 @@ import com.example.cartpostservice.commissions.controller.dto.response.Commissio
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
+import com.example.cartpostservice.commissions.service.CommissionsManagerService;
 import com.example.cartpostservice.commissions.service.CommissionsService;
 import com.example.cartpostservice.common.dto.ResponseDto;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CommissionsController implements CommissionsApi {
 
-    private final CommissionsService commissionsService;
+    private final CommissionsManagerService commissionsManagerService;
 
     @Override
     @PostMapping
     public ResponseEntity<ResponseDto<CommissionCreateResponse>> createCommission(@RequestHeader("X-CODE") String code,
-            @RequestBody CommissionCreateRequest commissionCreateRequest) {
+            @Valid @RequestBody CommissionCreateRequest commissionCreateRequest) {
 
-        //commissionsService.createCommission(code, commissionCreateRequest);
+        CommissionCreateResponse response = commissionsManagerService.createCommission(code, commissionCreateRequest);
 
-        return null;
+        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.CREATED, response),
+                CustomStatusCode.CREATED.getStatus());
     }
 
     @Override
