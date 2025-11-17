@@ -4,13 +4,13 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface CrudService<T, code> {
+public interface CrudService<Req, Res, code> {
 
-    public String create(T requestDto);
+    public String create(Req requestDto);
 
-    public Optional<T> read(code code);
+    public Optional<Res> read(code code);
 
-    public void update(T requestDto, code code);
+    public void update(Req requestDto, code code);
 
     public void delete(code code);
 
