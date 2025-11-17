@@ -9,6 +9,7 @@ import com.example.cartpostservice.commissions.controller.dto.response.Commissio
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
 import com.example.cartpostservice.commissions.service.CommissionsManagerService;
 import com.example.cartpostservice.commissions.service.CommissionsService;
+import com.example.cartpostservice.common.dto.EmptyResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import jakarta.validation.Valid;
@@ -46,7 +47,8 @@ public class CommissionsController implements CommissionsApi {
 
     @Override
     @GetMapping("/{commission-code}")
-    public ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable(name = "commission-code") String commissionsCode) {
+    public ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(
+            @PathVariable(name = "commission-code") String commissionsCode) {
 
         CommissionReadResponse response = commissionsManagerService.readCommission(commissionsCode);
 
@@ -85,4 +87,12 @@ public class CommissionsController implements CommissionsApi {
             Pageable pageable) {
         return null;
     }
+
+    @Override
+    @GetMapping("/exist/{commission-code}")
+    public ResponseEntity<ResponseDto<EmptyResponse>> existCommissions(@RequestHeader("X-CODE") String code,
+            @PathVariable String commissionsCode) {
+        return null;
+    }
+
 }

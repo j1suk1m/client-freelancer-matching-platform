@@ -7,6 +7,7 @@ import com.example.cartpostservice.commissions.controller.dto.response.Commissio
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
+import com.example.cartpostservice.common.dto.EmptyResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.Path;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,5 +102,18 @@ public interface CommissionsApi {
             Pageable pageable
     );
 
-
+    @Operation(summary = "커미션 종료", description = "특정 커미션을 종료 처리합니다.")
+    @Parameters({
+            @Parameter(name = "X-CODE", description = "사용자 코드", required = true, example = "USER123", in = ParameterIn.HEADER),
+            @Parameter(name = "commissionsCode", description = "종료할 커미션 코드", required = true, example = "COM123", in = ParameterIn.PATH)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 종료"),
+            @ApiResponse(responseCode = "404", description = "커미션을 찾을 수 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    public ResponseEntity<ResponseDto<EmptyResponse>> existCommissions(
+            @RequestHeader("X-CODE") String code,
+            @PathVariable String commissionsCode
+    );
 }
