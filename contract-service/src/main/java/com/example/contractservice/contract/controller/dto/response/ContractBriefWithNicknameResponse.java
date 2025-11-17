@@ -3,6 +3,7 @@ package com.example.contractservice.contract.controller.dto.response;
 import com.example.contractservice.contract.entity.ContractEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
+import java.util.Optional;
 
 public record ContractBriefWithNicknameResponse(
         @Schema(description = "계약 코드", example = "8172516b-2076-460f-805d-a60cbc0463a9")
@@ -27,13 +28,17 @@ public record ContractBriefWithNicknameResponse(
             String contractorName) {
         return new ContractBriefWithNicknameResponse(
                 contractEntity.getCode(),
-                requestorName,
-                contractorName,
+                getName(requestorName),
+                getName(contractorName),
                 contractEntity.getStartedAt(),
                 contractEntity.getEndedAt(),
                 contractEntity.getPaymentType().name(),
                 contractEntity.getUnitAmount(),
                 contractEntity.getName()
         );
+    }
+
+    private static String getName(String requestorName) {
+        return Optional.ofNullable(requestorName).orElse("알 수 없음");
     }
 }
