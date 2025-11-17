@@ -8,7 +8,7 @@ public interface CrudService<Req, Res, code> {
 
     public String create(Req requestDto);
 
-    public Optional<Res> read(code code);
+    public Res read(code code);
 
     public void update(Req requestDto, code code);
 
