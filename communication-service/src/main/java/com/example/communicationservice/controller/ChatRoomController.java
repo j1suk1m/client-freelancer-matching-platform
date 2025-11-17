@@ -63,6 +63,7 @@ public class ChatRoomController implements ChatRoomControllerApi {
 
     // 채팅방 메시지 목록 조회 API
     @GetMapping("/{room-id}/messages")
+    @Override
     public ResponseEntity<ResponseDto<ChatMessageListReadResponse>> findMessages(
         @PathVariable(name = "room-id") String roomId,
         @RequestHeader(name = "X-CODE") String currentMemberCode,
