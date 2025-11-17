@@ -1,12 +1,13 @@
 package com.example.memberservice.common.exception;
 
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
+
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
     //400
     VALIDATION_FAILED(2000, HttpStatus.BAD_REQUEST, "유효성 검증 실패"),
+
     NOT_CONTAINS_MEMBER_CODE(2001, HttpStatus.BAD_REQUEST, "검색하고자 하는 MemberCode는 반드시 포함되어야합니다."),
     //401
     FAIL_LOGIN(2200, HttpStatus.UNAUTHORIZED, "로그인에 실패하였습니다."),
@@ -20,6 +21,7 @@ public enum ErrorCode {
     //409 Conflict
     MEMBER_ALREADY_EXISTS(2490, HttpStatus.CONFLICT, "이미 회원가입을 진행한 멤버입니다."),
     NICKNAME_ALREADY_EXISTS(2491, HttpStatus.CONFLICT, "이미 회원가입을 진행한 멤버입니다."),
+
     //500
     INTERNAL_SERVER_ERROR(2500, HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다."),
     DATA_SAVE_FAILED(2501, HttpStatus.INTERNAL_SERVER_ERROR, "데이터 저장에 실패했습니다.");

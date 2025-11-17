@@ -4,7 +4,6 @@ import com.example.memberservice.common.exception.ErrorCode;
 import com.example.memberservice.common.web.model.vo.Empty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 
 public record ResponseDto<T>(

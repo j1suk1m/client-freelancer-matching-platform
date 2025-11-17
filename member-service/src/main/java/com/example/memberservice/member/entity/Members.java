@@ -4,7 +4,6 @@ package com.example.memberservice.member.entity;
 import com.example.memberservice.member.entity.vo.Gender;
 
 import com.example.memberservice.common.security.model.vo.Provider;
-import com.example.memberservice.member.service.model.dto.input.MemberUpdateInput;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
@@ -15,7 +14,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.hibernate.annotations.Comment;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

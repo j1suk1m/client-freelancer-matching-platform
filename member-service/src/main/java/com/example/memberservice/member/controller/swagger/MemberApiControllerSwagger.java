@@ -1,9 +1,10 @@
 package com.example.memberservice.member.controller.swagger;
 
+
 import com.example.memberservice.common.exception.ErrorCode;
 import com.example.memberservice.common.swagger.annotation.ApiErrorResponses;
-import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.common.web.model.dto.ResponseDto;
+import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
 import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
 import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
@@ -25,7 +26,8 @@ public interface MemberApiControllerSwagger {
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true),
         @Parameter(name = "member-code", description = "검색할 사용자 Code(없을 경우 본인 정보 검색)", in = ParameterIn.QUERY)
     })
-    @ApiErrorResponses(exceptions = {ErrorCode.NOT_CONTAINS_MEMBER_CODE,ErrorCode.MEMBER_NOT_FOUND,ErrorCode.INTERNAL_SERVER_ERROR})
+    @ApiErrorResponses(exceptions = {ErrorCode.NOT_CONTAINS_MEMBER_CODE, ErrorCode.MEMBER_NOT_FOUND,
+        ErrorCode.INTERNAL_SERVER_ERROR})
     ResponseDto<MemberGetResponse> getMemberByCode(
         @RequestHeader(name = "X-CODE", required = false) String xCode,
         @RequestParam(name = "member-code", required = false) String paramCode);
@@ -34,19 +36,22 @@ public interface MemberApiControllerSwagger {
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
-    @ApiErrorResponses(exceptions = {ErrorCode.MEMBER_ALREADY_EXISTS, ErrorCode.NICKNAME_ALREADY_EXISTS, ErrorCode.MEMBER_NOT_FOUND})
-    ResponseDto<Empty> createMember(@RequestHeader("X-CODE") String memberCode, @RequestBody MemberCreateRequest request);
+    @ApiErrorResponses(exceptions = {ErrorCode.MEMBER_ALREADY_EXISTS, ErrorCode.NICKNAME_ALREADY_EXISTS,
+        ErrorCode.MEMBER_NOT_FOUND})
+    ResponseDto<Empty> createMember(@RequestHeader("X-CODE") String memberCode,
+        @RequestBody MemberCreateRequest request);
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 정보를 수정합니다.")
     @Parameters({
         @Parameter(name = "X-CODE", description = "로그인 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
     @ApiErrorResponses(exceptions = {ErrorCode.NICKNAME_ALREADY_EXISTS, ErrorCode.MEMBER_NOT_FOUND})
-    ResponseDto<Empty> updateMember(@RequestHeader("X-CODE") String memberCode, @RequestBody MemberUpdateRequest request);
+    ResponseDto<Empty> updateMember(@RequestHeader("X-CODE") String memberCode,
+        @RequestBody MemberUpdateRequest request);
 
     @Operation(summary = "사용자 판매자 등록", description = "사용자의 판매자 등록을 진행합니다")
     @Parameters({
-        @Parameter(name = "X-CODE",description = "로그인한 사용자 코드",in = ParameterIn.HEADER, required = true)
+        @Parameter(name = "X-CODE", description = "로그인한 사용자 코드", in = ParameterIn.HEADER, required = true)
     })
     @ApiErrorResponses(exceptions = {ErrorCode.MEMBER_NOT_FOUND})
     ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode);
@@ -64,5 +69,6 @@ public interface MemberApiControllerSwagger {
         @Parameter(name = "name", description = "체크할 사용자 이름", in = ParameterIn.QUERY, required = true)
     })
     @ApiErrorResponses(exceptions = {ErrorCode.NICKNAME_ALREADY_EXISTS})
-    ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode, @RequestParam(name = "name") String name);
+    ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode,
+        @RequestParam(name = "name") String name);
 }

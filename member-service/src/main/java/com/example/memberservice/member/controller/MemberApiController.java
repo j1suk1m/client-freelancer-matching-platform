@@ -1,7 +1,8 @@
 package com.example.memberservice.member.controller;
 
-import com.example.memberservice.common.web.model.vo.Empty;
+
 import com.example.memberservice.common.web.model.dto.ResponseDto;
+import com.example.memberservice.common.web.model.vo.Empty;
 import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
 import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
 import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
@@ -40,13 +41,12 @@ public class MemberApiController implements MemberApiControllerSwagger {
     public ResponseDto<MemberGetResponse> getMemberByCode(
         @RequestHeader(name = "X-CODE", required = false) String xCode,
         @RequestParam(name = "member-code", required = false) String paramCode) {
-
-        return ResponseDto.success(
-            memberService.getMemberByCode(MemberServiceInputMapper.toGetMemberInput(xCode, paramCode)));
+        return ResponseDto.success(memberService.getMemberByCode(MemberServiceInputMapper.toGetMemberInput(xCode, paramCode)));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+
     public ResponseDto<Empty> createMember(@RequestHeader(name = "X-CODE") String memberCode,
         @RequestBody MemberCreateRequest request) {
 
@@ -61,7 +61,6 @@ public class MemberApiController implements MemberApiControllerSwagger {
         @RequestBody MemberUpdateRequest request) {
 
         memberService.updateMember(MemberServiceInputMapper.toUpdateMemberInput(memberCode, request));
-
         return ResponseDto.success();
     }
 
@@ -70,7 +69,6 @@ public class MemberApiController implements MemberApiControllerSwagger {
     public ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode) {
 
         memberService.updateMemberWorkState(MemberServiceInputMapper.toUpdateMemberWorkStateInput(memberCode));
-
         return ResponseDto.success();
     }
 
