@@ -2,19 +2,22 @@ package com.example.cartpostservice.commissions.service;
 
 import com.example.cartpostservice.commissions.model.CommissionsEntity;
 import com.example.cartpostservice.commissions.repository.CommissionsRepository;
-import com.example.cartpostservice.commissions.service.dto.request.CommissionsSaveCommand;
+import com.example.cartpostservice.commissions.service.dto.request.CommissionsServiceCommand;
+import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
+import com.example.cartpostservice.common.exception.BusinessException;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CommissionsService implements CrudService<CommissionsSaveCommand, String> {
+public class CommissionsService implements CrudService<CommissionsServiceCommand, CommissionsServiceResult, String> {
 
     private final CommissionsRepository commissionsRepository;
 
     @Override
-    public String create(CommissionsSaveCommand requestDto) {
+    public String create(CommissionsServiceCommand requestDto) {
         CommissionsEntity commissions = CommissionsEntity.builder()
                 .memberCode(requestDto.memberCode())
                 .title(requestDto.title())
@@ -31,12 +34,29 @@ public class CommissionsService implements CrudService<CommissionsSaveCommand, S
     }
 
     @Override
-    public Optional<CommissionsSaveCommand> read(String commissionsCode) {
-        return Optional.empty();
+    public CommissionsServiceResult read(String commissionsCode) {
+
+        CommissionsEntity commission = commissionsRepository.findByCode(commissionsCode)
+                .orElseThrow(()-> new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION));
+
+        CommissionsServiceResult result = new CommissionsServiceResult(
+                commission.getCode(),
+                commission.getMemberCode(),
+                commission.getTitle(),
+                commission.getContent(),
+                commission.getPaymentType(),
+                commission.getUnitAmount(),
+                commission.getStartedAt(),
+                commission.getEndedAt(),
+                commission.isOpen(),
+                commission.getWriterName()
+        );
+
+        return result;
     }
 
     @Override
-    public void update(CommissionsSaveCommand requestDto, String commissionsCode) {
+    public void update(CommissionsServiceCommand requestDto, String commissionsCode) {
 
     }
 
