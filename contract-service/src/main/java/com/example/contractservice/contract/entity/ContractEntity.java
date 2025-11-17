@@ -82,4 +82,8 @@ public class ContractEntity extends BaseEntity {
         this.name = name;
         this.body = body;
     }
+
+    public void updateStatus(ContractStatus status) {
+        this.status = status;
+    }
 }
