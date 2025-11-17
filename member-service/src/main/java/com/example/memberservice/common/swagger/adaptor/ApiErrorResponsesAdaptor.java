@@ -37,15 +37,8 @@ public class ApiErrorResponsesAdaptor {
             })
             .collect(Collectors.groupingBy(ExampleHolder::httpStatusCode));
 
-        // addExamples
-        Map<Integer, List<ExampleHolder>> mutableMap =
-            statusWithExampleHolders.entrySet().stream()
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    e -> new ArrayList<>(e.getValue())
-                ));
 
-        addExamplesToResponses(responses, mutableMap);
+        addExamplesToResponses(responses, statusWithExampleHolders);
     }
 
 
