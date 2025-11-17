@@ -60,9 +60,14 @@ public class CommissionsController implements CommissionsApi {
     @PatchMapping("/{commission-code}")
     public ResponseEntity<ResponseDto<CommissionUpdateResponse>> updateCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode
+            @PathVariable String commissionsCode,
+            @Valid @RequestBody CommissionCreateRequest commissionCreateRequest
     ) {
-        return null;
+
+        CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionsCode, commissionCreateRequest);
+
+        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
+                CustomStatusCode.SUCCESS.getStatus());
     }
 
     @Override

@@ -20,6 +20,7 @@ import jakarta.ws.rs.Path;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -57,7 +58,8 @@ public interface CommissionsApi {
     })
     ResponseEntity<ResponseDto<CommissionUpdateResponse>> updateCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode
+            @PathVariable String commissionsCode,
+            @RequestBody CommissionCreateRequest commissionCreateRequest
     );
 
     @Operation(summary = "의뢰글 삭제", description = "X-CODE 헤더와 의뢰글 코드를 기준으로 의뢰글을 삭제합니다.")
