@@ -4,6 +4,7 @@ import com.example.cartpostservice.commissions.controller.dto.request.Commission
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionDeleteResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
 import com.example.cartpostservice.commissions.service.CommissionsManagerService;
@@ -45,8 +46,12 @@ public class CommissionsController implements CommissionsApi {
 
     @Override
     @GetMapping("/{commission-code}")
-    public ResponseEntity<ResponseDto<CommissionsReadResponse>> readCommission(@PathVariable String commissionsCode) {
-        return null;
+    public ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable(name = "commission-code") String commissionsCode) {
+
+        CommissionReadResponse response = commissionsManagerService.readCommission(commissionsCode);
+
+        return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
+                CustomStatusCode.SUCCESS.getStatus());
     }
 
     @Override

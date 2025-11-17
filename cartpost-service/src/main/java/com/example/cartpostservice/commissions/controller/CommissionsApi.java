@@ -4,6 +4,7 @@ import com.example.cartpostservice.commissions.controller.dto.request.Commission
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionDeleteResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
@@ -40,7 +41,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "해당 의뢰글을 찾을 수 없음")
     })
-    ResponseEntity<ResponseDto<CommissionsReadResponse>> readCommission(@PathVariable String commissionsCode);
+    ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable String commissionsCode);
 
     @Operation(summary = "의뢰글 업데이트", description = "X-CODE 헤더와 의뢰글 코드를 기준으로 의뢰글을 수정합니다.")
     @Parameters({
