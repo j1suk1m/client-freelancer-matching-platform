@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/internal/contracts")
+@RequestMapping("/internal/contracts")
 public class ContractInternalController {
     private final ContractService contractService;
 
