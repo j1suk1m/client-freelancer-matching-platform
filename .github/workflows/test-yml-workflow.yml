@@ -30,4 +30,5 @@ jobs:
           spring.jpa.properties.hibernate.format_sql=false
           spring.jpa.defer-datasource-initialization=true
           spring.h2.console.enabled=false
+          spring.datasource.platform=h2
           EOF
