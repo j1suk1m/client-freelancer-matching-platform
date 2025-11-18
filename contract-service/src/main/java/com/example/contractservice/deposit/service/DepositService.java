@@ -5,6 +5,7 @@ import static com.example.contractservice.deposit.service.mapper.DepositHistoryM
 import static com.example.contractservice.deposit.service.mapper.DepositMapper.toDomain;
 
 import com.example.contractservice.deposit.controller.dto.request.DepositRechargeRequest;
+import com.example.contractservice.deposit.controller.dto.response.DepositInfoResponse;
 import com.example.contractservice.deposit.controller.dto.response.DepositRechargeResponse;
 import com.example.contractservice.deposit.domain.Deposit;
 import com.example.contractservice.deposit.domain.DepositHistory;
@@ -28,6 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DepositService {
     private final DepositRepository depositRepository;
+
+    public DepositInfoResponse getMyDeposit(String memberCode) {
+        DepositEntity depositEntity = depositRepository.findDepositByMemberCode(memberCode);
+        return DepositInfoResponse.of(depositEntity);
+    }
 
     /** 회원가입한 사용자에 대한 예치금 엔티티를 생성합니다.
      *

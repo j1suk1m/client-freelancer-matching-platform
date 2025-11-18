@@ -1,5 +1,6 @@
 package com.example.contractservice.deposit.controller;
 
+import com.example.contractservice.common.ResponseDto;
 import com.example.contractservice.deposit.common.GetDepositApi;
 import com.example.contractservice.deposit.common.GetDepositHistoriesApi;
 import com.example.contractservice.deposit.controller.dto.response.DepositHistoryInfoResponse;
@@ -25,9 +26,8 @@ public class DepositController {
     @GetDepositApi
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public DepositInfoResponse getMyDeposit(@RequestHeader(name = "X-CODE") String xCode) {
-
-        return new DepositInfoResponse(1000L);
+    public ResponseDto<DepositInfoResponse> getMyDeposit(@RequestHeader(name = "X-CODE") String xCode) {
+        return ResponseDto.ok(depositService.getMyDeposit(xCode));
     }
 
     @GetDepositHistoriesApi
