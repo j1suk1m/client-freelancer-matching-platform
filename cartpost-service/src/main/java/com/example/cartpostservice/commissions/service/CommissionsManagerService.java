@@ -80,8 +80,30 @@ public class CommissionsManagerService {
         return response;
     }
 
-    public CommissionUpdateResponse updateCommission(String code, String commissionsCode) {
-        return null;
+    public CommissionUpdateResponse updateCommission(String code, String commissionsCode, CommissionCreateRequest request) {
+
+        MemberResponse member = memberClient.getMember(code);
+
+        CommissionsServiceCommand commissionsServiceCommand = new CommissionsServiceCommand(
+                code,
+                request.title(),
+                request.content(),
+                request.paymentType(),
+                request.unitAmount(),
+                request.startedAt(),
+                request.endedAt(),
+                member.nickName()
+        );
+
+        TagServiceCommand tagServiceCommand = new TagServiceCommand(
+                commissionsCode,
+                request.tagCode()
+        );
+
+        commissionsService.update(commissionsServiceCommand, commissionsCode);
+        commissionsTagService.update(tagServiceCommand, commissionsCode);
+
+        return new CommissionUpdateResponse(commissionsCode);
     }
 
     public CommissionDeleteResponse deleteCommission(String code, String commissionsCode) {
