@@ -31,7 +31,7 @@ public class ChatRoom {
     private Instant updatedAt;
 
     @Builder
-    public ChatRoom(String name, List<String> memberCodes) {
+    private ChatRoom(String name, List<String> memberCodes) {
         this.name = name;
         this.memberCodes = memberCodes;
     }
