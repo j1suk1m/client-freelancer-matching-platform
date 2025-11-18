@@ -34,7 +34,7 @@ public class DepositService {
      */
     public DepositCreatedResponse createDeposit(String memberCode) {
         if (depositRepository.existMemberDeposit(memberCode)) {
-            log.warn(memberCode + " already exists");
+            log.warn("member_code 값 {}에 해당하는 예치금 엔티티가 이미 존재합니다.", memberCode);
 
             throw new DepositException(ALREADY_EXISTS);
         }
