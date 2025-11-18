@@ -17,7 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class ContractKafkaProducer implements ContractEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${kafka.topic.contract.name}")
+    @Value("${kafka.producer.topic.contract.name}")
     private String contractTopicName;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
