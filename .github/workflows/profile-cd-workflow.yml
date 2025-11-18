@@ -9,7 +9,7 @@ on:
 
 jobs:
   setting:
-    uses: ./.github/workflows/yml/profile-yml-workflow.yml
+    uses: ./.github/workflows/profile-yml-workflow.yml
     secrets: inherit
 
   releasing:

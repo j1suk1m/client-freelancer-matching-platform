@@ -9,7 +9,7 @@ on:
 
 jobs:
   setting:
-    uses: ./.github/workflows/yml/gateway-yml-workflow.yml
+    uses: ./.github/workflows/gateway-yml-workflow.yml
     secrets: inherit
 
   releasing:

@@ -60,7 +60,7 @@ jobs:
           EOF
 
   test-setting:
-    uses: ./.github/workflows/yml/test-yml-workflow.yml
+    uses: ./.github/workflows/test-yml-workflow.yml
     secrets: inherit
     with:
       service-name: search-service

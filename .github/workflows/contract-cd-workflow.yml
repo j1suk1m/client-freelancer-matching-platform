@@ -9,7 +9,7 @@ on:
 
 jobs:
   setting:
-    uses: ./.github/workflows/yml/contract-yml-workflow.yml
+    uses: ./.github/workflows/contract-yml-workflow.yml
     secrets: inherit
 
   releasing:

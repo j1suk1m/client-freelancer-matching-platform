@@ -9,7 +9,7 @@ on:
 
 jobs:
   setting:
-    uses: ./.github/workflows/yml/cartpost-yml-workflow.yml
+    uses: ./.github/workflows/cartpost-yml-workflow.yml
     secrets: inherit
 
   releasing:
