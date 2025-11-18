@@ -7,7 +7,6 @@ import com.example.communicationservice.entity.ChatRoom;
 import com.example.communicationservice.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class ChatRoomService {
      * @param currentMemberCode 현재 로그인한 회원의 코드
      * @return 생성된 채팅방 아이디
      */
-    @Transactional
     public ChatRoomCreateResponse createChatRoom(String name, List<String> memberCodes, String currentMemberCode) {
         // 1:1 채팅인지 확인
         if (memberCodes.stream().distinct().count() != 2) {
