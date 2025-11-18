@@ -29,12 +29,12 @@ jobs:
         ports:
           - 9200:9200
         env:
-          node.name: es01
-          cluster.name: cluster-exp
           discovery.type: single-node
           xpack.security.enabled: 'false'
           xpack.security.http.ssl.enabled: 'false'
           ES_JAVA_OPTS: -Xms512m -Xmx512m
+          bootstrap.memory_lock: 'true' # 메모리 락 활성화
+          network.host: 0.0.0.0         # 외부 접속 허용
         options: >-
           --health-cmd="curl -f http://localhost:9200 || exit 1"
           --health-interval=10s
@@ -112,13 +112,6 @@ jobs:
           mkdir -p ./search-service/src/main/resources
           echo '${{ vars.SEARCH_YML }}' > ./search-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./search-service/src/main/resources/application-test.yml
-      - name: Wait for Elasticsearch to be ready
-        run: |
-          for i in {1..10}; do
-          curl -s http://elasticsearch:9200/_cluster/health && break
-          echo "Waiting for Elasticsearch..."
-          sleep 10
-          done
 
       - name: 전체 모듈 gradlew 권한 세팅
         run: |
