@@ -4,6 +4,8 @@ import static com.example.contractservice.deposit.domain.exception.DepositErrorC
 import static com.example.contractservice.deposit.service.mapper.DepositHistoryMapper.toEntity;
 import static com.example.contractservice.deposit.service.mapper.DepositMapper.toDomain;
 
+import com.example.contractservice.deposit.controller.dto.request.DepositRechargeRequest;
+import com.example.contractservice.deposit.controller.dto.response.DepositRechargeResponse;
 import com.example.contractservice.deposit.domain.Deposit;
 import com.example.contractservice.deposit.domain.DepositHistory;
 import com.example.contractservice.deposit.domain.exception.DepositException;
@@ -45,6 +47,16 @@ public class DepositService {
     }
 
     @Transactional
+    public DepositRechargeResponse recharge(DepositRechargeRequest request) { // TODO: 동시성 테스트
+        DepositProcessRequest processRequest = new DepositProcessRequest(request.memberCode(), request.amount(),
+                "예치금 입금");
+
+        DepositProcessResponse processResponse = transfer(processRequest);
+
+        return DepositRechargeResponse.of(processResponse.code(), processResponse.amount());
+    }
+
+    @Transactional
     public DepositProcessResponse withdraw(DepositProcessRequest request) {
         DepositEntity depositEntity = process(request, Deposit::withdraw);
 
@@ -80,10 +92,6 @@ public class DepositService {
 
         saveHistory(request, deposit, afterAmount - beforeAmount);
         return depositEntity;
-    }
-
-        return new DepositWithdrawResponse(depositEntity.getCode(), depositEntity.getMemberCode(),
-                depositEntity.getAmount());
     }
 
     private void saveHistory(DepositProcessRequest request, Deposit deposit, Long changeAmount) {
