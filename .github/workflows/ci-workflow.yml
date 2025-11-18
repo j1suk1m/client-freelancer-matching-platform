@@ -471,7 +471,7 @@ jobs:
 
       - name: member-service 테스트 실행
         working-directory: ./member-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info --debug
 
 
       - name: contract-service 테스트 실행
