@@ -3,7 +3,7 @@ name: search-service ci/cd
 on:
   push:
     branches:
-      - main
+      - deploy-test
     paths:
       - 'search-service/**'
 

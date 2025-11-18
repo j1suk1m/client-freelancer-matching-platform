@@ -3,7 +3,7 @@ name: member-service ci/cd
 on:
   push:
     branches:
-      - main
+      - deploy-test
     paths:
       - 'member-service/**'
 

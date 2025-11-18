@@ -3,7 +3,7 @@ name: cartpost-service ci/cd
 on:
   push:
     branches:
-      - main
+      - deploy-test
     paths:
       - 'cartpost-service/**'
 

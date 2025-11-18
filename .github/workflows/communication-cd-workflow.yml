@@ -3,7 +3,7 @@ name: communication-service ci/cd
 on:
   push:
     branches:
-      - main
+      - deploy-test
     paths:
       - 'communication-service/**'
 

@@ -36,7 +36,7 @@ jobs:
       - name: 도커 서비스 컨테이너 실행
         run: |
           IMAGE=${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ inputs.service-name }}:${{ inputs.image-tag }}
-          docker run -d --name ${{ inputs.service-name }} $IMAGE
+          docker run -d --name ${{ inputs.service-name }} --network exp_default $IMAGE
 
       - name: Verify container status
         run: |

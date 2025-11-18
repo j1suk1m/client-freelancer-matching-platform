@@ -3,7 +3,7 @@ name: contract-service ci/cd
 on:
   push:
     branches:
-      - main
+      - deploy-test
     paths:
       - 'contract-service/**'
 
