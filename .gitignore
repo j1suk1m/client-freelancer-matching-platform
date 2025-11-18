@@ -2,7 +2,7 @@
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-gradle-wrapper.properties
+
 
 # IDE
 .idea/
@@ -23,3 +23,5 @@ gradle-wrapper.properties
 !docker-compose-build.yml
 
 !*-workflow.yml
+
+!gradle-wrapper.properties
