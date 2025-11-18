@@ -8,10 +8,13 @@ on:
       - 'member-service/**'
 
 jobs:
-
   releasing:
     uses: ./.github/workflows/release-workflow.yml
     secrets: inherit
+    permissions:
+      attestations: write
+      packages: write
+      id-token: write
     with:
       service-name: hexagon-member-service
       service-dir: ./member-service
