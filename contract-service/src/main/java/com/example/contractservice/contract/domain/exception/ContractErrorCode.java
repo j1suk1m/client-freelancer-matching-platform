@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ContractErrorCode {
     NO_FREELANCERS(HttpStatus.BAD_REQUEST, 4000, "프리랜서가 없어 계약을 생성할 수 없습니다."),
-    INVALID_MEMBER(HttpStatus.BAD_REQUEST, 4001, "존재하지 않는 회원으로 계약을 생성할 수 없습니다."),
+    INVALID_MEMBER(HttpStatus.BAD_REQUEST, 4001, "적절하지 않은 회원입니다."),
     DELETED_MEMBER(HttpStatus.BAD_REQUEST, 4002, "탈퇴한 회원은 계약을 생성할 수 없습니다."),
 
     NO_CONTRACT(HttpStatus.BAD_REQUEST, 4010, "해당 계약이 존재하지 않습니다."), // TODO: 계약 코드를 넣을 수 있도록 개선
