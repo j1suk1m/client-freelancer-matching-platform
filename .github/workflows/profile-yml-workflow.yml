@@ -33,7 +33,6 @@ jobs:
           spring.kafka.consumer.properties.spring.json.trusted.packages=*
           spring.kafka.consumer.properties.allow.auto.create.topics=false
           kafka.topic.contract.name=${{ secrets.KAFKA_TOPIC_NAME_CONTRACT }}
-          eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
           springdoc.swagger-ui.path=/api/profiles/swagger-ui
           springdoc.api-docs.path=/api/profiles/v3/api-docs

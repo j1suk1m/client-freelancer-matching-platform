@@ -82,7 +82,6 @@ jobs:
           springdoc.swagger-ui.path=/api/members/swagger-ui
           springdoc.api-docs.path=/api/members/v3/api-docs
           request.uri.ratings.info=lb://PROFILE-SERVICE/api/ratings
-          eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
           EOF
 
   test-setting:

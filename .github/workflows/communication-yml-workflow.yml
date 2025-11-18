@@ -22,7 +22,6 @@ jobs:
           springdoc.swagger-ui.path=/api/chatrooms/swagger-ui
           springdoc.api-docs.path=/api/chatrooms/v3/api-docs
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-          eureka.instance.instance-id=${{ secrets.EUREKA_INTANCE_ID }}
           EOF
 
   test-setting:

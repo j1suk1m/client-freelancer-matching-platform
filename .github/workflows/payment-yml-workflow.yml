@@ -30,7 +30,6 @@ jobs:
           springdoc.swagger-ui.path=/api/payments/swagger-ui
           springdoc.api-docs.path=/api/payments/v3/api-docs
           eureka.client.serviceUrl.defaultZone=http://discovery-service:***/eureka/
-          eureka.instance.instance-id=***
           EOF
 
   test-setting:

@@ -18,7 +18,6 @@ jobs:
           cat <<EOF > contract-service/src/main/resources/application.properties
           server.port=8083
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-          eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
           spring.application.name=contract-service
           spring.jackson.property-naming-strategy=SNAKE_CASE
           spring.jpa.open-in-view=false
