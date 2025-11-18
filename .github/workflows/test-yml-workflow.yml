@@ -32,4 +32,5 @@ jobs:
           spring.h2.console.enabled=false
           spring.datasource.platform=h2
           spring.sql.init.mode=never
+          spring.jpa.defer-datasource-initialization=false
           EOF
