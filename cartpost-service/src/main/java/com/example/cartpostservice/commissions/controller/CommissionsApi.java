@@ -2,11 +2,9 @@ package com.example.cartpostservice.commissions.controller;
 
 import com.example.cartpostservice.commissions.controller.dto.request.CommissionCreateRequest;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionDeleteResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
 import com.example.cartpostservice.common.dto.EmptyResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,13 +14,12 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.Path;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Commissions API", description = "의뢰글 API 명세")
 public interface CommissionsApi {
@@ -36,7 +33,8 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    ResponseEntity<ResponseDto<CommissionCreateResponse>> createCommission(@RequestHeader("X-CODE") String code, CommissionCreateRequest commissionCreateRequest);
+    ResponseEntity<ResponseDto<CommissionCreateResponse>> createCommission(@RequestHeader("X-CODE") String code,
+            CommissionCreateRequest commissionCreateRequest);
 
     @Operation(summary = "의뢰글 조회", description = "의뢰글 코드를 기준으로 의뢰글을 조회합니다.")
     @Parameter(name = "commissionsCode", description = "의뢰글 코드", required = true)
@@ -44,7 +42,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "해당 의뢰글을 찾을 수 없음")
     })
-    ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable String commissionCode);
+    ResponseEntity<ResponseDto<CommissionElementReadResponse>> readCommission(@PathVariable String commissionCode);
 
     @Operation(summary = "의뢰글 업데이트", description = "X-CODE 헤더와 의뢰글 코드를 기준으로 의뢰글을 수정합니다.")
     @Parameters({
@@ -100,7 +98,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    ResponseEntity<ResponseDto<CommissionsReadResponse>> readOwnCommissions(
+    ResponseEntity<ResponseDto<Page<CommissionReadResponse>>> readOwnCommissions(
             @RequestHeader("X-CODE") String code,
             Pageable pageable
     );
@@ -115,7 +113,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "404", description = "커미션을 찾을 수 없음"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    public ResponseEntity<ResponseDto<EmptyResponse>> canAccessCommission(
+    ResponseEntity<ResponseDto<EmptyResponse>> canAccessCommission(
             @RequestHeader("X-CODE") String code,
             @PathVariable String commissionCode
     );
