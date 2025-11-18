@@ -36,52 +36,50 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-
-
       - name: CARTPOST yml 생성
         run: |
-          echo "${{ vars.CARTPOST_YML }}" > ./cartpost-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./cartpost-service/src/main/resources/application-test.yml
+          echo '${{ vars.CARTPOST_YML }}' > ./cartpost-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./cartpost-service/src/main/resources/application-test.yml
 
       - name: COMMUNICATION yml 생성
         run: |
-          echo "${{ vars.COMMUNICATION_YML }}" > ./communication-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./communication-service/src/main/resources/application-test.yml
+          echo '${{ vars.COMMUNICATION_YML }}' > ./communication-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./communication-service/src/main/resources/application-test.yml
 
       - name: CONTRACT yml 생성
         run: |
-          echo "${{ vars.CONTRACT_YML }}" > ./contract-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./contract-service/src/main/resources/application-test.yml
+          echo '${{ vars.CONTRACT_YML }}' > ./contract-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./contract-service/src/main/resources/application-test.yml
 
       - name: DISCOVERY yml 생성
         run: |
-          echo "${{ vars.DISCOVERY_YML }}" > ./discovery-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./discovery-service/src/main/resources/application-test.yml
+          echo '${{ vars.DISCOVERY_YML }}' > ./discovery-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./discovery-service/src/main/resources/application-test.yml
 
       - name: GATEWAY yml 생성
         run: |
-          echo "${{ vars.GATEWAY_YML }}" > ./gateway-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./gateway-service/src/main/resources/application-test.yml
+          echo '${{ vars.GATEWAY_YML }}' > ./gateway-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./gateway-service/src/main/resources/application-test.yml
 
       - name: MEMBER yml 생성
         run: |
-          echo "${{ vars.MEMBER_YML }}" > ./member-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./member-service/src/main/resources/application-test.yml
+          echo '${{ vars.MEMBER_YML }}' > ./member-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./member-service/src/main/resources/application-test.yml
 
       - name: PAYMENT yml 생성
         run: |
-          echo "${{ vars.PAYMENT_YML }}" > ./payment-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./payment-service/src/main/resources/application-test.yml
+          echo '${{ vars.PAYMENT_YML }}' > ./payment-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./payment-service/src/main/resources/application-test.yml
 
       - name: PROFILE yml 생성
         run: |
-          echo "${{ vars.PROFILE_YML }}" > ./profile-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./profile-service/src/main/resources/application-test.yml
+          echo '${{ vars.PROFILE_YML }}' > ./profile-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./profile-service/src/main/resources/application-test.yml
 
       - name: SEARCH yml 생성
         run: |
-          echo "${{ vars.SEARCH_YML }}" > ./search-service/src/main/resources/application.yml
-          echo "${{ vars.TEST_YML }}" > ./search-service/src/main/resources/application-test.yml
+          echo '${{ vars.SEARCH_YML }}' > ./search-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./search-service/src/main/resources/application-test.yml
 
       - name: 전체 모듈 gradlew 권한 세팅
         run: |
