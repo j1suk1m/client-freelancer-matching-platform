@@ -110,7 +110,7 @@ batch:
   contract:
     size: 500
     interval: 0 * * * * *
-EOF
+      EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

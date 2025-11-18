@@ -143,7 +143,7 @@ request:
   uri:
     ratings:
       info: "lb://PROFILE-SERVICE/api/ratings"
-EOF
+        EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

@@ -25,4 +25,4 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-EOF
+      EOF

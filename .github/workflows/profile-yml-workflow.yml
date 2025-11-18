@@ -81,7 +81,7 @@ springdoc:
     path: /api/profiles/swagger-ui
   api-docs:
     path: /api/profiles/v3/api-docs
-EOF
+      EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

@@ -124,4 +124,4 @@ eureka:
       defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
   instance:
     instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
-EOF
+      EOF
