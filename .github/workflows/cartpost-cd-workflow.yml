@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/release-workflow.yml
     secrets: inherit
     permissions:
+      contents: read
       attestations: write
       packages: write
       id-token: write
