@@ -33,6 +33,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j' // MySQL
 //	runtimeOnly 'com.h2database:h2' // H2
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // Feign Client
+	implementation 'org.springframework.kafka:spring-kafka' // Kafka
 
 	// 롬복
 	compileOnly 'org.projectlombok:lombok'
