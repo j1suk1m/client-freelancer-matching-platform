@@ -32,10 +32,12 @@ jobs:
           discovery.type: single-node
           xpack.security.enabled: 'false'
           xpack.security.http.ssl.enabled: 'false'
-          ES_JAVA_OPTS: -Xms512m -Xmx512m
-          bootstrap.memory_lock: 'true' # 메모리 락 활성화
+          ES_JAVA_OPTS: -Xms1g -Xmx1g
+          bootstrap.memory_lock: 'false' # 메모리 락 활성화
           network.host: 0.0.0.0         # 외부 접속 허용
         options: >-
+          --memory=2g
+          --memory-swap=2g
           --health-cmd="curl -f http://localhost:9200 || exit 1"
           --health-interval=10s
           --health-timeout=5s
@@ -45,6 +47,8 @@ jobs:
         image: redis:7.0.11
         ports:
           - 6379:6379
+        env:
+          network.host: 0.0.0.0
 
     steps:
       - name: 브랜치로 체크아웃
