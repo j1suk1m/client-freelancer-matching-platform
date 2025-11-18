@@ -469,9 +469,12 @@ jobs:
           chmod +x ./profile-service/gradlew
           chmod +x ./search-service/gradlew
 
+      - name: application-test.properties 파일 내용 확인
+        run: cat ./member-service/src/main/resources/application-test.properties
+
       - name: member-service 테스트 실행
         working-directory: ./member-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info --debug
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
 
 
       - name: contract-service 테스트 실행
