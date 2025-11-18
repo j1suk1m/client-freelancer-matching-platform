@@ -13,6 +13,8 @@ import com.example.cartpostservice.commissions.service.dto.request.CommissionsSe
 import com.example.cartpostservice.commissions.service.dto.request.TagServiceCommand;
 import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
 import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
+import com.example.cartpostservice.common.exception.BusinessException;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -60,9 +62,9 @@ public class CommissionsManagerService {
         return commissionCreateResponse;
     }
 
-    public CommissionReadResponse readCommission(String commissionsCode) {
+    public CommissionReadResponse readCommission(String commissionCode) {
 
-        CommissionsServiceResult commissionResult = commissionsService.read(commissionsCode);
+        CommissionsServiceResult commissionResult = commissionsService.read(commissionCode);
         TagServiceResult tagResult = commissionsTagService.read(commissionResult.code());
 
         CommissionReadResponse response = new CommissionReadResponse(
@@ -80,7 +82,7 @@ public class CommissionsManagerService {
         return response;
     }
 
-    public CommissionUpdateResponse updateCommission(String code, String commissionsCode, CommissionCreateRequest request) {
+    public CommissionUpdateResponse updateCommission(String code, String commissionCode, CommissionCreateRequest request) {
 
         MemberResponse member = memberClient.getMember(code);
 
@@ -96,25 +98,29 @@ public class CommissionsManagerService {
         );
 
         TagServiceCommand tagServiceCommand = new TagServiceCommand(
-                commissionsCode,
+                commissionCode,
                 request.tagCode()
         );
 
-        commissionsService.update(commissionsServiceCommand, commissionsCode);
-        commissionsTagService.update(tagServiceCommand, commissionsCode);
+        commissionsService.update(commissionsServiceCommand, commissionCode);
+        commissionsTagService.update(tagServiceCommand, commissionCode);
 
-        return new CommissionUpdateResponse(commissionsCode);
+        return new CommissionUpdateResponse(commissionCode);
     }
 
-    public void deleteCommission(String code, String commissionsCode) {
+    public void deleteCommission(String code, String commissionCode) {
 
-        commissionsService.delete(code, commissionsCode);
-        commissionsTagService.delete(code, commissionsCode);
+        commissionsService.delete(code, commissionCode);
+        commissionsTagService.delete(code, commissionCode);
 
     }
 
-    public CommissionFinishResponse finishCommission(String code) {
-        return null;
+    public void finishCommission(String code, String commissionCode) {
+        if(!commissionsService.isOwner(code, commissionCode)){
+            throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
+        }
+
+        CommissionsServiceResult commissionResult = commissionsService.read(commissionCode);
     }
 
     public CommissionsReadResponse readOwnCommissions(String code, Pageable pageable) {
