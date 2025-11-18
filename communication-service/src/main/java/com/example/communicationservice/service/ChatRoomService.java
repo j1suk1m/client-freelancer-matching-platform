@@ -37,7 +37,7 @@ public class ChatRoomService {
         }
 
         // 이미 생성된 채팅방이 있는지 확인
-        if (chatRoomRepository.existsByMemberCodes(memberCodes.get(0), memberCodes.get(1))) {
+        if (chatRoomRepository.existsByMemberCodes(memberCodes, memberCodes.size())) {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_ALREADY_EXISTS);
         }
 
