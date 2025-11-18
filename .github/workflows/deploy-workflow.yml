@@ -15,7 +15,6 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ inputs.service-name }}:${{ inputs.image-tag }}
 
 jobs:
   deploy:
