@@ -473,7 +473,11 @@ jobs:
         run: cat ./member-service/src/main/resources/application-test.properties
 
       - name: member-service 테스트 실행
-        run: ./member-service/gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
+        working-directory: ./member-service
+        run: |
+          if [ -f ./gradlew ]; then
+            echo "gradlew exists"
+          ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
 
 
       - name: contract-service 테스트 실행
