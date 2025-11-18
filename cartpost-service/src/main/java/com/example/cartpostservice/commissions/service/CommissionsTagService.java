@@ -61,9 +61,4 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
     public void delete(String commissionCode, String tagCode) {
         commissionsTagRepository.deleteByCommissionCode(commissionCode);
     }
-
-    @Override
-    public boolean exist(String ownerCode, String targetCode) {
-        return false;
-    }
 }

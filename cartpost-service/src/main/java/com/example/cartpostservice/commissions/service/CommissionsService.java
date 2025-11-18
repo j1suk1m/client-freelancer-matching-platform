@@ -91,8 +91,16 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
         commissionsRepository.delete(commission);
     }
 
-    @Override
-    public boolean exist(String ownerCode, String targetCode) {
-        return false;
+    public boolean isOwner(String memberCode, String commissionsCode) {
+        return commissionsRepository
+                .findByMemberCodeAndCode(memberCode, commissionsCode)
+                .isPresent();
+    }
+
+    public void closeCommission(String commissionCode) {
+        CommissionsEntity entity = commissionsRepository.findByCode(commissionCode)
+                .orElseThrow(() ->  new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
+
+        entity.closed();
     }
 }

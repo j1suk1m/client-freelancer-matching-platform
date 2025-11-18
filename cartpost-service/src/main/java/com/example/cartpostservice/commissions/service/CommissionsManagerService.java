@@ -112,7 +112,6 @@ public class CommissionsManagerService {
 
         commissionsService.delete(code, commissionCode);
         commissionsTagService.delete(code, commissionCode);
-
     }
 
     public void finishCommission(String code, String commissionCode) {
@@ -120,7 +119,7 @@ public class CommissionsManagerService {
             throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
         }
 
-        CommissionsServiceResult commissionResult = commissionsService.read(commissionCode);
+        commissionsService.closeCommission(commissionCode);
     }
 
     public CommissionsReadResponse readOwnCommissions(String code, Pageable pageable) {
