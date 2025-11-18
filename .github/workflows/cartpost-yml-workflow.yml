@@ -40,5 +40,6 @@ jobs:
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml
     secrets: inherit
+    needs: setting
     with:
       service-name: cartpost-service

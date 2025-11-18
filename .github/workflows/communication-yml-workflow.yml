@@ -25,6 +25,7 @@ jobs:
           EOF
 
   test-setting:
+    needs: setting
     uses: ./.github/workflows/test-yml-workflow.yml
     secrets: inherit
     with:
