@@ -342,6 +342,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
 
       - name: communication 모듈 application-test.properties 작성
@@ -359,6 +360,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
           
       - name: contract 모듈 application-test.properties 작성
@@ -376,6 +378,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
           
       # member-service
@@ -394,6 +397,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
 
       # payment-service
@@ -412,6 +416,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
 
       # profile-service
@@ -430,6 +435,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
 
       # search-service
@@ -448,6 +454,7 @@ jobs:
           spring.sql.init.platform=h2
           spring.jpa.defer-datasource-initialization=false
           eureka.client.enabled=false
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
           EOF
 
       - name: 전체 모듈 gradlew 권한 세팅
