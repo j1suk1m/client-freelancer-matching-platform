@@ -54,5 +54,5 @@ jobs:
             jwt.claims.member-code=${{ secrets.JWT_CLAIMS_MEMBER_CODE }}
             jwt.claims.is-sign=${{ secrets.JWT_CLAIMS_IS_SIGNED }}
             eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-            eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
+            eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
             EOF

@@ -32,7 +32,7 @@ jobs:
           springdoc.swagger-ui.path=/api/payments/swagger-ui
           springdoc.api-docs.path=/api/payments/v3/api-docs
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-          eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
+          eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
           EOF
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

@@ -79,7 +79,7 @@ jobs:
             redirect-url.login.need-signup=${{ secrets.REDIRECT_NEED_SIGNUP }}
             redirect-url.login.failure=${{ secrets.REDIRECT_LOGIN_FIAL }}
             eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-            eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
+            eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
             springdoc.swagger-ui.path=/api/members/swagger-ui
             springdoc.api-docs.path=/api/members/v3/api-docs
             request.uri.ratings.info=lb://PROFILE-SERVICE/api/ratings
