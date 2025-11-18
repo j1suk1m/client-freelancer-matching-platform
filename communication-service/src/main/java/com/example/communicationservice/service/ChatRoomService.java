@@ -31,7 +31,7 @@ public class ChatRoomService {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_INVALID_MEMBER_COUNT);
         }
 
-        // 현재 로그인한 회원이 채팅방에 포함되어 있는지 확인
+        // 현재 로그인한 회원이 참여자 코드 목록에 포함되어 있는지 확인
         if (!memberCodes.contains(currentMemberCode)) {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_NOT_INCLUDE_SELF);
         }
@@ -49,7 +49,7 @@ public class ChatRoomService {
             .memberCodes(memberCodes)
             .build();
 
-        // 채팅방 저장 후 반환
+        // 채팅방 저장
         ChatRoom createdChatRoom = chatRoomRepository.save(chatRoom);
 
         return ChatRoomCreateResponse.from(createdChatRoom);
