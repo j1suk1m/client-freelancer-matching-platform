@@ -84,8 +84,11 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
     }
 
     @Override
-    public void delete(String commissionsCode) {
+    public void delete(String memberCode, String commissionsCode) {
+        CommissionsEntity commission =  commissionsRepository.findByMemberCodeAndCode(memberCode, commissionsCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
 
+        commissionsRepository.delete(commission);
     }
 
     @Override

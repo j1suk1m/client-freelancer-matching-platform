@@ -58,8 +58,8 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
     }
 
     @Override
-    public void delete(String s) {
-
+    public void delete(String commissionCode, String tagCode) {
+        commissionsTagRepository.deleteByCommissionCode(commissionCode);
     }
 
     @Override

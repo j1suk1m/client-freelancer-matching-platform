@@ -12,7 +12,7 @@ public interface CrudService<Req, Res, code> {
 
     void update(Req requestDto, code code);
 
-    void delete(code code);
+    void delete(code userCode, code dataCode);
 
     boolean exist(code ownerCode, code targetCode);
 }

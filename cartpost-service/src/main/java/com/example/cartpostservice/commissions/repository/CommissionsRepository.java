@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommissionsRepository extends JpaRepository<CommissionsEntity, Long> {
 
-    //Optional<CommissionsEntity> findByMemberCode(String memberCode);
-
     Optional<CommissionsEntity> findByCode(String code);
 
     List<CommissionsEntity> findByMemberCode(String memberCode);
+
+    Optional<CommissionsEntity> findByMemberCodeAndCode(String memberCode, String commissionsCode);
 }

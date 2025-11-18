@@ -106,8 +106,11 @@ public class CommissionsManagerService {
         return new CommissionUpdateResponse(commissionsCode);
     }
 
-    public CommissionDeleteResponse deleteCommission(String code, String commissionsCode) {
-        return null;
+    public void deleteCommission(String code, String commissionsCode) {
+
+        commissionsService.delete(code, commissionsCode);
+        commissionsTagService.delete(code, commissionsCode);
+
     }
 
     public CommissionFinishResponse finishCommission(String code) {
