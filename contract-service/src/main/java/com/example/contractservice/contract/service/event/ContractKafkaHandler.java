@@ -1,7 +1,7 @@
 package com.example.contractservice.contract.service.event;
 
 import com.example.contractservice.contract.service.ContractEventService;
-import com.example.contractservice.contract.service.event.dto.CartItemDeletedEvent;
+import com.example.contractservice.contract.service.dto.event.CartItemDeletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
