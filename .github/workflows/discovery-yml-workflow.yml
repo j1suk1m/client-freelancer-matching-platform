@@ -2,7 +2,6 @@ name: Generate Application YML
 
 on:
   workflow_call:
-    inputs:
   workflow_dispatch:
 
 
