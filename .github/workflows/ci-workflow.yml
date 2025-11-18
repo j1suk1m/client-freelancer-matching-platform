@@ -111,8 +111,7 @@ jobs:
           if [ -f ./gradlew ]; then
             echo "gradlew exists"
           fi
-          ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
-
+          ./gradlew test --no-daemon -Dspring.profiles.active=test 
 
       - name: contract-service 테스트 실행
         working-directory: ./contract-service
