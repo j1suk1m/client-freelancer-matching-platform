@@ -89,17 +89,18 @@ jobs:
           mkdir -p ./search-service/src/main/resources
           echo '${{ vars.SEARCH_YML }}' > ./search-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./search-service/src/main/resources/application-test.yml
-          - name: 전체 모듈 gradlew 권한 세팅
-            run: |
-              chmod +x ./cartpost-service/gradlew
-              chmod +x ./communication-service/gradlew
-              chmod +x ./contract-service/gradlew
-              chmod +x ./discovery-service/gradlew
-              chmod +x ./gateway-service/gradlew
-              chmod +x ./member-service/gradlew
-              chmod +x ./payment-service/gradlew
-              chmod +x ./profile-service/gradlew
-              chmod +x ./search-service/gradlew
+
+      - name: 전체 모듈 gradlew 권한 세팅
+        run: |
+          chmod +x ./cartpost-service/gradlew
+          chmod +x ./communication-service/gradlew
+          chmod +x ./contract-service/gradlew
+          chmod +x ./discovery-service/gradlew
+          chmod +x ./gateway-service/gradlew
+          chmod +x ./member-service/gradlew
+          chmod +x ./payment-service/gradlew
+          chmod +x ./profile-service/gradlew
+          chmod +x ./search-service/gradlew
 
       - name: application-test.properties 파일 내용 확인
         run: cat ./member-service/src/main/resources/application-test.properties
