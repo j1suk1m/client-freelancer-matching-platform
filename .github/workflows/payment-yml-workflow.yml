@@ -22,18 +22,17 @@ jobs:
           spring.datasource.username=sa
           spring.datasource.password=
           spring.h2.console.enabled=false
-          # --- 방법 1: SQL 스크립트 실행 설정 ---
           spring.sql.init.mode=always
-          # --- (필수) JPA/Hibernate와의 충돌 방지 ---
           spring.jpa.hibernate.ddl-auto=none
           spring.jpa.show-sql=true
           spring.jpa.properties.hibernate.format_sql=true
           spring.jpa.defer-datasource-initialization=true
           springdoc.swagger-ui.path=/api/payments/swagger-ui
           springdoc.api-docs.path=/api/payments/v3/api-docs
-          eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-          eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
+          eureka.client.serviceUrl.defaultZone=http://discovery-service:***/eureka/
+          eureka.instance.instance-id=***
           EOF
+
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml
     secrets: inherit
