@@ -4,6 +4,8 @@ import com.example.cartpostservice.common.model.vo.PaymentType;
 import com.example.cartpostservice.common.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -27,6 +29,7 @@ public class CommissionsEntity extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentType paymentType;
 
@@ -46,7 +49,8 @@ public class CommissionsEntity extends BaseEntity {
     private String writerName;
 
     @Builder
-    public CommissionsEntity(String memberCode, String title, String content, PaymentType paymentType, String unitAmount, LocalDate startedAt, LocalDate endedAt, String writerName){
+    public CommissionsEntity(String memberCode, String title, String content, PaymentType paymentType,
+            String unitAmount, LocalDate startedAt, LocalDate endedAt, String writerName) {
         this.memberCode = memberCode;
         this.title = title;
         this.content = content;
@@ -57,7 +61,7 @@ public class CommissionsEntity extends BaseEntity {
         this.writerName = writerName;
     }
 
-    public void closed(){
+    public void closed() {
         this.isOpen = false;
     }
 }

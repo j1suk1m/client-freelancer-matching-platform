@@ -9,6 +9,8 @@ import com.example.cartpostservice.common.exception.CustomStatusCode;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,7 +41,7 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
     public CommissionsServiceResult read(String commissionsCode) {
 
         CommissionsEntity commission = commissionsRepository.findByCode(commissionsCode)
-                .orElseThrow(()-> new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION));
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION));
 
         CommissionsServiceResult result = new CommissionsServiceResult(
                 commission.getCode(),
@@ -60,12 +62,12 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
     @Override
     public void update(CommissionsServiceCommand requestDto, String commissionsCode) {
         List<CommissionsEntity> commissions = commissionsRepository.findByMemberCode(requestDto.memberCode());
-        if(commissions.isEmpty()){
+        if (commissions.isEmpty()) {
             throw new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION);
         }
         boolean owned = commissions.stream().anyMatch(entity -> entity.getCode().equals(commissionsCode));
 
-        if(owned){
+        if (owned) {
             throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
         }
 
@@ -85,10 +87,30 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
 
     @Override
     public void delete(String memberCode, String commissionsCode) {
-        CommissionsEntity commission =  commissionsRepository.findByMemberCodeAndCode(memberCode, commissionsCode)
+        CommissionsEntity commission = commissionsRepository.findByMemberCodeAndCode(memberCode, commissionsCode)
                 .orElseThrow(() -> new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
 
         commissionsRepository.delete(commission);
+    }
+
+    public Page<CommissionsServiceResult> getPage(String memberCode, Pageable pageable) {
+
+        Page<CommissionsEntity> commissions = commissionsRepository.findPageByMemberCode(memberCode, pageable);
+
+        return commissions.map(commission ->
+                new CommissionsServiceResult(
+                        commission.getCode(),
+                        commission.getMemberCode(),
+                        commission.getTitle(),
+                        commission.getContent(),
+                        commission.getPaymentType(),
+                        commission.getUnitAmount(),
+                        commission.getStartedAt(),
+                        commission.getEndedAt(),
+                        commission.isOpen(),
+                        commission.getWriterName()
+                )
+        );
     }
 
     public boolean isOwner(String memberCode, String commissionsCode) {
@@ -99,7 +121,7 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
 
     public void closeCommission(String commissionCode) {
         CommissionsEntity entity = commissionsRepository.findByCode(commissionCode)
-                .orElseThrow(() ->  new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
 
         entity.closed();
     }
