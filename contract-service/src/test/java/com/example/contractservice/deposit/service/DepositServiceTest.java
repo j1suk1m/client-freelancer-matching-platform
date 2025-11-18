@@ -58,4 +58,19 @@ class DepositServiceTest {
                     assertEquals(DepositErrorCode.NO_DEPOSIT_ENTITY, depositException.errorCode);
                 });
     }
+
+    @Test
+    @DisplayName("첫 회원가입한 사용자에 대해 예치금을 생성할 수 있다.")
+    void success_create_deposit_given_normal_member() {
+        // given
+        String memberCode = "example-member-code";
+
+        // when
+        depositService.createDeposit(memberCode);
+
+        // then
+        assertDoesNotThrow(() -> depositRepository.findByMemberCode(memberCode));
+        DepositEntity entity = depositRepository.findByMemberCode(memberCode).get();
+        assertEquals(memberCode, entity.getMemberCode().strip());
+    }
 }
