@@ -67,15 +67,52 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: demo-service gradlew 권한 세팅
-        run: chmod +x ./gradlew
+      - name: 전체 모듈 gradlew 권한 세팅
+        run: |
+          chmod +x ./cartpost-service/gradlew
+          chmod +x ./communication-service/gradlew
+          chmod +x ./contract-service/gradlew
+          chmod +x ./discovery-service/gradlew
+          chmod +x ./gateway-service/gradlew
+          chmod +x ./member-service/gradlew
+          chmod +x ./payment-service/gradlew
+          chmod +x ./profile-service/gradlew
+          chmod +x ./search-service/gradlew
 
-      - name: demo-service 테스트 실행
-        # -x는 테스트 를 실행하지 않음.
+      - name: cartpost-service 테스트 실행
+        working-directory: ./cartpost-service
         run: ./gradlew test --no-daemon
 
-      - name: account-service 테스트 실행
-        working-directory: ./account-service
+      - name: communication-service 테스트 실행
+        working-directory: ./communication-service
+        run: ./gradlew test --no-daemon
+
+      - name: contract-service 테스트 실행
+        working-directory: ./contract-service
+        run: ./gradlew test --no-daemon
+
+      - name: discovery-service 테스트 실행
+        working-directory: ./discovery-service
+        run: ./gradlew test --no-daemon
+
+      - name: gateway-service 테스트 실행
+        working-directory: ./gateway-service
+        run: ./gradlew test --no-daemon
+
+      - name: member-service 테스트 실행
+        working-directory: ./member-service
+        run: ./gradlew test --no-daemon
+
+      - name: payment-service 테스트 실행
+        working-directory: ./payment-service
+        run: ./gradlew test --no-daemon
+
+      - name: profile-service 테스트 실행
+        working-directory: ./profile-service
+        run: ./gradlew test --no-daemon
+
+      - name: search-service 테스트 실행
+        working-directory: ./search-service
         run: ./gradlew test --no-daemon
 
 
