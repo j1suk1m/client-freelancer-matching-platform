@@ -7,16 +7,19 @@ import com.example.cartpostservice.commissions.service.dto.response.TagServiceRe
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommissionsTagService implements CrudService<TagServiceCommand, TagServiceResult, String>{
+@RequiredArgsConstructor
+public class CommissionsTagService implements CrudService<TagServiceCommand, TagServiceResult, String> {
 
-    private CommissionsTagRepository commissionsTagRepository;
+    private final CommissionsTagRepository commissionsTagRepository;
 
     @Override
     public String create(TagServiceCommand requestDto) {
-        for(String tagCode : requestDto.tagCodes()){
+        for (String tagCode : requestDto.tagCodes()) {
             CommissionsTagEntity commissionsTagEntity = CommissionsTagEntity.builder()
                     .commissionCode(requestDto.commissionsCode())
                     .tagCode(tagCode).build();
@@ -35,7 +38,6 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
                 .map(entity -> entity.getTagCode())
                 .toList();
 
-
         TagServiceResult result = new TagServiceResult(
                 commissionCode,
                 tagCodes
@@ -46,9 +48,9 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
 
     @Override
     public void update(TagServiceCommand requestDto, String commissionCode) {
-            commissionsTagRepository.deleteByCommissionCode(commissionCode);
+        commissionsTagRepository.deleteByCommissionCode(commissionCode);
 
-        for(String tagCode : requestDto.tagCodes()){
+        for (String tagCode : requestDto.tagCodes()) {
             CommissionsTagEntity commissionsTagEntity = CommissionsTagEntity.builder()
                     .commissionCode(requestDto.commissionsCode())
                     .tagCode(tagCode).build();
@@ -60,5 +62,21 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
     @Override
     public void delete(String commissionCode, String tagCode) {
         commissionsTagRepository.deleteByCommissionCode(commissionCode);
+    }
+
+    public List<TagServiceResult> getTags(List<String> commissionCodes) {
+        List<CommissionsTagEntity> tags = commissionsTagRepository.findAllByCommissionCodeIn(commissionCodes);
+
+        return tags.stream()
+                .collect(Collectors.groupingBy(
+                        CommissionsTagEntity::getCommissionCode,
+                        Collectors.mapping(
+                                CommissionsTagEntity::getTagCode,
+                                Collectors.toList()
+                        )
+                ))
+                .entrySet().stream()
+                .map(entry -> new TagServiceResult(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

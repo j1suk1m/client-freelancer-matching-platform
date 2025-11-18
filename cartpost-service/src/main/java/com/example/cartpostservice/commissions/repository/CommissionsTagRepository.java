@@ -11,4 +11,6 @@ public interface CommissionsTagRepository extends JpaRepository<CommissionsTagEn
     List<CommissionsTagEntity> findByCommissionCode(String commissionCode);
 
     void deleteByCommissionCode(String commissionCode);
+
+    List<CommissionsTagEntity> findAllByCommissionCodeIn(List<String> commissionCodes);
 }
