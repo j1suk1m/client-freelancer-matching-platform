@@ -15,7 +15,7 @@ jobs:
       - name: cartpost 모듈 application.properties 작성
         run: |
             mkdir -p cartpost-service/src/main/resources
-            cat <<EOF > cartpost-service/src/main/resources/application.properties
+            cat <<'EOF' > cartpost-service/src/main/resources/application.properties
             server.port=8081
             spring.application.name=cartpost-service
             spring.data.web.pageable.default-page-size=10

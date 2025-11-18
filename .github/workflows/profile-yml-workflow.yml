@@ -15,7 +15,7 @@ jobs:
       - name: profile 모듈 application.properties 작성
         run: |
           mkdir -p profile-service/src/main/resources
-          cat <<EOF > profile-service/src/main/resources/application.properties
+          cat <<'EOF' > profile-service/src/main/resources/application.properties
           server.port=8086
           
           spring.application.name=profile-service

@@ -14,7 +14,7 @@ jobs:
       - name: payment 모듈 application.yml 작성
         run: |
           mkdir -p payment-service/src/main/resources
-          cat <<EOF > payment-service/src/main/resources/application.properties
+          cat <<'EOF' > payment-service/src/main/resources/application.properties
           server.port=8085
           spring.application.name=payment-service
           spring.datasource.url=jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE

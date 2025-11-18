@@ -15,7 +15,7 @@ jobs:
       - name: communication 모듈 application.properties 작성
         run: |
           mkdir -p communication-service/src/main/resources
-          cat <<EOF > communication-service/src/main/resources/application.properties
+          cat <<'EOF' > communication-service/src/main/resources/application.properties
           server.port=8082
           spring.application.name=communication-service
           spring.data.mongodb.uri=mongodb://mongodb:${{ secrets.DB_MONGO_PORT }}/chatdb
