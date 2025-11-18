@@ -70,7 +70,7 @@ jobs:
           kafka.config.topic-partitions=1
           kafka.config.topic-replications=1
           jwt.access-token.secret=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
-          jwt.access-token.ttl=${{ secrets.JWT_ACCESS_TOKEN_TTL }}  # 15분
+          jwt.access-token.ttl=${{ secrets.JWT_ACCESS_TOKEN_TTL }}  
           jwt.refresh-token.secret=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
           jwt.refresh-token.ttl=${{ secrets.JWT_REFRESH_TOKEN_TTL }}
           jwt.claims.member-code=${{ secrets.JWT_CLAIMS_MEMBER_CODE }}
