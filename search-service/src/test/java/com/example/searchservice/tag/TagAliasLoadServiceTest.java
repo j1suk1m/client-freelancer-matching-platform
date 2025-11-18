@@ -8,6 +8,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 public class TagAliasLoadServiceTest {
 
+
+    //TEST
     @Test
     void getAliases() {
         // given
