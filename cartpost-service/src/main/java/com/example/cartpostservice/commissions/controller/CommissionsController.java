@@ -48,9 +48,9 @@ public class CommissionsController implements CommissionsApi {
     @Override
     @GetMapping("/{commission-code}")
     public ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(
-            @PathVariable(name = "commission-code") String commissionsCode) {
+            @PathVariable(name = "commission-code") String commissionCode) {
 
-        CommissionReadResponse response = commissionsManagerService.readCommission(commissionsCode);
+        CommissionReadResponse response = commissionsManagerService.readCommission(commissionCode);
 
         return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
                 CustomStatusCode.SUCCESS.getStatus());
@@ -60,11 +60,11 @@ public class CommissionsController implements CommissionsApi {
     @PatchMapping("/{commission-code}")
     public ResponseEntity<ResponseDto<CommissionUpdateResponse>> updateCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode,
+            @PathVariable(name = "commission-code") String commissionCode,
             @Valid @RequestBody CommissionCreateRequest commissionCreateRequest
     ) {
 
-        CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionsCode,
+        CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionCode,
                 commissionCreateRequest);
 
         return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
@@ -75,9 +75,9 @@ public class CommissionsController implements CommissionsApi {
     @DeleteMapping("/{commission-code}")
     public ResponseEntity<ResponseDto<EmptyResponse>> deleteCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode) {
+            @PathVariable String commissionCode) {
 
-        commissionsManagerService.deleteCommission(code, commissionsCode);
+        commissionsManagerService.deleteCommission(code, commissionCode);
 
         return ResponseEntity.status(CustomStatusCode.SUCCESS.getStatus())
                 .body(ResponseDto.success(CustomStatusCode.SUCCESS, EmptyResponse.getInstance()));
@@ -87,9 +87,9 @@ public class CommissionsController implements CommissionsApi {
     @PatchMapping("/deadline/{commission-code}")
     public ResponseEntity<ResponseDto<EmptyResponse>> finishCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode) {
+            @PathVariable(name = "commission-code") String commissionCode) {
 
-        commissionsManagerService.finishCommission(code, commissionsCode);
+        commissionsManagerService.finishCommission(code, commissionCode);
 
         return ResponseEntity.status(CustomStatusCode.SUCCESS.getStatus())
                 .body(ResponseDto.success(CustomStatusCode.SUCCESS, EmptyResponse.getInstance()));
@@ -105,9 +105,13 @@ public class CommissionsController implements CommissionsApi {
 
     @Override
     @GetMapping("/exist/{commission-code}")
-    public ResponseEntity<ResponseDto<EmptyResponse>> existCommissions(@RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode) {
-        return null;
+    public ResponseEntity<ResponseDto<EmptyResponse>> canAccessCommission(@RequestHeader("X-CODE") String code,
+            @PathVariable(name = "commission-code") String commissionCode) {
+
+        commissionsManagerService.canAccessCommission(code, commissionCode);
+
+        return ResponseEntity.status(CustomStatusCode.SUCCESS.getStatus())
+                .body(ResponseDto.success(CustomStatusCode.SUCCESS, EmptyResponse.getInstance()));
     }
 
 }

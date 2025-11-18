@@ -125,4 +125,10 @@ public class CommissionsManagerService {
     public CommissionsReadResponse readOwnCommissions(String code, Pageable pageable) {
         return null;
     }
+
+    public void canAccessCommission(String code, String commissionCode) {
+        if(!commissionsService.isOwner(code, commissionCode)){
+            throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
+        }
+    }
 }

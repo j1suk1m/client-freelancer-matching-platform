@@ -44,7 +44,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "해당 의뢰글을 찾을 수 없음")
     })
-    ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable String commissionsCode);
+    ResponseEntity<ResponseDto<CommissionReadResponse>> readCommission(@PathVariable String commissionCode);
 
     @Operation(summary = "의뢰글 업데이트", description = "X-CODE 헤더와 의뢰글 코드를 기준으로 의뢰글을 수정합니다.")
     @Parameters({
@@ -58,7 +58,7 @@ public interface CommissionsApi {
     })
     ResponseEntity<ResponseDto<CommissionUpdateResponse>> updateCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode,
+            @PathVariable String commissionCode,
             @RequestBody CommissionCreateRequest commissionCreateRequest
     );
 
@@ -73,7 +73,7 @@ public interface CommissionsApi {
     })
     ResponseEntity<ResponseDto<EmptyResponse>> deleteCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode
+            @PathVariable String commissionCode
     );
 
 
@@ -85,7 +85,7 @@ public interface CommissionsApi {
     })
     ResponseEntity<ResponseDto<EmptyResponse>> finishCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode
+            @PathVariable String commissionCode
     );
 
 
@@ -115,8 +115,8 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "404", description = "커미션을 찾을 수 없음"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    public ResponseEntity<ResponseDto<EmptyResponse>> existCommissions(
+    public ResponseEntity<ResponseDto<EmptyResponse>> canAccessCommission(
             @RequestHeader("X-CODE") String code,
-            @PathVariable String commissionsCode
+            @PathVariable String commissionCode
     );
 }
