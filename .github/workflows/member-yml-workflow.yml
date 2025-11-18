@@ -77,7 +77,7 @@ jobs:
           jwt.claims.is-sign=${{ secrets.JWT_CLAIMS_IS_SIGNED }}
           redirect-url.login.success=${{ secrets.REDIRECT_LOGIN_SUCCESS }}
           redirect-url.login.need-signup=${{ secrets.REDIRECT_NEED_SIGNUP }}
-          redirect-url.login.failure=${{ secrets.REDIRECT_LOGIN_FIAL }}
+          redirect-url.login.failure=${{ secrets.REDIRECT_LOGIN_FAIL }}
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
           eureka.instance.instance-id=${{ secrets.EUREKA_INSTANCE_ID }}
           springdoc.swagger-ui.path=/api/members/swagger-ui
