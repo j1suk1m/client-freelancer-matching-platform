@@ -16,47 +16,47 @@ jobs:
         run: |
           mkdir -p search-service/src/main/resources
           cat <<EOF > search-service/src/main/resources/application.yml
-          server:
-            port: 8087
-          
-          spring:
-            application:
-              name: search-service
-          
-            elasticsearch:
-              uris: http://elasticsearch:${{ secrets.INFRA_ELASTICSEARCH_PORT }}
-          
-            kafka:
-              bootstrap-servers: kafka:${{ secrets.INFRA_KAFKA_PORT }}
-              consumer:
-                group-id: search-service-group
-                key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-                value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-                properties:
-                  spring.json.trusted.packages: "*"
-          
-              producer:
-                key-serializer: org.apache.kafka.common.serialization.StringSerializer
-                value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-          
-          topics:
-            tag-events: ${{ secrets.KAFKA_TOPIC_NAME_TAG_EVENTS }}
-            selfpromotion-events: ${{ secrets.KAFKA_TOPIC_NAME_SELFPROMOTION_EVENTS }}
-            commission-events: ${{ secrets.KAFKA_TOPIC_NAME_COMMISION_EVENTS }}
-          
-          eureka:
-            client:
-              serviceUrl:
-                defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-            instance:
-              instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
-          
-          springdoc:
-            swagger-ui:
-              path: /api/search/swagger-ui
-            api-docs:
-              path: /api/search/v3/api-docs
-          EOF
+server:
+  port: 8087
+
+spring:
+  application:
+    name: search-service
+
+  elasticsearch:
+    uris: http://elasticsearch:${{ secrets.INFRA_ELASTICSEARCH_PORT }}
+
+  kafka:
+    bootstrap-servers: kafka:${{ secrets.INFRA_KAFKA_PORT }}
+    consumer:
+      group-id: search-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+topics:
+  tag-events: ${{ secrets.KAFKA_TOPIC_NAME_TAG_EVENTS }}
+  selfpromotion-events: ${{ secrets.KAFKA_TOPIC_NAME_SELFPROMOTION_EVENTS }}
+  commission-events: ${{ secrets.KAFKA_TOPIC_NAME_COMMISION_EVENTS }}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+  instance:
+    instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
+
+springdoc:
+  swagger-ui:
+    path: /api/search/swagger-ui
+  api-docs:
+    path: /api/search/v3/api-docs
+EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

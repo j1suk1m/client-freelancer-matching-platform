@@ -19,25 +19,25 @@ jobs:
     steps:
       - name: ${{ inputs.service-name }} 모듈 application.yml 작성
         run: |
-          mkdir -p ${{ inputs.service-name }}/src/main/resources
-          cat <<EOF > ${{ inputs.service-name }}/src/main/resources/application-test.yml
-          spring:
-            datasource:
-              url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL;IGNORECASE=TRUE;INIT=SET REFERENTIAL_INTEGRITY FALSE
-              driver-class-name: org.h2.Driver
-              username: sa
-              password:
-          
-            jpa:
-              hibernate:
-                ddl-auto: create-drop
-              show-sql: false
-              properties:
-                hibernate:
-                  format_sql: false
-              defer-datasource-initialization: true
-          
-            h2:
-              console:
-                enabled: false
-          EOF
+            mkdir -p ${{ inputs.service-name }}/src/main/resources
+            cat <<EOF > ${{ inputs.service-name }}/src/main/resources/application-test.yml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL;IGNORECASE=TRUE;INIT=SET REFERENTIAL_INTEGRITY FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    defer-datasource-initialization: true
+
+  h2:
+    console:
+      enabled: false
+EOF

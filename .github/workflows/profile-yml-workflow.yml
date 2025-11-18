@@ -14,74 +14,74 @@ jobs:
     steps:
       - name: profile 모듈 application.yml 작성
         run: |
-          mkdir -p profile-service/src/main/resources
-          cat <<EOF > profile-service/src/main/resources/application.yml
-          server:
-            port: 8086
-          
-          spring:
-            application:
-              name: profile-service
-          
-            datasource:
-              url: ${{ secrets.DB_MYSQL_URL }}
-              driver-class-name: com.mysql.cj.jdbc.Driver
-              username: ${{ secrets.DB_MYSQL_USER_NAME }}
-              password: ${{ secrets.DB_MYSQL_USER_PASSWORD }}
-          
-            jpa:
-              open-in-view: false #Lazy Loading 사용 시 트랜잭션 종료를 명확하게 관리하기 위해 false
-              hibernate:
-                ddl-auto: validate # 처음에는 create로 시작하여 엔티티 확인 후 validate로 변경
-              properties:
-                hibernate:
-                  show_sql: false
-                  format_sql: false #쿼리 로그를 보기 쉽게 포맷
+mkdir -p profile-service/src/main/resources
+cat <<EOF > profile-service/src/main/resources/application.yml
+server:
+  port: 8086
 
-            kafka:
-              bootstrap-servers:
-                - kafka:${{ secrets.INFRA_KAFKA_PORT }} # Kafka 브로커 주소
-          
-              consumer:
-                group-id: profile-service-group
-                key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-                value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-          
-                properties:
-                  # JSON 역직렬화 시 신뢰할 패키지 설정
-                  spring.json.trusted.packages: "*" # 모든 패키지 허용 (운영 환경에서는 보안을 위해 명시적으로 설정 권장!)
-                  allow.auto.create.topics: false
-          kafka:
-            topic:
-              contract:
-                name: ${{ secrets.KAFKA_TOPIC_NAME_CONTRACT }}
-          
-          # --- H2 인메모리 DB 설정 ---
-          #datasource:
-          #  url: jdbc:h2:mem:profiledb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-          #  driver-class-name: org.h2.Driver
-          #  username: sa
-          #  password:
-          #
-          # H2 콘솔 설정을 통해 웹에서 DB 상태를 확인 가능 (개발 시 편의)
-          #h2:
-          #  console:
-          #    enabled: true
-          #    path: /h2-console
-          
-          eureka:
-            instance:
-              instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
-            client:
-              serviceUrl:
-                defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-          
-          springdoc:
-            swagger-ui:
-              path: /api/profiles/swagger-ui
-            api-docs:
-              path: /api/profiles/v3/api-docs
-          EOF
+spring:
+  application:
+    name: profile-service
+
+  datasource:
+    url: ${{ secrets.DB_MYSQL_URL }}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${{ secrets.DB_MYSQL_USER_NAME }}
+    password: ${{ secrets.DB_MYSQL_USER_PASSWORD }}
+
+  jpa:
+    open-in-view: false #Lazy Loading 사용 시 트랜잭션 종료를 명확하게 관리하기 위해 false
+    hibernate:
+      ddl-auto: validate # 처음에는 create로 시작하여 엔티티 확인 후 validate로 변경
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false #쿼리 로그를 보기 쉽게 포맷
+
+  kafka:
+    bootstrap-servers:
+      - kafka:${{ secrets.INFRA_KAFKA_PORT }} # Kafka 브로커 주소
+
+    consumer:
+      group-id: profile-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        # JSON 역직렬화 시 신뢰할 패키지 설정
+        spring.json.trusted.packages: "*" # 모든 패키지 허용 (운영 환경에서는 보안을 위해 명시적으로 설정 권장!)
+        allow.auto.create.topics: false
+kafka:
+  topic:
+    contract:
+      name: ${{ secrets.KAFKA_TOPIC_NAME_CONTRACT }}
+
+# --- H2 인메모리 DB 설정 ---
+#datasource:
+#  url: jdbc:h2:mem:profiledb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#  driver-class-name: org.h2.Driver
+#  username: sa
+#  password:
+#
+# H2 콘솔 설정을 통해 웹에서 DB 상태를 확인 가능 (개발 시 편의)
+#h2:
+#  console:
+#    enabled: true
+#    path: /h2-console
+
+eureka:
+  instance:
+    instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+
+springdoc:
+  swagger-ui:
+    path: /api/profiles/swagger-ui
+  api-docs:
+    path: /api/profiles/v3/api-docs
+EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml
