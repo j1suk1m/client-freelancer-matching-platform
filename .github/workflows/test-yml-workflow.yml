@@ -1,5 +1,5 @@
 #Test 전용 yml 파일 작성
-name: Generate Application-test YML
+name: Generate Application-test properties
 
 on:
   workflow_call:
@@ -13,14 +13,14 @@ on:
 
 jobs:
   test-setting:
-    name: application-test yml 작성
+    name: application-test properties 작성
     runs-on: ubuntu-latest
 
     steps:
-      - name: ${{ inputs.service-name }} 모듈 application.yml 작성
+      - name: ${{ inputs.service-name }} 모듈 application.properties 작성
         run: |
           mkdir -p ${{ inputs.service-name }}/src/main/resources
-          cat <<EOF > ${{ inputs.service-name }}/src/main/resources/application-test.yml
+          cat <<EOF > ${{ inputs.service-name }}/src/main/resources/application-test.properties
           spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL;IGNORECASE=TRUE;INIT=SET REFERENTIAL_INTEGRITY FALSE
           spring.datasource.driver-class-name=org.h2.Driver
           spring.datasource.username=sa

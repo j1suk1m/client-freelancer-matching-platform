@@ -1,5 +1,5 @@
 # .github/workflows/generate-app-yml.yml
-name: Generate Application YML
+name: Generate Application properties
 
 on:
   workflow_call:
@@ -8,14 +8,14 @@ on:
 
 jobs:
   setting:
-    name: application yml 작성
+    name: application properties 작성
     runs-on: ubuntu-latest
 
     steps:
-      - name: search 모듈 application.yml 작성
+      - name: search 모듈 application.properties 작성
         run: |
           mkdir -p search-service/src/main/resources
-          cat <<EOF > search-service/src/main/resources/application.yml
+          cat <<EOF > search-service/src/main/resources/application.properties
           server.port=8087
           spring.application.name=search-service
           spring.elasticsearch.uris=http://elasticsearch:${{ secrets.INFRA_ELASTICSEARCH_PORT }}

@@ -1,5 +1,5 @@
 # .github/workflows/generate-app-yml.yml
-name: Generate Application YML
+name: Generate Application properties
 
 on:
   workflow_call:
@@ -8,14 +8,14 @@ on:
 
 jobs:
   setting:
-    name: application yml 작성
+    name: application properties 작성
     runs-on: ubuntu-latest
 
     steps:
-      - name: communication 모듈 application.yml 작성
+      - name: communication 모듈 application.properties 작성
         run: |
           mkdir -p communication-service/src/main/resources
-          cat <<EOF > communication-service/src/main/resources/application.yml
+          cat <<EOF > communication-service/src/main/resources/application.properties
           server.port=8082
           spring.application.name=communication-service
           spring.data.mongodb.uri=mongodb://mongodb:${{ secrets.DB_MONGO_PORT }}/chatdb

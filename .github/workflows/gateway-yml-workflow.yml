@@ -7,14 +7,14 @@ on:
 
 jobs:
   setting:
-    name: application yml 작성
+    name: application properties 작성
     runs-on: ubuntu-latest
 
     steps:
-      - name: gateway 모듈 application.yml 작성
+      - name: gateway 모듈 application.properties 작성
         run: |
             mkdir -p gateway-service/src/main/resources
-            cat <<EOF > gateway-service/src/main/resources/application.yml
+            cat <<EOF > gateway-service/src/main/resources/application.properties
             server.port=8000
             spring.application.name=gateway-service
             spring.cloud.gateway.server.webflux.routes[0].id=cartpost-service
