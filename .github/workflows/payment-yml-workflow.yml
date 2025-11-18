@@ -10,9 +10,8 @@ jobs:
   setting:
     name: application yml 작성
     runs-on: ubuntu-latest
-
     steps:
-      - name: {domain} 모듈 application.yml 작성
+      - name: payment 모듈 application.yml 작성
         run: |
           mkdir -p payment-service/src/main/resources
           cat <<EOF > payment-service/src/main/resources/application.properties
@@ -35,7 +34,6 @@ jobs:
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
           eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
           EOF
-
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml
     secrets: inherit
