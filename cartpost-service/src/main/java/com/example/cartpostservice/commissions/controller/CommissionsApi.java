@@ -71,7 +71,7 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
             @ApiResponse(responseCode = "404", description = "대상 의뢰글 없음")
     })
-    ResponseEntity<ResponseDto<CommissionDeleteResponse>> deleteCommission(
+    ResponseEntity<ResponseDto<EmptyResponse>> deleteCommission(
             @RequestHeader("X-CODE") String code,
             @PathVariable String commissionsCode
     );

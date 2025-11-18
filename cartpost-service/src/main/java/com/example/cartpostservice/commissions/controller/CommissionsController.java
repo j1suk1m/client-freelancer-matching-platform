@@ -64,7 +64,8 @@ public class CommissionsController implements CommissionsApi {
             @Valid @RequestBody CommissionCreateRequest commissionCreateRequest
     ) {
 
-        CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionsCode, commissionCreateRequest);
+        CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionsCode,
+                commissionCreateRequest);
 
         return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
                 CustomStatusCode.SUCCESS.getStatus());
@@ -72,10 +73,14 @@ public class CommissionsController implements CommissionsApi {
 
     @Override
     @DeleteMapping("/{commission-code}")
-    public ResponseEntity<ResponseDto<CommissionDeleteResponse>> deleteCommission(
+    public ResponseEntity<ResponseDto<EmptyResponse>> deleteCommission(
             @RequestHeader("X-CODE") String code,
             @PathVariable String commissionsCode) {
-        return null;
+
+        commissionsManagerService.deleteCommission(code, commissionsCode);
+
+        return ResponseEntity.status(CustomStatusCode.SUCCESS.getStatus())
+                .body(ResponseDto.success(CustomStatusCode.SUCCESS, EmptyResponse.getInstance()));
     }
 
     @Override
