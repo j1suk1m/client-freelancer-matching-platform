@@ -84,10 +84,15 @@ public class CommissionsController implements CommissionsApi {
     }
 
     @Override
-    @PatchMapping("/deadline")
-    public ResponseEntity<ResponseDto<CommissionFinishResponse>> finishCommission(
-            @RequestHeader("X-CODE") String code) {
-        return null;
+    @PatchMapping("/deadline/{commission-code}")
+    public ResponseEntity<ResponseDto<EmptyResponse>> finishCommission(
+            @RequestHeader("X-CODE") String code,
+            @PathVariable String commissionsCode) {
+
+        commissionsManagerService.finishCommission(code, commissionsCode);
+
+        return ResponseEntity.status(CustomStatusCode.SUCCESS.getStatus())
+                .body(ResponseDto.success(CustomStatusCode.SUCCESS, EmptyResponse.getInstance()));
     }
 
     @Override

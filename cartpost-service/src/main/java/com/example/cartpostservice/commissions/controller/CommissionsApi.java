@@ -83,8 +83,9 @@ public interface CommissionsApi {
             @ApiResponse(responseCode = "200", description = "마감 성공"),
             @ApiResponse(responseCode = "404", description = "대상 의뢰글 없음")
     })
-    ResponseEntity<ResponseDto<CommissionFinishResponse>> finishCommission(
-            @RequestHeader("X-CODE") String code
+    ResponseEntity<ResponseDto<EmptyResponse>> finishCommission(
+            @RequestHeader("X-CODE") String code,
+            @PathVariable String commissionsCode
     );
 
 
