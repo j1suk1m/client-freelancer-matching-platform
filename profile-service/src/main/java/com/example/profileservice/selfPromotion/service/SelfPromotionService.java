@@ -129,7 +129,7 @@ public class SelfPromotionService {
 
         // 3. 이벤트 발행 (DELETE)
         kafkaProducer.send(selfPromotionTopic,
-                SelfPromotionEvent.delete(SelfPromotionEsEventData.fromResponse(response)));
+                SelfPromotionEvent.delete(promotionCode));
     }
 
     // 회원 코드로 닉네임을 조회하는 헬퍼 메서드
