@@ -15,14 +15,8 @@ jobs:
         run: |
             mkdir -p discovery-service/src/main/resources
             cat <<EOF > discovery-service/src/main/resources/application.yml
-server:
-  port: ${{ secrets.INFRA_EUREKA_SERVER_PORT }}
-
-spring:
-  application:
-    name: discovery-service
-eureka:
-  client:
-    register-with-eureka: false
-    fetch-registry: false
-      EOF
+            server.port=${{ secrets.INFRA_EUREKA_SERVER_PORT }}
+            spring.application.name=discovery-service
+            eureka.client.register-with-eureka=false
+            eureka.client.fetch-registry=false
+            EOF

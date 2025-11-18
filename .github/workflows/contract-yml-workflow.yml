@@ -15,102 +15,50 @@ jobs:
       - name: contract 모듈 application.yml 작성
         run: |
             mkdir -p contract-service/src/main/resources
-            cat <<EOF > contract-service/src/main/resources/application.yml
-server:
-  port: 8083
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-  instance:
-    instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
-
-spring:
-  application:
-    name: contract-service
-
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        show_sql: false
-        format_sql: false
-
-  datasource:
-    url: ${{ secrets.DB_MYSQL_URL }}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${{ secrets.DB_MYSQL_USER_NAME }}
-    password: ${{ secrets.DB_MYSQL_USER_PASSWORD }}
-
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: false
-
-  kafka:
-    bootstrap-servers:
-      - kafka:${{ secrets.INFRA_KAFKA_PORT }}
-
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-      acks: all
-
-      properties:
-        delivery.timeout.ms: 120000
-        linger.ms: 0
-        request.timeout.ms: 30000
-        enable.idempotence: true
-        allow.auto.create.topics: false
-
-    consumer:
-      group-id: contract-service
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-
-      properties:
-        spring.json.trusted.packages:
-        allow.auto.create.topics: false
-
-kafka:
-  topic:
-    contract:
-      name: ${{ secrets.KAFKA_TOPIC_NAME_CONTRACT }}
-  config:
-    topic-partitions: 1
-    topic-replications: 1
-
-springdoc:
-  swagger-ui:
-    path: /api/contracts/swagger-ui
-  api-docs:
-    path: /api/contracts/v3/api-docs
-
-module:
-  member:
-    application:
-      name: MEMBER-SERVICE
-      path:
-        member-exists: /api/internal/members/exist
-        member-info: /api/internal/members
-
-batch:
-  settlement:
-    size: 500
-    settlement-rate: 0.125
-    interval: 0 0 3 15 * ? # 매월 15일 새벽 3시
-  contract:
-    size: 500
-    interval: 0 * * * * *
-      EOF
+            cat <<EOF > contract-service/src/main/resources/application.properties
+            server.port=8083
+            eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+            eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
+            spring.application.name=contract-service
+            spring.jackson.property-naming-strategy=SNAKE_CASE
+            spring.jpa.open-in-view=false
+            spring.jpa.hibernate.ddl-auto=validate
+            spring.jpa.properties.hibernate.show_sql=false
+            spring.jpa.properties.hibernate.format_sql=false
+            spring.datasource.url=${{ secrets.DB_MYSQL_URL }}
+            spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+            spring.datasource.username=${{ secrets.DB_MYSQL_USER_NAME }}
+            spring.datasource.password=${{ secrets.DB_MYSQL_USER_PASSWORD }}
+            spring.batch.jdbc.initialize-schema=always
+            spring.batch.job.enabled=false
+            spring.kafka.bootstrap-servers=kafka:${{ secrets.INFRA_KAFKA_PORT }}
+            spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+            spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+            spring.kafka.producer.acks=all
+            spring.kafka.producer.properties.delivery.timeout.ms=120000
+            spring.kafka.producer.properties.linger.ms=0
+            spring.kafka.producer.properties.request.timeout.ms=30000
+            spring.kafka.producer.properties.enable.idempotence=true
+            spring.kafka.producer.properties.allow.auto.create.topics=false
+            spring.kafka.consumer.group-id=contract-service
+            spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+            spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+            spring.kafka.consumer.properties.spring.json.trusted.packages=
+            spring.kafka.consumer.properties.allow.auto.create.topics=false
+            kafka.topic.contract.name=${{ secrets.KAFKA_TOPIC_NAME_CONTRACT }}
+            kafka.config.topic-partitions=1
+            kafka.config.topic-replications=1
+            springdoc.swagger-ui.path=/api/contracts/swagger-ui
+            springdoc.api-docs.path=/api/contracts/v3/api-docs
+            module.member.application.name=MEMBER-SERVICE
+            module.member.application.path.member-exists=/api/internal/members/exist
+            module.member.application.path.member-info=/api/internal/members
+            batch.settlement.size=500
+            batch.settlement.settlement-rate=0.125
+            batch.settlement.interval=0 0 3 15 * ? # 매월 15일 새벽 3시
+            batch.contract.size=500
+            batch.contract.interval=0 * * * * *
+            EOF
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml

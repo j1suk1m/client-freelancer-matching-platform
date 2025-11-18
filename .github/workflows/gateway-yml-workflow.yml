@@ -15,113 +15,44 @@ jobs:
         run: |
             mkdir -p gateway-service/src/main/resources
             cat <<EOF > gateway-service/src/main/resources/application.yml
-server:
-  port: 8000
-
-spring:
-  application:
-    name: gateway-service
-
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            #######
-            # CARTPOST SERVICE
-            #######
-            - id: cartpost-service
-              uri: lb://CARTPOST-SERVICE
-              predicates:
-                - Path=/api/commissions/{comissions_code}
-                - Method=GET
-              filters:
-                - GlobalExceptionHandlingFilter
-                - TokenAuthenticationFilter
-            #                - IsSignCheckFilter
-
-            #######
-            # CARTPOST AUTH SERVICE
-            #######
-            - id: cartpost-service
-              uri: lb://CARTPOST-SERVICE
-              predicates:
-                - Path=/api/commissions/**,/api/commissions,/api/carts/**
-            #######
-            # COMMUNICATION SERVICE
-            #######
-            - id: communication-service
-              uri: lb://COMMUNICATION-SERVICE
-              predicates:
-                - Path=/api/chats/**,/api/chats
-
-
-            #######
-            # CONTRACT SERVICE
-            #######
-            - id: contract-service
-              uri: lb://CONTRACT-SERVICE
-              predicates:
-                - Path=/api/contracts/**,/api/contracts,/api/deposits/**,/api/deposits
-
-            - id: member-service-need-auth
-              uri: lb://MEMBER-SERVICE
-              predicates:
-                - Path=/api/members/healthCheck
-              filters:
-                - GlobalExceptionHandlingFilter
-                - TokenAuthenticationFilter
-            #                - IsSignCheckFilter
-
-            #######
-            # MEMBER SERVICE
-            #######
-            - id: member-service
-              uri: lb://MEMBER-SERVICE
-              predicates:
-                - Path=/api/members/**,/api/members,/oauth2/**,/login/**,/login,/api/auth,/api/auth/**
-
-            #######
-            # PAYMENT SERVICE
-            #######
-            - id: payment-service
-              uri: lb://PAYMENT-SERVICE
-              predicates:
-                - Path=/api/payments/**,/api/payments
-
-
-            #######
-            # PROFILE SERVICE
-            #######
-            - id: profile-service
-              uri: lb://PROFILE-SERVICE
-              predicates:
-                - Path=/api/experiences/**,/api/experiences,/api/ratings/**,/api/ratings,/api/resumes/**,/api/resumes,/api/self-promotions/**,/api/self-promotions,/api/tags/**,/api/tags
-
-            #######
-            # SEARCH SERVICE
-            #######
-            - id: search-service
-              uri: lb://SEARCH-SERVICE
-              predicates:
-                - Path=/api/search/**,/api/recommendations/**
-
-cors:
-  allowed:
-    origin: "${{ secrets.CORS_ALLOWED_ORIGIN }}"
-
-jwt:
-  access-token:
-    secret: ${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
-  claims:
-    member-code: ${{ secrets.JWT_CLAIMS_MEMBER_CODE }}
-    is-sign: ${{ secrets.JWT_CLAIMS_IS_SIGNED }}
-
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
-  instance:
-    instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
-      EOF
+            server.port=8000
+            spring.application.name=gateway-service
+            spring.cloud.gateway.server.webflux.routes[0].id=cartpost-service
+            spring.cloud.gateway.server.webflux.routes[0].uri=lb://CARTPOST-SERVICE
+            spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/api/commissions/{comissions_code}
+            spring.cloud.gateway.server.webflux.routes[0].predicates[1]=Method=GET
+            spring.cloud.gateway.server.webflux.routes[0].filters[0]=GlobalExceptionHandlingFilter
+            spring.cloud.gateway.server.webflux.routes[0].filters[1]=TokenAuthenticationFilter
+            spring.cloud.gateway.server.webflux.routes[1].id=cartpost-service
+            spring.cloud.gateway.server.webflux.routes[1].uri=lb://CARTPOST-SERVICE
+            spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/api/commissions/**,/api/commissions,/api/carts/**
+            spring.cloud.gateway.server.webflux.routes[2].id=communication-service
+            spring.cloud.gateway.server.webflux.routes[2].uri=lb://COMMUNICATION-SERVICE
+            spring.cloud.gateway.server.webflux.routes[2].predicates[0]=Path=/api/chats/**,/api/chats
+            spring.cloud.gateway.server.webflux.routes[3].id=contract-service
+            spring.cloud.gateway.server.webflux.routes[3].uri=lb://CONTRACT-SERVICE
+            spring.cloud.gateway.server.webflux.routes[3].predicates[0]=Path=/api/contracts/**,/api/contracts,/api/deposits/**,/api/deposits
+            spring.cloud.gateway.server.webflux.routes[4].id=member-service-need-auth
+            spring.cloud.gateway.server.webflux.routes[4].uri=lb://MEMBER-SERVICE
+            spring.cloud.gateway.server.webflux.routes[4].predicates[0]=Path=/api/members/healthCheck
+            spring.cloud.gateway.server.webflux.routes[4].filters[0]=GlobalExceptionHandlingFilter
+            spring.cloud.gateway.server.webflux.routes[4].filters[1]=TokenAuthenticationFilter
+            spring.cloud.gateway.server.webflux.routes[5].id=member-service
+            spring.cloud.gateway.server.webflux.routes[5].uri=lb://MEMBER-SERVICE
+            spring.cloud.gateway.server.webflux.routes[5].predicates[0]=Path=/api/members/**,/api/members,/oauth2/**,/login/**,/login,/api/auth,/api/auth/**
+            spring.cloud.gateway.server.webflux.routes[6].id=payment-service
+            spring.cloud.gateway.server.webflux.routes[6].uri=lb://PAYMENT-SERVICE
+            spring.cloud.gateway.server.webflux.routes[6].predicates[0]=Path=/api/payments/**,/api/payments
+            spring.cloud.gateway.server.webflux.routes[7].id=profile-service
+            spring.cloud.gateway.server.webflux.routes[7].uri=lb://PROFILE-SERVICE
+            spring.cloud.gateway.server.webflux.routes[7].predicates[0]=Path=/api/experiences/**,/api/experiences,/api/ratings/**,/api/ratings,/api/resumes/**,/api/resumes,/api/self-promotions/**,/api/self-promotions,/api/tags/**,/api/tags
+            spring.cloud.gateway.server.webflux.routes[8].id=search-service
+            spring.cloud.gateway.server.webflux.routes[8].uri=lb://SEARCH-SERVICE
+            spring.cloud.gateway.server.webflux.routes[8].predicates[0]=Path=/api/search/**,/api/recommendations/**
+            cors.allowed.origin=${{ secrets.CORS_ALLOWED_ORIGIN }}
+            jwt.access-token.secret=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
+            jwt.claims.member-code=${{ secrets.JWT_CLAIMS_MEMBER_CODE }}
+            jwt.claims.is-sign=${{ secrets.JWT_CLAIMS_IS_SIGNED }}
+            eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+            eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
+            EOF
