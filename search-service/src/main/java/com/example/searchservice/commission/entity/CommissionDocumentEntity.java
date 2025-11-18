@@ -10,17 +10,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "commissions", createIndex = false)
+@Document(indexName = "commissions")
+@Setting(settingPath = "elasticsearch/commissions-settings.json")
 public class CommissionDocumentEntity {
 
     @Id
@@ -31,6 +34,9 @@ public class CommissionDocumentEntity {
 
     @Field(type = FieldType.Text)
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    private String memberCode;
 
     @Field(type = FieldType.Keyword, name = "member_nickname")
     private String memberNickname;
@@ -56,4 +62,6 @@ public class CommissionDocumentEntity {
     @Field(type = FieldType.Date, format = DateFormat.date_time, name = "updated_at")
     private Instant updatedAt;
 
+    @Version
+    Long version;
 }
