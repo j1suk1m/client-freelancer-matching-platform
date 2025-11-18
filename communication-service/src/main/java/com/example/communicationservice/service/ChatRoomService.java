@@ -27,7 +27,7 @@ public class ChatRoomService {
     @Transactional
     public ChatRoomCreateResponse createChatRoom(String name, List<String> memberCodes, String currentMemberCode) {
         // 1:1 채팅인지 확인
-        if (memberCodes.size() != 2) {
+        if (memberCodes.stream().distinct().count() != 2) {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_INVALID_MEMBER_COUNT);
         }
 
