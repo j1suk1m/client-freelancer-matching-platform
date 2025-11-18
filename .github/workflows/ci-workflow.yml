@@ -477,6 +477,7 @@ jobs:
         run: |
           if [ -f ./gradlew ]; then
             echo "gradlew exists"
+          fi
           ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
 
 
