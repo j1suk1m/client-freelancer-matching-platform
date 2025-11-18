@@ -1,0 +1,29 @@
+name: Generate Application YML
+
+on:
+  workflow_call:
+    inputs:
+  workflow_dispatch:
+
+
+jobs:
+  setting:
+    name: application yml 작성
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: discovery 모듈 application.yml 작성
+        run: |
+          mkdir -p discovery-service/src/main/resources
+          cat <<EOF > discovery-service/src/main/resources/application.yml
+          server:
+            port: ${{ secrets.INFRA_EUREKA_SERVER_PORT }}
+          
+          spring:
+            application:
+              name: discovery-service
+          eureka:
+            client:
+              register-with-eureka: false
+              fetch-registry: false
+          EOF

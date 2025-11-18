@@ -1,0 +1,72 @@
+# .github/workflows/generate-app-yml.yml
+name: Generate Application YML
+
+on:
+  workflow_call:
+    inputs:
+  workflow_dispatch:
+
+
+jobs:
+  setting:
+    name: application yml 작성
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: {domain} 모듈 application.yml 작성
+        run: |
+          mkdir -p payment-service/src/main/resources
+          cat <<EOF > payment-service/src/main/resources/application.yml
+          server:
+            port: 8085
+          
+          spring:
+            application:
+              name: payment-service
+          
+            datasource:
+              url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE
+              driverClassName: org.h2.Driver
+              username: sa
+              password:
+          
+            h2:
+              console:
+                enabled: false
+          
+            # --- 방법 1: SQL 스크립트 실행 설정 ---
+            sql:
+              init:
+                mode: always
+          
+            # --- (필수) JPA/Hibernate와의 충돌 방지 ---
+            jpa:
+              hibernate:
+                ddl-auto: none
+              #  SQL 로그 보기
+              show-sql: true
+              properties:
+                hibernate:
+                  format_sql: true
+              defer-datasource-initialization: true
+          
+          springdoc:
+            swagger-ui:
+              path: /api/payments/swagger-ui
+            api-docs:
+              path: /api/payments/v3/api-docs
+          
+          
+          eureka:
+            client:
+              serviceUrl:
+                defaultZone: http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+            instance:
+              instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
+          EOF
+
+  test-setting:
+    uses: ./.github/workflows/test-yml-workflow.yml
+    secrets: inherit
+    with:
+      service-name: payment-service

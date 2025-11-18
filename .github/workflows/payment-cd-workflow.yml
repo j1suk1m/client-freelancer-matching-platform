@@ -9,7 +9,7 @@ on:
 
 jobs:
   setting:
-    uses: ./.github/workflows/yml/payment-yml-workflow.yml
+    uses: ./.github/workflows/payment-yml-workflow.yml
     secrets: inherit
 
   releasing:
