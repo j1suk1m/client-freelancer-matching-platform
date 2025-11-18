@@ -23,33 +23,6 @@ jobs:
     # 그래서 해당 프로젝트에서는 4팀이 같이 쓰니까 action을 간략화 해두었음.
     runs-on: ubuntu-latest
 
-    services:
-      elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
-        ports:
-          - 9200:9200
-        env:
-          discovery.type: single-node
-          xpack.security.enabled: 'false'
-          xpack.security.http.ssl.enabled: 'false'
-          ES_JAVA_OPTS: -Xms1g -Xmx1g
-          bootstrap.memory_lock: 'false' # 메모리 락 활성화
-          network.host: 0.0.0.0         # 외부 접속 허용
-        options: >-
-          --memory=2g
-          --memory-swap=2g
-          --health-cmd="curl -f http://localhost:9200 || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      redis:
-        image: redis:7.0.11
-        ports:
-          - 6379:6379
-        env:
-          network.host: 0.0.0.0
-
     steps:
       - name: 브랜치로 체크아웃
         # 메인브랜치로 이동
@@ -128,6 +101,33 @@ jobs:
           chmod +x ./payment-service/gradlew
           chmod +x ./profile-service/gradlew
           chmod +x ./search-service/gradlew
+
+      - name: Configure sysctl limits
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      - uses: getong/elasticsearch-action@v1.3
+        with:
+          elasticsearch version: '8.11.0'
+          host port: 9200
+          container port: 9200
+          host node port: 9300
+          node port: 9300
+          discovery type: 'single-node'
+
+      - name: Wait for Elasticsearch to be up
+        run: |
+          for i in {1..10}; do
+            if curl -sSf http://localhost:9200; then
+              echo "Elasticsearch is up"
+              break
+            fi
+            echo "Waiting for Elasticsearch..."
+            sleep 5
+          done
 
       - name: search-service 테스트 실행
         working-directory: ./search-service
