@@ -1,6 +1,7 @@
 package com.example.cartpostservice.commissions.repository;
 
 import com.example.cartpostservice.commissions.model.CommissionsEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,6 @@ public interface CommissionsRepository extends JpaRepository<CommissionsEntity, 
     //Optional<CommissionsEntity> findByMemberCode(String memberCode);
 
     Optional<CommissionsEntity> findByCode(String code);
+
+    List<CommissionsEntity> findByMemberCode(String memberCode);
 }

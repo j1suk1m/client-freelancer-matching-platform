@@ -6,6 +6,7 @@ import com.example.cartpostservice.commissions.service.dto.request.CommissionsSe
 import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
                 .unitAmount(requestDto.unitAmount())
                 .startedAt(requestDto.startedAt())
                 .endedAt(requestDto.endedAt())
+                .writerName(requestDto.writerName())
                 .build();
 
         CommissionsEntity saved = commissionsRepository.save(commissions);
@@ -57,7 +59,28 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
 
     @Override
     public void update(CommissionsServiceCommand requestDto, String commissionsCode) {
+        List<CommissionsEntity> commissions = commissionsRepository.findByMemberCode(requestDto.memberCode());
+        if(commissions.isEmpty()){
+            throw new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION);
+        }
+        boolean owned = commissions.stream().anyMatch(entity -> entity.getCode().equals(commissionsCode));
 
+        if(owned){
+            throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
+        }
+
+        CommissionsEntity commission = CommissionsEntity.builder()
+                .memberCode(requestDto.memberCode())
+                .title(requestDto.title())
+                .content(requestDto.content())
+                .paymentType(requestDto.paymentType())
+                .unitAmount(requestDto.unitAmount())
+                .startedAt(requestDto.startedAt())
+                .endedAt(requestDto.endedAt())
+                .writerName(requestDto.writerName())
+                .build();
+
+        CommissionsEntity saved = commissionsRepository.save(commission);
     }
 
     @Override
