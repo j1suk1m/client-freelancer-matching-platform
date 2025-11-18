@@ -1,0 +1,28 @@
+name: member-service ci/cd
+
+on:
+  push:
+    branches:
+      - deploy-test
+    paths:
+      - 'member-service/**'
+
+jobs:
+  setting:
+    uses: ./.github/workflows/yml/member-yml-workflow.yml
+    secrets: inherit
+
+  releasing:
+    uses: ./.github/workflows/release-workflow.yml
+    secrets: inherit
+    with:
+      service-name: hexagon-member-service
+      service-dir: ./member-service
+      file-name: Dockerfile
+
+  deploying:
+    needs: releasing
+    uses: ./.github/workflows/deploy-workflow.yml
+    with:
+      service-name: hexagon-member-service
+      image-tag: ${{ needs.releasing.outputs.tag_name }}

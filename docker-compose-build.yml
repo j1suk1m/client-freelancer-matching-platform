@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  cartpost-service:
+    build:
+      context: ./cartpost-service
+      dockerfile: Dockerfile
+    image: cartpost-service:latest
+
+  communication-service:
+    build:
+      context: ./communication-service
+      dockerfile: Dockerfile
+    image: communication-service:latest
+
+  contract-service:
+    build:
+      context: ./contract-service
+      dockerfile: Dockerfile
+    image: contract-service:latest
+
+  discovery-service:
+    build:
+      context: ./discovery-service
+      dockerfile: Dockerfile
+    image: discovery-service:latest
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    image: gateway-service:latest
+
+  member-service:
+    build:
+      context: ./member-service
+      dockerfile: Dockerfile
+    image: member-service:latest
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    image: payment-service:latest
+
+  profile-service:
+    build:
+      context: ./profile-service
+      dockerfile: Dockerfile
+    image: profile-service:latest
+
+  search-service:
+    build:
+      context: ./search-service
+      dockerfile: Dockerfile
+    image: search-service:latest

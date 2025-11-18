@@ -1,0 +1,120 @@
+name: CI Test Script
+
+#이벤트의 종류
+on:
+  # 특정 원격지 레포지토리의 어떤 이벤트가 발생했을때
+  pull_request:
+    ## 어떤 브랜치로 발생했을 때
+    branches:
+      - deploy-test
+
+# 해당 job을 순서대로 실행하겠다.
+# 해당 jobs는 파이프라인 형태로 작동함.
+    # 입력으로 들어와서 출력이 나가는게 다음 파이프의 입력으로 들어감
+    # 잡은 병렬적으로 실행 될 수 있지만 파이프라인으로 구성되게 할 수 있음.
+jobs:
+  # 해당 잡의 key
+  ## application.yml 들 실행
+  cartpost-yml:
+    uses: ./.github/workflows/yml/cartpost-yml-workflow.yml
+    secrets: inherit
+
+  communication-yml:
+    uses: ./.github/workflows/yml/communication-yml-workflow.yml
+    secrets: inherit
+
+  discovery-yml:
+    uses: ./.github/workflows/yml/discovery-yml-workflow.yml
+    secrets: inherit
+
+  gateway-yml:
+    uses: ./.github/workflows/yml/gateway-yml-workflow.yml
+    secrets: inherit
+
+  member-yml:
+    uses: ./.github/workflows/yml/member-yml-workflow.yml
+    secrets: inherit
+
+  payment-yml:
+    uses: ./.github/workflows/yml/payment-yml-workflow.yml
+    secrets: inherit
+
+  profile-yml:
+    uses: ./.github/workflows/yml/profile-yml-workflow.yml
+    secrets: inherit
+
+  search-yml:
+    uses: ./.github/workflows/yml/search-yml-workflow.yml
+    secrets: inherit
+
+  code-test:
+    name: 코드 테스트
+    # Action은 job 실행시 가상 환경을 이용함, 그래서 원래는 요금이 듬
+    # 한달의 2000분 정도.
+    # 그래서 해당 프로젝트에서는 4팀이 같이 쓰니까 action을 간략화 해두었음.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 브랜치로 체크아웃
+        # 메인브랜치로 이동
+        uses: actions/checkout@v5
+
+      #java가 없기 때문에 java를 설치해줘야함.
+      - name: JDK 세팅
+        uses: actions/setup-java@v5
+        with:
+          # java 버전과 벤더를 설정해줘야함
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 전체 모듈 gradlew 권한 세팅
+        run: |
+          chmod +x ./cartpost-service/gradlew
+          chmod +x ./communication-service/gradlew
+          chmod +x ./contract-service/gradlew
+          chmod +x ./discovery-service/gradlew
+          chmod +x ./gateway-service/gradlew
+          chmod +x ./member-service/gradlew
+          chmod +x ./payment-service/gradlew
+          chmod +x ./profile-service/gradlew
+          chmod +x ./search-service/gradlew
+
+      - name: cartpost-service 테스트 실행
+        working-directory: ./cartpost-service
+        run: ./gradlew test --no-daemon
+
+      - name: communication-service 테스트 실행
+        working-directory: ./communication-service
+        run: ./gradlew test --no-daemon
+
+      - name: contract-service 테스트 실행
+        working-directory: ./contract-service
+        run: ./gradlew test --no-daemon
+
+      - name: discovery-service 테스트 실행
+        working-directory: ./discovery-service
+        run: ./gradlew test --no-daemon
+
+      - name: gateway-service 테스트 실행
+        working-directory: ./gateway-service
+        run: ./gradlew test --no-daemon
+
+      - name: member-service 테스트 실행
+        working-directory: ./member-service
+        run: ./gradlew test --no-daemon
+
+      - name: payment-service 테스트 실행
+        working-directory: ./payment-service
+        run: ./gradlew test --no-daemon
+
+      - name: profile-service 테스트 실행
+        working-directory: ./profile-service
+        run: ./gradlew test --no-daemon
+
+      - name: search-service 테스트 실행
+        working-directory: ./search-service
+        run: ./gradlew test --no-daemon
+
+
+# Git의 Runners를 통해서 원격지 서버와의 연결을 설정
+# self-hosted runner는 

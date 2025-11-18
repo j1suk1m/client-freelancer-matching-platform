@@ -1,0 +1,28 @@
+name: profile-service ci/cd
+
+on:
+  push:
+    branches:
+      - deploy-test
+    paths:
+      - 'profile-service/**'
+
+jobs:
+  setting:
+    uses: ./.github/workflows/yml/profile-yml-workflow.yml
+    secrets: inherit
+
+  releasing:
+    uses: ./.github/workflows/release-workflow.yml
+    secrets: inherit
+    with:
+      service-name: hexagon-profile-service
+      service-dir: ./profile-service
+      file-name: Dockerfile
+
+  deploying:
+    needs: releasing
+    uses: ./.github/workflows/deploy-workflow.yml
+    with:
+      service-name: hexagon-profile-service
+      image-tag: ${{ needs.releasing.outputs.tag_name }}

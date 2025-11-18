@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+
+# Logs
+*.log
+
+
+# properties
+*.properties
+*.yml
+*.yaml
+
+#docker compose는 예외 제외
+!docker-compose-infra.yml
+!docker-compose-deploy.yml
+!docker-compose-build.yml
+
+!*-workflow.yml
