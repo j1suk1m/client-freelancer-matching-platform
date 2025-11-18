@@ -231,7 +231,7 @@ public class ContractService {
                 .reduce(0L, Long::sum); // 총 금액
 
         DepositProcessRequest depositProcessRequest = new DepositProcessRequest(request.xCode(), totalAmount, PAYMENT_COMMENT);
-        depositService.process(depositProcessRequest, depositService::withdraw);
+        depositService.withdraw(depositProcessRequest);
     }
 
     private void saveSettlements(List<Contract> contracts) {

@@ -12,7 +12,7 @@ import com.example.contractservice.deposit.entity.DepositHistoryEntity;
 import com.example.contractservice.deposit.repository.DepositRepository;
 import com.example.contractservice.deposit.service.dto.request.DepositProcessRequest;
 import com.example.contractservice.deposit.service.dto.response.DepositCreatedResponse;
-import com.example.contractservice.deposit.service.dto.response.DepositWithdrawResponse;
+import com.example.contractservice.deposit.service.dto.response.DepositProcessResponse;
 import com.example.contractservice.deposit.service.mapper.DepositHistoryMapper;
 import com.example.contractservice.deposit.service.mapper.DepositMapper;
 import java.util.function.BiConsumer;
@@ -44,6 +44,22 @@ public class DepositService {
         return DepositCreatedResponse.of(savedDeposit.getCode());
     }
 
+    @Transactional
+    public DepositProcessResponse withdraw(DepositProcessRequest request) {
+        DepositEntity depositEntity = process(request, Deposit::withdraw);
+
+        return new DepositProcessResponse(depositEntity.getCode(), depositEntity.getMemberCode(),
+                depositEntity.getAmount());
+    }
+
+    @Transactional
+    public DepositProcessResponse transfer(DepositProcessRequest request) {
+        DepositEntity depositEntity = process(request, Deposit::transfer);
+
+        return new DepositProcessResponse(depositEntity.getCode(), depositEntity.getMemberCode(),
+                depositEntity.getAmount());
+    }
+
     /**
      * 공통적인 메서드입니다. action은 예치금에 어떤 행동(출금/입금)을 하는지가 들어갑니다. </br>
      * 다음 순서로 처리됩니다. </br></br>
@@ -51,8 +67,7 @@ public class DepositService {
      * 2. 예치금에 action(출금/입금 등) 한다. </br>
      * 3. 변동된 예치금을 바탕으로 예치금 내역을 만들고 저장한다. </br>
      */
-    @Transactional
-    public DepositWithdrawResponse process(DepositProcessRequest request, BiConsumer<Deposit, Long> action) {
+    private DepositEntity process(DepositProcessRequest request, BiConsumer<Deposit, Long> action) {
         DepositEntity depositEntity = depositRepository.findDepositByMemberCode(request.memberCode());
         Deposit deposit = toDomain(depositEntity);
 
@@ -64,6 +79,8 @@ public class DepositService {
         depositRepository.saveDeposit(depositEntity);
 
         saveHistory(request, deposit, afterAmount - beforeAmount);
+        return depositEntity;
+    }
 
         return new DepositWithdrawResponse(depositEntity.getCode(), depositEntity.getMemberCode(),
                 depositEntity.getAmount());
@@ -76,15 +93,4 @@ public class DepositService {
         depositRepository.saveDepositHistory(depositHistoryEntity);
     }
 
-    /** 출금 action
-     */
-    public void withdraw(Deposit deposit, Long amount) {
-        deposit.withdraw(amount);
-    }
-
-    /** 입금 action
-     */
-    public void transfer(Deposit deposit, Long amount) {
-        deposit.transfer(amount);
-    }
 }
