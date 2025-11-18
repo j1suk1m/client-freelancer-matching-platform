@@ -1,0 +1,76 @@
+# .github/workflows/generate-app-yml.yml
+name: Generate Application YML
+
+on:
+  workflow_call:
+    inputs:
+  workflow_dispatch:
+
+
+jobs:
+  setting:
+    name: application yml 작성
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: cartpost 모듈 application.yml 작성
+        run: |
+          mkdir -p cartpost-service/src/main/resources
+          cat <<EOF > cartpost-service/src/main/resources/application.yml
+          server:
+            port: 8081
+          
+          spring:
+            application:
+              name: cartpost-service
+          
+            data:
+              web:
+                pageable:
+                  default-page-size: 10
+                  max-page-size: 50
+                  one-indexed-parameters: true
+          
+            datasource:
+              url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+              driverClassName: org.h2.Driver
+              username: sa
+              password:
+          
+            sql:
+              init:
+                mode: always        # 항상 schema.sql + data.sql 실행
+                platform: h2        # H2용 SQL 실행
+          
+            jpa:
+              hibernate:
+                ddl-auto: none       # JPA가 DDL 생성하지 않도록
+              show-sql: true
+              properties:
+                hibernate:
+                  format_sql: true
+              defer-datasource-initialization: true   # 데이터 소스 초기화를 지연시켜 schema.sql 먼저 실행
+          
+            h2:
+              console:
+                enabled: false
+          
+          springdoc:
+            swagger-ui:
+              path: /api/commissions/swagger-ui
+            api-docs:
+              path: /api/commissions/v3/api-docs
+          
+          eureka:
+            client:
+              serviceUrl:
+                defaultZone: http://discovery-service:$${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
+            instance:
+              instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
+          EOF
+
+  test-setting:
+    uses: ./.github/workflows/yml/test-yml-workflow.yml
+    secrets: inherit
+    with:
+      service-name: cartpost-service
