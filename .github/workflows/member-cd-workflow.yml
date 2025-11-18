@@ -8,6 +8,7 @@ on:
       - 'member-service/**'
 
 jobs:
+
   releasing:
     uses: ./.github/workflows/release-workflow.yml
     secrets: inherit
