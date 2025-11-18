@@ -61,6 +61,7 @@ jobs:
 
   test-setting:
     uses: ./.github/workflows/test-yml-workflow.yml
+    needs: setting
     secrets: inherit
     with:
       service-name: contract-service
