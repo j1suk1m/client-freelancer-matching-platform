@@ -11,8 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +50,11 @@ import java.util.Base64;
 public class PaymentController implements PaymentApi {
 
     private final ObjectMapper om = new ObjectMapper();
-    private final String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
-    private final String tossPaymentConfirmUrl = "https://api.tosspayments.com/v1/payments/confirm";
+    @Value("${payment.toss.widget-secret-key}")
+    private String widgetSecretKey;
+
+    @Value("${payment.toss.confirm-url}")
+    private String tossPaymentConfirmUrl;
 
 
     @PostMapping("/confirm")
