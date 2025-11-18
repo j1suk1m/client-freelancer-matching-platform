@@ -21,3 +21,5 @@ gradle-wrapper.properties
 !docker-compose-infra.yml
 !docker-compose-deploy.yml
 !docker-compose-build.yml
+
+!*-workflow.yml
