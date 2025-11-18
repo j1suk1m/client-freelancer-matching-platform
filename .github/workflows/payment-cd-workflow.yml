@@ -8,9 +8,6 @@ on:
       - 'payment-service/**'
 
 jobs:
-  setting:
-    uses: ./.github/workflows/payment-yml-workflow.yml
-    secrets: inherit
 
   releasing:
     uses: ./.github/workflows/release-workflow.yml

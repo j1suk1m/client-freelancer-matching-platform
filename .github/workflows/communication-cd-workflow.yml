@@ -8,10 +8,7 @@ on:
       - 'communication-service/**'
 
 jobs:
-  setting:
-    uses: ./.github/workflows/communication-yml-workflow.yml
-    secrets: inherit
-  
+
   releasing:
     uses: ./.github/workflows/release-workflow.yml
     secrets: inherit
