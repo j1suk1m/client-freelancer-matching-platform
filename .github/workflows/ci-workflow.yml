@@ -473,8 +473,7 @@ jobs:
         run: cat ./member-service/src/main/resources/application-test.properties
 
       - name: member-service 테스트 실행
-        working-directory: ./member-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
+        run: ./member-service/gradlew test --no-daemon -Dspring.profiles.active=test --stacktrace --info
 
 
       - name: contract-service 테스트 실행
