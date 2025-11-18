@@ -14,4 +14,8 @@ public interface MemberFeignClient {
     @GetMapping("/exist")
     ResponseDto<MemberExistOutput> existMemberByCode(
             @RequestParam(name = "member-code") List<String> memberCodes);
+
+    @GetMapping
+    ResponseDto<MemberInfoOutput> getMemberInfoByCode(
+            @RequestParam(name = "member-code") List<String> memberCodes);
 }
