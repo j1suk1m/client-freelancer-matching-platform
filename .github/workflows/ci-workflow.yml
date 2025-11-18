@@ -79,6 +79,10 @@ jobs:
           chmod +x ./profile-service/gradlew
           chmod +x ./search-service/gradlew
 
+      - name: contract-service 테스트 실행
+        working-directory: ./contract-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+
       - name: cartpost-service 테스트 실행
         working-directory: ./cartpost-service
         run: ./gradlew test --no-daemon -Dspring.profiles.active=test
@@ -87,9 +91,6 @@ jobs:
         working-directory: ./communication-service
         run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
-      - name: contract-service 테스트 실행
-        working-directory: ./contract-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
       - name: discovery-service 테스트 실행
         working-directory: ./discovery-service
