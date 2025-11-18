@@ -11,6 +11,10 @@ gradle-wrapper.properties
 # Logs
 *.log
 
+!./docker-compose-infra.yml
+!./docker-compose-deploy.yml
+!./docker-compose-build.yml
+
 # properties
 *.properties
 *.yml
