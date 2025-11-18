@@ -20,7 +20,7 @@ jobs:
       - name: ${{ inputs.service-name }} 모듈 application.properties 작성
         run: |
           mkdir -p ${{ inputs.service-name }}/src/main/resources
-          cat <<'EOF' > ${{ inputs.service-name }}/src/main/resources/application-test.properties
+          cat <<EOF > ${{ inputs.service-name }}/src/main/resources/application-test.properties
           spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL;IGNORECASE=TRUE;INIT=SET REFERENTIAL_INTEGRITY FALSE
           spring.datasource.driver-class-name=org.h2.Driver
           spring.datasource.username=sa

@@ -15,7 +15,7 @@ jobs:
       - name: member 모듈 application.properties 작성
         run: |
             mkdir -p member-service/src/main/resources
-            cat <<'EOF' > member-service/src/main/resources/application.properties
+            cat <<EOF > member-service/src/main/resources/application.properties
             server.port=8084
             spring.application.name=member-service
             spring.jpa.open-in-view=false  # Lazy Loading 사용 시 트랜잭션 종료를 명확하게 관리하기 위해 false

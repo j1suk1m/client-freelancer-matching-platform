@@ -14,7 +14,7 @@ jobs:
       - name: discovery 모듈 application.properties 작성
         run: |
           mkdir -p discovery-service/src/main/resources
-          cat <<'EOF' > discovery-service/src/main/resources/application.properties
+          cat <<EOF > discovery-service/src/main/resources/application.properties
           server.port=${{ secrets.INFRA_EUREKA_SERVER_PORT }}
           spring.application.name=discovery-service
           eureka.client.register-with-eureka=false

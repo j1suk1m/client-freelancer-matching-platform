@@ -15,7 +15,7 @@ jobs:
       - name: contract 모듈 application.properties 작성
         run: |
           mkdir -p contract-service/src/main/resources
-          cat <<'EOF' > contract-service/src/main/resources/application.properties
+          cat <<EOF > contract-service/src/main/resources/application.properties
           server.port=8083
           eureka.client.serviceUrl.defaultZone=http://discovery-service:${{ secrets.INFRA_EUREKA_SERVER_PORT }}/eureka/
           eureka.instance.instance-id=${spring.application.name}:${server.port}:${random.uuid}
