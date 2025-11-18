@@ -1,26 +1,48 @@
 package com.example.contractservice.deposit.service;
 
+import static com.example.contractservice.deposit.domain.exception.DepositErrorCode.ALREADY_EXISTS;
 import static com.example.contractservice.deposit.service.mapper.DepositHistoryMapper.toEntity;
 import static com.example.contractservice.deposit.service.mapper.DepositMapper.toDomain;
 
 import com.example.contractservice.deposit.domain.Deposit;
 import com.example.contractservice.deposit.domain.DepositHistory;
+import com.example.contractservice.deposit.domain.exception.DepositException;
 import com.example.contractservice.deposit.entity.DepositEntity;
 import com.example.contractservice.deposit.entity.DepositHistoryEntity;
 import com.example.contractservice.deposit.repository.DepositRepository;
 import com.example.contractservice.deposit.service.dto.request.DepositProcessRequest;
+import com.example.contractservice.deposit.service.dto.response.DepositCreatedResponse;
 import com.example.contractservice.deposit.service.dto.response.DepositWithdrawResponse;
 import com.example.contractservice.deposit.service.mapper.DepositHistoryMapper;
 import com.example.contractservice.deposit.service.mapper.DepositMapper;
 import java.util.function.BiConsumer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DepositService {
     private final DepositRepository depositRepository;
+
+    /** 회원가입한 사용자에 대한 예치금 엔티티를 생성합니다.
+     *
+     * @param memberCode 회원가입한 사용자의 코드
+     * @return 생성된 예치금 정보
+     */
+    public DepositCreatedResponse createDeposit(String memberCode) {
+        if (depositRepository.existMemberDeposit(memberCode)) {
+            log.warn(memberCode + " already exists");
+
+            throw new DepositException(ALREADY_EXISTS);
+        }
+
+        DepositEntity savedDeposit = depositRepository.saveDeposit(DepositEntity.createBy(memberCode));
+
+        return DepositCreatedResponse.of(savedDeposit.getCode());
+    }
 
     /**
      * 공통적인 메서드입니다. action은 예치금에 어떤 행동(출금/입금)을 하는지가 들어갑니다. </br>
