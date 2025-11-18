@@ -1,9 +1,17 @@
 package com.example.paymentservice.payment.controller;
 
 import com.example.paymentservice.common.dto.ResponseDto;
+import com.example.paymentservice.payment.controller.dto.request.PaymentConfirmRequest;
 import com.example.paymentservice.payment.controller.dto.response.PayRechargeResponse;
 import com.example.paymentservice.payment.controller.dto.response.PaymentGetResponse;
 import com.example.paymentservice.payment.controller.dto.response.PaymentsGetResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,56 +49,41 @@ import java.util.Base64;
 @RequestMapping("/api/payments")
 public class PaymentController implements PaymentApi {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ObjectMapper om = new ObjectMapper();
+    private final String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+    private final String tossPaymentConfirmUrl = "https://api.tosspayments.com/v1/payments/confirm";
+
 
     @PostMapping("/confirm")
-    public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
+    public ResponseEntity<JSONObject> confirmPayment(@RequestBody PaymentConfirmRequest request) throws Exception {
 
         JSONParser parser = new JSONParser();
-        String orderId;
-        String amount; // V1 예제에서는 amount가 String이었습니다.
-        String paymentKey;
-        try {
-            // 클라이언트에서 받은 JSON 요청 바디입니다.
-            JSONObject requestData = (JSONObject) parser.parse(jsonBody);
-            paymentKey = (String) requestData.get("paymentKey");
-            orderId = (String) requestData.get("orderId");
-            amount = (String) requestData.get("amount");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        ;
-        JSONObject obj = new JSONObject();
-        obj.put("orderId", orderId);
-        obj.put("amount", Long.parseLong(amount)); // 토스 API는 amount를 Number 타입으로 받습니다.
-        obj.put("paymentKey", paymentKey);
 
-        // V1 (결제 위젯) 테스트 시크릿 키입니다. (V2와 다름)
-        // 참고: 이 키는 V1 문서 예제용 키(test_gsk_...)입니다.
-        // 실제 V1 연동 시에는 '내 개발 정보'의 '시크릿 키'(test_sk_...)를 사용해야 합니다.
-        // 여기서는 공식 예제 코드 그대로 test_gsk_... 키를 사용합니다.
-        String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
-        Base64.Encoder encoder = Base64.getEncoder();
-        byte[] encodedBytes = encoder.encode((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
-        String authorizations = "Basic " + new String(encodedBytes);
+        Map<String, Object> requestMap = Map.of(
+                "paymentKey", request.paymentKey(),
+                "orderId", request.orderId(),
+                "amount", request.amount()
+        );
 
-        // 결제를 승인하면 결제수단에서 금액이 차감돼요.
-        URL url = new URL("https://api.tosspayments.com/v1/payments/confirm");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization", authorizations);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
+        // Basic 인증 헤더
+        String authorization = "Basic " + Base64.getEncoder()
+                .encodeToString((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 
-        OutputStream outputStream = connection.getOutputStream();
-        outputStream.write(obj.toString().getBytes("UTF-8"));
+        // HttpClient 생성
+        HttpClient client = HttpClient.newHttpClient();
 
-        int code = connection.getResponseCode();
-        boolean isSuccess = code == 200;
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(tossPaymentConfirmUrl))
+                .header("Authorization", authorization)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofByteArray(om.writeValueAsBytes(requestMap)))
+                .build();
 
-        InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
+        HttpResponse<InputStream> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
 
-        // 결제 성공 및 실패 비즈니스 로직을 구현하세요.
+        int code = response.statusCode();
+        InputStream responseStream = code == 200 ? response.body() : response.body();
+
         Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
