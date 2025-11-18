@@ -23,16 +23,16 @@ public record DepositHistoryCursorResponse(
         if (infos.size() <= pageSize) {
             return new DepositHistoryCursorResponse(
                     infos,
-                    historyEntities.get(infos.size() - 1).getCreatedAt(),
-                    historyEntities.get(infos.size() - 1).getCode(),
+                    null,
+                    null,
                     false
             );
         }
 
         return new DepositHistoryCursorResponse(
                 infos.subList(0, pageSize),
-                historyEntities.get(pageSize - 2).getCreatedAt(),
-                historyEntities.get(pageSize - 2).getCode(),
+                historyEntities.get(pageSize - 1).getCreatedAt(),
+                historyEntities.get(pageSize - 1).getCode(),
                 true
         );
     }
