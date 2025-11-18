@@ -18,10 +18,10 @@ jobs:
           cat <<EOF > member-service/src/main/resources/application.properties
           server.port=8084
           spring.application.name=member-service
-          spring.jpa.open-in-view=false  # Lazy Loading 사용 시 트랜잭션 종료를 명확하게 관리하기 위해 false
+          spring.jpa.open-in-view=false  
           spring.jpa.hibernate.ddl-auto=validate
           spring.jpa.properties.hibernate.show_sql=false
-          spring.jpa.properties.hibernate.format_sql=false  # 쿼리 로그를 보기 쉽게 포맷
+          spring.jpa.properties.hibernate.format_sql=false 
           spring.datasource.url=${{ secrets.DB_MYSQL_URL }}
           spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
           spring.datasource.username=${{ secrets.DB_MYSQL_USER_NAME }}
