@@ -13,20 +13,6 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class) //Mockito + JUnit 연동
 class CommissionsServiceTest {
 
-    @Mock
-    private CommissionsRepository commissionsRepository;
-
-    @InjectMocks
-    private CommissionsManagerService commissionsService;
-
-    private String xCode;
-    private String commissionCode;
-
-    @BeforeEach
-    void setUp() {
-        xCode = UUID.randomUUID().toString();
-        commissionCode = UUID.randomUUID().toString();
-    }
 
     @Test
     void createCommission_success() {
