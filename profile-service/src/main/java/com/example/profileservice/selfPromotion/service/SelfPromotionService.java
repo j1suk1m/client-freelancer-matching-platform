@@ -1,9 +1,11 @@
 package com.example.profileservice.selfPromotion.service;
 
 import com.example.profileservice.common.model.vo.ErrorCode;
+import com.example.profileservice.common.model.vo.KafkaProducer;
 import com.example.profileservice.common.model.vo.exception.CustomException;
 import com.example.profileservice.resume.repository.ResumeRepository;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionCreateRequest;
+import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionEvent;
 import com.example.profileservice.selfPromotion.model.dto.request.SelfPromotionUpdateRequest;
 import com.example.profileservice.selfPromotion.model.dto.response.SelfPromotionResponse;
 import com.example.profileservice.selfPromotion.model.entity.SelfPromotionEntity;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,11 @@ public class SelfPromotionService {
 
     private final SelfPromotionRepository selfPromotionRepository;
     private final ResumeRepository resumeRepository;
+    private final KafkaProducer kafkaProducer;
+
+    // Search Service에서 사용할 토픽 이름
+    @Value("${topics.selfpromotion-events:selfpromotion-events}")
+    private String selfPromotionTopic;
 
     // 모든 활성 셀프 프로모션 게시글 목록을 최신순으로 조회
     public List<SelfPromotionResponse> getAllPromotions() {
@@ -66,6 +74,11 @@ public class SelfPromotionService {
 
         selfPromotionRepository.save(promotion);
 
+        SelfPromotionResponse response = toResponse(promotion);
+
+        // 3. 이벤트 발행 (CREATE)
+        kafkaProducer.send(selfPromotionTopic, SelfPromotionEvent.create(response));
+
         return toResponse(promotion);
     }
 
@@ -87,6 +100,11 @@ public class SelfPromotionService {
                 request.resumeCode()
         );
 
+        SelfPromotionResponse response = toResponse(promotion);
+
+        // 4. 이벤트 발행 (UPDATE)
+        kafkaProducer.send(selfPromotionTopic, SelfPromotionEvent.update(response));
+
         return toResponse(promotion);
     }
 
@@ -98,6 +116,11 @@ public class SelfPromotionService {
 
         // 2. Soft Delete 처리
         promotion.delete();
+
+        SelfPromotionResponse response = toResponse(promotion);
+
+        // 3. 이벤트 발행 (DELETE)
+        kafkaProducer.send(selfPromotionTopic, SelfPromotionEvent.delete(response));
     }
 
     // promotionCode로 엔티티를 조회하고, 요청 memberCode와 작성자가 일치하는지 확인
