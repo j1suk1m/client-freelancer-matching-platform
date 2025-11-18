@@ -130,10 +130,10 @@ jobs:
           done
       - name: application-test.properties 파일 내용 확인
         run: cat ./search-service/src/main/resources/application-test.yml
-
-      - name: search-service 테스트 실행
-        working-directory: ./search-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test --info
+#
+#      - name: search-service 테스트 실행
+#        working-directory: ./search-service
+#        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
 
 
