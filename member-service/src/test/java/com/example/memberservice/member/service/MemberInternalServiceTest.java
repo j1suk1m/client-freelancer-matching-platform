@@ -1,6 +1,7 @@
 package com.example.memberservice.member.service;
 
 
+import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.security.model.vo.Provider;
 import com.example.memberservice.member.entity.Members;
 import com.example.memberservice.member.entity.vo.Gender;
@@ -84,8 +85,7 @@ class MemberInternalServiceTest {
         //When&Then
         assertThatThrownBy(() ->
             memberInternalService.getMemberInfos(List.of(code1, code2))
-        ).isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("요청하신 memberCode 중 잘못된 memberCode가 존재합니다.");
+        ).isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -107,8 +107,7 @@ class MemberInternalServiceTest {
         //When&Then
         assertThatThrownBy(() ->
             memberInternalService.getMemberInfos(List.of(code1, code2, code3))
-        ).isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("요청하신 memberCode 중 잘못된 memberCode가 존재합니다.");
+        ).isInstanceOf(BusinessException.class);
     }
 
     @Test

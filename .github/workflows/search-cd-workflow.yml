@@ -8,9 +8,6 @@ on:
       - 'search-service/**'
 
 jobs:
-  setting:
-    uses: ./.github/workflows/search-yml-workflow.yml
-    secrets: inherit
 
   releasing:
     uses: ./.github/workflows/release-workflow.yml

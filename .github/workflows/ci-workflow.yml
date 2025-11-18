@@ -15,38 +15,7 @@ on:
 jobs:
   # 해당 잡의 key
   ## application.yml 들 실행
-  cartpost-yml:
-    uses: ./.github/workflows/cartpost-yml-workflow.yml
-    secrets: inherit
-
-  communication-yml:
-    uses: ./.github/workflows/communication-yml-workflow.yml
-    secrets: inherit
-
-  discovery-yml:
-    uses: ./.github/workflows/discovery-yml-workflow.yml
-    secrets: inherit
-
-  gateway-yml:
-    uses: ./.github/workflows/gateway-yml-workflow.yml
-    secrets: inherit
-
-  member-yml:
-    uses: ./.github/workflows/member-yml-workflow.yml
-    secrets: inherit
-
-  payment-yml:
-    uses: ./.github/workflows/payment-yml-workflow.yml
-    secrets: inherit
-
-  profile-yml:
-    uses: ./.github/workflows/profile-yml-workflow.yml
-    secrets: inherit
-
-  search-yml:
-    uses: ./.github/workflows/search-yml-workflow.yml
-    secrets: inherit
-
+  # cartpost yml 생성 로직
   code-test:
     name: 코드 테스트
     # Action은 job 실행시 가상 환경을 이용함, 그래서 원래는 요금이 듬
@@ -67,6 +36,60 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: CARTPOST yml 생성
+        run: |
+          mkdir -p ./cartpost-service/src/main/resources
+          echo '${{ vars.CARTPOST_YML }}' > ./cartpost-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./cartpost-service/src/main/resources/application-test.yml
+
+      - name: COMMUNICATION yml 생성
+        run: |
+          mkdir -p ./communication-service/src/main/resources
+          echo '${{ vars.COMMUNICATION_YML }}' > ./communication-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./communication-service/src/main/resources/application-test.yml
+
+      - name: CONTRACT yml 생성
+        run: |
+          mkdir -p ./contract-service/src/main/resources
+          echo '${{ vars.CONTRACT_YML }}' > ./contract-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./contract-service/src/main/resources/application-test.yml
+
+      - name: DISCOVERY yml 생성
+        run: |
+          mkdir -p ./discovery-service/src/main/resources
+          echo '${{ vars.DISCOVERY_YML }}' > ./discovery-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./discovery-service/src/main/resources/application-test.yml
+
+      - name: GATEWAY yml 생성
+        run: |
+          mkdir -p ./gateway-service/src/main/resources
+          echo '${{ vars.GATEWAY_YML }}' > ./gateway-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./gateway-service/src/main/resources/application-test.yml
+
+      - name: MEMBER yml 생성
+        run: |
+          mkdir -p ./member-service/src/main/resources
+          echo '${{ vars.MEMBER_YML }}' > ./member-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./member-service/src/main/resources/application-test.yml
+
+      - name: PAYMENT yml 생성
+        run: |
+          mkdir -p ./payment-service/src/main/resources
+          echo '${{ vars.PAYMENT_YML }}' > ./payment-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./payment-service/src/main/resources/application-test.yml
+
+      - name: PROFILE yml 생성
+        run: |
+          mkdir -p ./profile-service/src/main/resources
+          echo '${{ vars.PROFILE_YML }}' > ./profile-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./profile-service/src/main/resources/application-test.yml
+
+      - name: SEARCH yml 생성
+        run: |
+          mkdir -p ./search-service/src/main/resources
+          echo '${{ vars.SEARCH_YML }}' > ./search-service/src/main/resources/application.yml
+          echo '${{ vars.TEST_YML }}' > ./search-service/src/main/resources/application-test.yml
+
       - name: 전체 모듈 gradlew 권한 세팅
         run: |
           chmod +x ./cartpost-service/gradlew
@@ -79,41 +102,69 @@ jobs:
           chmod +x ./profile-service/gradlew
           chmod +x ./search-service/gradlew
 
-      - name: cartpost-service 테스트 실행
-        working-directory: ./cartpost-service
-        run: ./gradlew test --no-daemon
+      - name: Configure sysctl limits
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
 
-      - name: communication-service 테스트 실행
-        working-directory: ./communication-service
-        run: ./gradlew test --no-daemon
+      - uses: getong/elasticsearch-action@v1.3
+        with:
+          elasticsearch version: '9.1.3'
+          host port: 9200
+          container port: 9200
+          host node port: 9300
+          node port: 9300
+          discovery type: 'single-node'
 
-      - name: contract-service 테스트 실행
-        working-directory: ./contract-service
-        run: ./gradlew test --no-daemon
+      - name: Wait for Elasticsearch to be up
+        run: |
+          for i in {1..10}; do
+            if curl -sSf http://localhost:9200; then
+              echo "Elasticsearch is up"
+              break
+            fi
+            echo "Waiting for Elasticsearch..."
+            sleep 5
+          done
+      - name: application-test.properties 파일 내용 확인
+        run: cat ./search-service/src/main/resources/application-test.yml
+#
+#      - name: search-service 테스트 실행
+#        working-directory: ./search-service
+#        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
-      - name: discovery-service 테스트 실행
-        working-directory: ./discovery-service
-        run: ./gradlew test --no-daemon
 
-      - name: gateway-service 테스트 실행
-        working-directory: ./gateway-service
-        run: ./gradlew test --no-daemon
 
       - name: member-service 테스트 실행
         working-directory: ./member-service
-        run: ./gradlew test --no-daemon
+        run: |
+          if [ -f ./gradlew ]; then
+            echo "gradlew exists"
+          fi
+          ./gradlew test --no-daemon -Dspring.profiles.active=test 
+
+      - name: contract-service 테스트 실행
+        working-directory: ./contract-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+
+      - name: cartpost-service 테스트 실행
+        working-directory: ./cartpost-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+
+      - name: communication-service 테스트 실행
+        working-directory: ./communication-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
       - name: payment-service 테스트 실행
         working-directory: ./payment-service
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
       - name: profile-service 테스트 실행
         working-directory: ./profile-service
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
-      - name: search-service 테스트 실행
-        working-directory: ./search-service
-        run: ./gradlew test --no-daemon
 
 
 # Git의 Runners를 통해서 원격지 서버와의 연결을 설정

@@ -36,6 +36,8 @@ dependencies {
 	// 롬복
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'com.h2database:h2'
 }
 
 dependencyManagement {
