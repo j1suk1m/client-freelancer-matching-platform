@@ -45,8 +45,16 @@ public class CommissionsTagService implements CrudService<TagServiceCommand, Tag
     }
 
     @Override
-    public void update(TagServiceCommand requestDto, String s) {
+    public void update(TagServiceCommand requestDto, String commissionCode) {
+            commissionsTagRepository.deleteByCommissionCode(commissionCode);
 
+        for(String tagCode : requestDto.tagCodes()){
+            CommissionsTagEntity commissionsTagEntity = CommissionsTagEntity.builder()
+                    .commissionCode(requestDto.commissionsCode())
+                    .tagCode(tagCode).build();
+
+            commissionsTagRepository.save(commissionsTagEntity);
+        }
     }
 
     @Override

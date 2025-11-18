@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface CommissionsTagRepository extends JpaRepository<CommissionsTagEntity, Long> {
 
     List<CommissionsTagEntity> findByCommissionCode(String commissionCode);
+
+    void deleteByCommissionCode(String commissionCode);
 }
