@@ -2,11 +2,9 @@ package com.example.cartpostservice.commissions.service;
 
 import com.example.cartpostservice.commissions.controller.dto.request.CommissionCreateRequest;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionDeleteResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionFinishResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
-import com.example.cartpostservice.commissions.controller.dto.response.CommissionsReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.MemberResponse;
 import com.example.cartpostservice.commissions.controller.internal.MemberClient;
 import com.example.cartpostservice.commissions.service.dto.request.CommissionsServiceCommand;
@@ -16,7 +14,13 @@ import com.example.cartpostservice.commissions.service.dto.response.TagServiceRe
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -62,12 +66,13 @@ public class CommissionsManagerService {
         return commissionCreateResponse;
     }
 
-    public CommissionReadResponse readCommission(String commissionCode) {
+    @Transactional
+    public CommissionElementReadResponse readCommission(String commissionCode) {
 
         CommissionsServiceResult commissionResult = commissionsService.read(commissionCode);
         TagServiceResult tagResult = commissionsTagService.read(commissionResult.code());
 
-        CommissionReadResponse response = new CommissionReadResponse(
+        CommissionElementReadResponse response = new CommissionElementReadResponse(
                 commissionResult.title(),
                 commissionResult.content(),
                 commissionResult.paymentType(),
@@ -82,7 +87,9 @@ public class CommissionsManagerService {
         return response;
     }
 
-    public CommissionUpdateResponse updateCommission(String code, String commissionCode, CommissionCreateRequest request) {
+    @Transactional
+    public CommissionUpdateResponse updateCommission(String code, String commissionCode,
+            CommissionCreateRequest request) {
 
         MemberResponse member = memberClient.getMember(code);
 
@@ -108,26 +115,69 @@ public class CommissionsManagerService {
         return new CommissionUpdateResponse(commissionCode);
     }
 
+    @Transactional
     public void deleteCommission(String code, String commissionCode) {
 
         commissionsService.delete(code, commissionCode);
         commissionsTagService.delete(code, commissionCode);
     }
 
+    @Transactional
     public void finishCommission(String code, String commissionCode) {
-        if(!commissionsService.isOwner(code, commissionCode)){
+        if (!commissionsService.isOwner(code, commissionCode)) {
             throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
         }
 
         commissionsService.closeCommission(commissionCode);
     }
 
-    public CommissionsReadResponse readOwnCommissions(String code, Pageable pageable) {
-        return null;
+    @Transactional
+    public Page<CommissionReadResponse> readOwnCommissions(String code, Pageable pageable) {
+
+        int page = 0;
+        if (pageable.getPageNumber() > 0) {
+            page = pageable.getPageNumber() - 1;
+        }
+
+        Pageable adjustedPageable = PageRequest.of(
+                page,
+                pageable.getPageSize(),
+                pageable.getSort()
+        );
+
+        Page<CommissionsServiceResult> resultPage = commissionsService.getPage(code, adjustedPageable);
+
+        List<String> commissionCodes = resultPage.stream()
+                .map(CommissionsServiceResult::code)
+                .toList();
+
+        List<TagServiceResult> tagServiceResults = commissionsTagService.getTags(commissionCodes);
+
+        Map<String, List<String>> tagMap = tagServiceResults.stream()
+                .collect(Collectors.toMap(
+                        TagServiceResult::commissionCode,
+                        TagServiceResult::tagCodes
+                ));
+
+        List<CommissionReadResponse> responses = resultPage.stream()
+                .map(result -> new CommissionReadResponse(
+                        result.title(),
+                        result.paymentType(),
+                        result.unitAmount(),
+                        result.startedAt(),
+                        result.endedAt(),
+                        result.isOpen(),
+                        result.writerName(),
+                        tagMap.getOrDefault(result.code(), List.of())
+                ))
+                .toList();
+
+        return new PageImpl<>(responses, pageable, resultPage.getTotalElements());
     }
 
+    @Transactional
     public void canAccessCommission(String code, String commissionCode) {
-        if(!commissionsService.isOwner(code, commissionCode)){
+        if (!commissionsService.isOwner(code, commissionCode)) {
             throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
         }
     }
