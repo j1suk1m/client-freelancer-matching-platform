@@ -103,7 +103,7 @@ jobs:
           chmod +x ./search-service/gradlew
 
       - name: application-test.properties 파일 내용 확인
-        run: cat ./member-service/src/main/resources/application-test.properties
+        run: cat ./member-service/src/main/resources/application-test.yml
 
       - name: member-service 테스트 실행
         working-directory: ./member-service
