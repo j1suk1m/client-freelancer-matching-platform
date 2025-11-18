@@ -38,60 +38,68 @@ jobs:
 
       - name: CARTPOST yml 생성
         run: |
+          mkdir -p ./cartpost-service/src/main/resources
           echo '${{ vars.CARTPOST_YML }}' > ./cartpost-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./cartpost-service/src/main/resources/application-test.yml
 
       - name: COMMUNICATION yml 생성
         run: |
+          mkdir -p ./communication-service/src/main/resources
           echo '${{ vars.COMMUNICATION_YML }}' > ./communication-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./communication-service/src/main/resources/application-test.yml
 
       - name: CONTRACT yml 생성
         run: |
+          mkdir -p ./contract-service/src/main/resources
           echo '${{ vars.CONTRACT_YML }}' > ./contract-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./contract-service/src/main/resources/application-test.yml
 
       - name: DISCOVERY yml 생성
         run: |
+          mkdir -p ./discovery-service/src/main/resources
           echo '${{ vars.DISCOVERY_YML }}' > ./discovery-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./discovery-service/src/main/resources/application-test.yml
 
       - name: GATEWAY yml 생성
         run: |
+          mkdir -p ./gateway-service/src/main/resources
           echo '${{ vars.GATEWAY_YML }}' > ./gateway-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./gateway-service/src/main/resources/application-test.yml
 
       - name: MEMBER yml 생성
         run: |
+          mkdir -p ./member-service/src/main/resources
           echo '${{ vars.MEMBER_YML }}' > ./member-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./member-service/src/main/resources/application-test.yml
 
       - name: PAYMENT yml 생성
         run: |
+          mkdir -p ./payment-service/src/main/resources
           echo '${{ vars.PAYMENT_YML }}' > ./payment-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./payment-service/src/main/resources/application-test.yml
 
       - name: PROFILE yml 생성
         run: |
+          mkdir -p ./profile-service/src/main/resources
           echo '${{ vars.PROFILE_YML }}' > ./profile-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./profile-service/src/main/resources/application-test.yml
 
       - name: SEARCH yml 생성
         run: |
+          mkdir -p ./search-service/src/main/resources
           echo '${{ vars.SEARCH_YML }}' > ./search-service/src/main/resources/application.yml
           echo '${{ vars.TEST_YML }}' > ./search-service/src/main/resources/application-test.yml
-
-      - name: 전체 모듈 gradlew 권한 세팅
-        run: |
-          chmod +x ./cartpost-service/gradlew
-          chmod +x ./communication-service/gradlew
-          chmod +x ./contract-service/gradlew
-          chmod +x ./discovery-service/gradlew
-          chmod +x ./gateway-service/gradlew
-          chmod +x ./member-service/gradlew
-          chmod +x ./payment-service/gradlew
-          chmod +x ./profile-service/gradlew
-          chmod +x ./search-service/gradlew
+          - name: 전체 모듈 gradlew 권한 세팅
+            run: |
+              chmod +x ./cartpost-service/gradlew
+              chmod +x ./communication-service/gradlew
+              chmod +x ./contract-service/gradlew
+              chmod +x ./discovery-service/gradlew
+              chmod +x ./gateway-service/gradlew
+              chmod +x ./member-service/gradlew
+              chmod +x ./payment-service/gradlew
+              chmod +x ./profile-service/gradlew
+              chmod +x ./search-service/gradlew
 
       - name: application-test.properties 파일 내용 확인
         run: cat ./member-service/src/main/resources/application-test.properties
