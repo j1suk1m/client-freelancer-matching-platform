@@ -462,6 +462,11 @@ jobs:
           chmod +x ./profile-service/gradlew
           chmod +x ./search-service/gradlew
 
+      - name: member-service 테스트 실행
+        working-directory: ./member-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+
+
       - name: contract-service 테스트 실행
         working-directory: ./contract-service
         run: ./gradlew test --no-daemon -Dspring.profiles.active=test
@@ -481,10 +486,6 @@ jobs:
 
       - name: gateway-service 테스트 실행
         working-directory: ./gateway-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
-
-      - name: member-service 테스트 실행
-        working-directory: ./member-service
         run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 
       - name: payment-service 테스트 실행
