@@ -11,11 +11,13 @@ gradle-wrapper.properties
 # Logs
 *.log
 
-!./docker-compose-infra.yml
-!./docker-compose-deploy.yml
-!./docker-compose-build.yml
 
 # properties
 *.properties
 *.yml
 *.yaml
+
+#docker compose는 예외 제외
+!docker-compose-infra.yml
+!docker-compose-deploy.yml
+!docker-compose-build.yml
