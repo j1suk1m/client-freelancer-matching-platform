@@ -115,7 +115,7 @@ class ChatMessageServiceTest {
         ChatRoomException exception = assertThrows(ChatRoomException.class,
             () -> chatMessageService.findMessagesByRoomId(ROOM_ID, MY_CODE, pageable));
 
-        assertThat(exception.getStatus()).isEqualTo(ResponseDtoStatus.CHATROOM_UNAUTHORIZED);
+        assertThat(exception.getStatus()).isEqualTo(ResponseDtoStatus.CHATROOM_FORBIDDEN);
 
         verify(chatMessageRepository, times(0)).findAllByRoomId(any(String.class), any(Pageable.class));
     }

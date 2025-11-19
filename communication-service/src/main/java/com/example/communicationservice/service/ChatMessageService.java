@@ -40,7 +40,7 @@ public class ChatMessageService {
 
         // 현재 로그인한 회원이 해당 채팅방의 참여자인지 확인
         if (!chatRoom.getMemberCodes().contains(currentMemberCode)) {
-            throw new ChatRoomException(ResponseDtoStatus.CHATROOM_UNAUTHORIZED);
+            throw new ChatRoomException(ResponseDtoStatus.CHATROOM_FORBIDDEN);
         }
 
         Page<ChatMessage> messagePage = chatMessageRepository.findAllByRoomId(roomId, pageable);
@@ -71,7 +71,7 @@ public class ChatMessageService {
 
         // 메시지 송신자가 해당 채팅방의 참여자인지 확인
         if (!chatRoom.getMemberCodes().contains(senderCode)) {
-            throw new ChatRoomException(ResponseDtoStatus.CHATROOM_UNAUTHORIZED);
+            throw new ChatRoomException(ResponseDtoStatus.CHATROOM_FORBIDDEN);
         }
 
         ChatMessage chatMessage = ChatMessage.builder()
