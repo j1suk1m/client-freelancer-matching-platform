@@ -8,7 +8,6 @@ import com.example.communicationservice.entity.ChatMessage;
 import com.example.communicationservice.entity.ChatRoom;
 import com.example.communicationservice.repository.ChatMessageRepository;
 import com.example.communicationservice.repository.ChatRoomRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
