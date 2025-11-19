@@ -102,7 +102,7 @@ public class ContractService {
 
         contractRepository.saveContract(contractEntity);
 
-        applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
+        applicationEventPublisher.publishEvent(new ContractEvent(contract.getInfo().requestorCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
 
         return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
     }
@@ -122,7 +122,7 @@ public class ContractService {
 
         saveSettlements(contracts);
 
-        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
+        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(request.xCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
 
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
