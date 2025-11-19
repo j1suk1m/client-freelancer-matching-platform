@@ -3,9 +3,7 @@ package com.example.memberservice.member.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -13,11 +11,9 @@ import com.example.memberservice.common.exception.BusinessException;
 import com.example.memberservice.common.exception.ErrorCode;
 import com.example.memberservice.common.kafka.model.dto.MemberCreateEvent;
 import com.example.memberservice.common.kafka.model.dto.MemberUpdateEvent;
-import com.example.memberservice.common.kafka.producer.MemberCreateKafkaEventProducer;
+import com.example.memberservice.common.kafka.producer.MemberKafkaEventProducer;
 import com.example.memberservice.common.kafka.producer.MemberUpdateKafkaEventProducer;
 import com.example.memberservice.common.security.model.vo.Provider;
-import com.example.memberservice.common.web.model.dto.ResponseDto;
-import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
 import com.example.memberservice.member.entity.Members;
 import com.example.memberservice.member.entity.vo.Gender;
 import com.example.memberservice.member.repository.MemberJpaRepository;
@@ -27,24 +23,17 @@ import com.example.memberservice.member.service.model.dto.input.MemberExistByNam
 import com.example.memberservice.member.service.model.dto.input.MemberGetInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateInput;
 import com.example.memberservice.member.service.model.dto.input.MemberUpdateWorkStateInput;
-import com.example.memberservice.member.service.model.vo.MemberRating;
-import com.example.memberservice.member.service.model.vo.MemberTag;
 import com.example.memberservice.member.service.util.RequestURIGenerator;
 import com.example.memberservice.socialmember.entity.SocialMembers;
 import com.example.memberservice.socialmember.repository.SocialMemberJpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +56,7 @@ class MemberServiceImplTest {
     private RestTemplate restTemplate; // 외부 API는 Mock
 
     @MockitoBean
-    private MemberCreateKafkaEventProducer memberCreateKafkaEventProducer;
+    private MemberKafkaEventProducer memberKafkaEventProducer;
     @MockitoBean
     private MemberUpdateKafkaEventProducer memberUpdateKafkaEventProducer;
     @MockitoBean
@@ -132,7 +121,7 @@ class MemberServiceImplTest {
         socialMemberJpaRepository.save(socialMembers);
 
         MemberCreateInput input = new MemberCreateInput("c2", "new", "01022223333", LocalDate.now(), Gender.MAN);
-        given(memberCreateKafkaEventProducer.sendEvent(any(MemberCreateEvent.class)))
+        given(memberKafkaEventProducer.sendEvent(any(MemberCreateEvent.class)))
             .willReturn(CompletableFuture.completedFuture(null));
 
         // When
@@ -141,7 +130,7 @@ class MemberServiceImplTest {
         // Then
         Members saved = memberJpaRepository.findByCode("c2").get();
         assertThat(saved.getEmail()).isEqualTo("e@ex.com");
-        verify(memberCreateKafkaEventProducer).sendEvent(any(MemberCreateEvent.class));
+        verify(memberKafkaEventProducer).sendEvent(any(MemberCreateEvent.class));
     }
 
     @Test
