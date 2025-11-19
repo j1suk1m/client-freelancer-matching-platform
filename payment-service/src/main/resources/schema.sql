@@ -203,7 +203,9 @@ CREATE TABLE payments (
                           order_pg_id VARCHAR(255) NOT NULL UNIQUE,
                           payment_key VARCHAR(255),
                           amount BIGINT NOT NULL,
-                          payment_status VARCHAR(255) NOT NULL
+                          payment_status VARCHAR(255) NOT NULL,
+                          method VARCHAR(255) NOT NULL,  -- **추가된 컬럼: 결제 수단 (예: Card, Transfer)**
+                          approve_at TIMESTAMP  -- **추가된 컬럼: 결제 승인 시간**
 );
 
 CREATE TABLE orders (

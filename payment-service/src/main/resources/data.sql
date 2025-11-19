@@ -31,19 +31,22 @@ INSERT INTO members (
 
 
 -- ==========================================
--- 3. Payments 테이블 일괄 INSERT
+-- 3. Payments 테이블 일괄 INSERT (컬럼 추가 반영)
 -- ==========================================
 INSERT INTO payments (
     code, is_deleted, created_at, updated_at,
-    order_pg_id, payment_key, amount, payment_status
+    order_pg_id, payment_key, amount, payment_status,
+    method, approve_at -- <<-- 추가된 컬럼
 ) VALUES
       (
           RANDOM_UUID(), FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
-          @pg_uuid_1, 'toss_pay_key_001', 50000, 'COMPLETED'
+          @pg_uuid_1, 'toss_pay_key_001', 50000, 'COMPLETED',
+          'CARD', CURRENT_TIMESTAMP -- <<-- 데이터 추가: 카드, 승인 완료
       ),
       (
           RANDOM_UUID(), FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
-          @pg_uuid_2, NULL, 12000, 'PENDING'
+          @pg_uuid_2, 'virtual_acct_002', 12000, 'COMPLETED', -- NOT NULL 제약 조건 때문에 'PENDING'에서 'COMPLETED'로 변경 가정
+          'VIRTUAL_ACCOUNT', CURRENT_TIMESTAMP -- <<-- 데이터 추가: 가상 계좌, 승인 완료
       );
 
 
