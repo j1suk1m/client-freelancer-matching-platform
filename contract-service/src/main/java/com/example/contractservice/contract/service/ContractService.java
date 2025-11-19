@@ -3,6 +3,7 @@ package com.example.contractservice.contract.service;
 import static com.example.contractservice.contract.domain.exception.ContractErrorCode.*;
 import static com.example.contractservice.contract.service.mapper.ContractMapper.*;
 
+import com.example.contractservice.common.UriConstructor;
 import com.example.contractservice.contract.common.ContractStatus;
 import com.example.contractservice.contract.controller.dto.request.ContractCreateRequest;
 import com.example.contractservice.contract.controller.dto.response.ContractBriefWithNicknameResponse;
@@ -12,7 +13,6 @@ import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
 import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
-import com.example.contractservice.contract.service.event.dto.ContractEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
@@ -34,12 +34,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.hexagon.core.events.contract.ContractEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -51,12 +50,7 @@ public class ContractService {
     private final ContractRepository contractRepository;
     private final RestTemplate restTemplate;
     private final ApplicationEventPublisher applicationEventPublisher;
-
-    @Value("${module.member.application.name}")
-    private String memberServiceName;
-
-    @Value("${module.member.application.path.member-info}")
-    private String memberInfoUrl;
+    private final UriConstructor uriConstructor;
 
     public List<ContractBriefWithNicknameResponse> getBriefInfos(List<String> codes) {
         // 코드를 기반으로 모든 ContractEntity를 한 번에 조회
@@ -72,7 +66,7 @@ public class ContractService {
                 .collect(Collectors.toSet());
 
         // member 모듈로부터 정보 가져오기
-        URI memberInfoUri = createMemberInfoUrl(memberCodes.stream().toList());
+        URI memberInfoUri = uriConstructor.createMemberInfoUrl(memberCodes.stream().toList());
         List<MemberInfo> memberInfos = Optional.ofNullable(restTemplate.getForObject(memberInfoUri, MemberInfoResponse.class))
                 .orElseThrow(() -> new ContractException(INVALID_MEMBER))
                 .members();
@@ -108,7 +102,7 @@ public class ContractService {
 
         contractRepository.saveContract(contractEntity);
 
-        applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
+        applicationEventPublisher.publishEvent(new ContractEvent(contract.getInfo().requestorCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
 
         return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
     }
@@ -128,7 +122,7 @@ public class ContractService {
 
         saveSettlements(contracts);
 
-        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
+        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(request.xCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
 
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
@@ -145,7 +139,7 @@ public class ContractService {
     }
 
     private void isValidMember(List<String> memberCodes) {
-        URI memberInfoUri = createMemberInfoUrl(memberCodes);
+        URI memberInfoUri = uriConstructor.createMemberInfoUrl(memberCodes);
         MemberInfoResponse memberInfoResponse = Optional.ofNullable(restTemplate.getForObject(memberInfoUri, MemberInfoResponse.class))
                 .orElseThrow(() -> new ContractException(INVALID_MEMBER));
 
@@ -165,16 +159,6 @@ public class ContractService {
                 .filter(MemberInfo::canWork)
                 .findFirst()
                 .isEmpty();
-    }
-
-    private URI createMemberInfoUrl(List<String> memberCodes) {
-        return UriComponentsBuilder.newInstance()
-                .scheme("lb")
-                .host(memberServiceName)
-                .path(memberInfoUrl)
-                .queryParam("member-code", memberCodes)
-                .build()
-                .toUri();
     }
 
     private void validateConfirm(String xCode, ContractInfo info) {
@@ -231,7 +215,7 @@ public class ContractService {
                 .reduce(0L, Long::sum); // 총 금액
 
         DepositProcessRequest depositProcessRequest = new DepositProcessRequest(request.xCode(), totalAmount, PAYMENT_COMMENT);
-        depositService.process(depositProcessRequest, depositService::withdraw);
+        depositService.withdraw(depositProcessRequest);
     }
 
     private void saveSettlements(List<Contract> contracts) {

@@ -40,11 +40,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(TestKafkaConfig.class)
+@Transactional
 public class ResumeControllerTest {
 
     private static final String BASE_URL = "/api/resumes";
@@ -237,20 +239,25 @@ public class ResumeControllerTest {
     @DisplayName("POST /api/resumes - 유효하지 않은 회원 코드로 등록 시도 시 400 Bad Request")
     void createResume_InvalidMemberCode_Failure() throws Exception {
         // given: 유효하지 않은 회원 코드를 시뮬레이션하기 위한 Mocking 재설정
-        // INVALID_MEMBER_CODE는 존재하지 않는다고 Mocking
+        // Mock 객체의 모든 기존 설정을 제거합니다.
+        Mockito.reset(memberServiceClient);
 
-        List<String> validCodes = List.of(INVALID_MEMBER_CODE);
+        // 정확한 인수를 정의합니다.
+        // List<String> inputCodes = List.of(INVALID_MEMBER_CODE); // 👈 이 코드는 불필요
 
-        // INVALID_MEMBER_CODE는 존재하지 않도록 응답 설정
+        // INVALID_MEMBER_CODE는 존재하지 않도록 응답 설정 (실패 응답 DTO는 그대로 사용)
         MemberExistOutput mockExistOutputFailure = new MemberExistOutput(
                 List.of(), // 존재하는 코드 없음
                 List.of(INVALID_MEMBER_CODE) // 존재하지 않는 코드
         );
         ResponseDto<MemberExistOutput> mockFailureResponse = ResponseDto.success(mockExistOutputFailure);
 
-        // 해당 코드를 포함하는 호출에 대해서만 실패 응답을 반환하도록 설정
-        Mockito.when(memberServiceClient.existMemberByCode(validCodes))
+        // Mockito.argThat()을 사용하여, List에 INVALID_MEMBER_CODE가 포함된 모든 호출을 잡습니다.
+        Mockito.when(memberServiceClient.existMemberByCode(Mockito.argThat(
+                        codes -> codes.contains(INVALID_MEMBER_CODE)
+                )))
                 .thenReturn(mockFailureResponse);
+
 
         // when & then: 유효하지 않은 회원 코드로 이력서 등록 시도
         mockMvc.perform(post(BASE_URL)
@@ -258,7 +265,7 @@ public class ResumeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(3006));
+                .andExpect(jsonPath("$.code").value(3006)); // INVALID_MEMBER_CODE
     }
 
     //Experience API 테스트
