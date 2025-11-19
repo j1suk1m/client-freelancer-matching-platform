@@ -1,29 +1,128 @@
 package com.example.cartpostservice.commissions.service;
 
-import com.example.cartpostservice.commissions.service.dto.response.CommissionCreateResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionDeleteResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionFinishResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionReadResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionSortReadResult;
-import com.example.cartpostservice.commissions.service.dto.response.CommissionUpdateResult;
+import com.example.cartpostservice.commissions.model.CommissionsEntity;
+import com.example.cartpostservice.commissions.repository.CommissionsRepository;
+import com.example.cartpostservice.commissions.service.dto.request.CommissionsServiceCommand;
+import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
+import com.example.cartpostservice.common.exception.BusinessException;
+import com.example.cartpostservice.common.exception.CustomStatusCode;
+import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
-public interface CommissionsService {
+@RequiredArgsConstructor
+public class CommissionsService implements CrudService<CommissionsServiceCommand, CommissionsServiceResult, String> {
 
-    public CommissionCreateResult createCommission(String code);
+    private final CommissionsRepository commissionsRepository;
 
-    public CommissionReadResult readCommission(String commissionsCode);
+    @Override
+    public String create(CommissionsServiceCommand requestDto) {
+        CommissionsEntity commissions = CommissionsEntity.builder()
+                .memberCode(requestDto.memberCode())
+                .title(requestDto.title())
+                .content(requestDto.content())
+                .paymentType(requestDto.paymentType())
+                .unitAmount(requestDto.unitAmount())
+                .startedAt(requestDto.startedAt())
+                .endedAt(requestDto.endedAt())
+                .writerName(requestDto.writerName())
+                .build();
 
-    public CommissionUpdateResult updateCommission(String code, String commissionsCode);
+        CommissionsEntity saved = commissionsRepository.save(commissions);
 
-    public CommissionDeleteResult deleteCommission(String code, String commissionsCode);
+        return saved.getCode();
+    }
 
-    public CommissionFinishResult finishCommission(String code);
+    @Override
+    public CommissionsServiceResult read(String commissionsCode) {
 
-    public CommissionSortReadResult readOwnCommissions(String code, Pageable pageable);
+        CommissionsEntity commission = commissionsRepository.findByCode(commissionsCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION));
+
+        CommissionsServiceResult result = new CommissionsServiceResult(
+                commission.getCode(),
+                commission.getMemberCode(),
+                commission.getTitle(),
+                commission.getContent(),
+                commission.getPaymentType(),
+                commission.getUnitAmount(),
+                commission.getStartedAt(),
+                commission.getEndedAt(),
+                commission.isOpen(),
+                commission.getWriterName()
+        );
+
+        return result;
+    }
+
+    @Override
+    public void update(CommissionsServiceCommand requestDto, String commissionsCode) {
+        List<CommissionsEntity> commissions = commissionsRepository.findByMemberCode(requestDto.memberCode());
+        if (commissions.isEmpty()) {
+            throw new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION);
+        }
+        boolean owned = commissions.stream().anyMatch(entity -> entity.getCode().equals(commissionsCode));
+
+        if (!owned) {
+            throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
+        }
+
+        CommissionsEntity commission = CommissionsEntity.builder()
+                .memberCode(requestDto.memberCode())
+                .title(requestDto.title())
+                .content(requestDto.content())
+                .paymentType(requestDto.paymentType())
+                .unitAmount(requestDto.unitAmount())
+                .startedAt(requestDto.startedAt())
+                .endedAt(requestDto.endedAt())
+                .writerName(requestDto.writerName())
+                .build();
+
+        CommissionsEntity saved = commissionsRepository.save(commission);
+    }
+
+    @Override
+    public void delete(String memberCode, String commissionsCode) {
+        CommissionsEntity commission = commissionsRepository.findByMemberCodeAndCode(memberCode, commissionsCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
+
+        commissionsRepository.delete(commission);
+    }
+
+    public Page<CommissionsServiceResult> getPage(String memberCode, Pageable pageable) {
+
+        Page<CommissionsEntity> commissions = commissionsRepository.findPageByMemberCode(memberCode, pageable);
+
+        return commissions.map(commission ->
+                new CommissionsServiceResult(
+                        commission.getCode(),
+                        commission.getMemberCode(),
+                        commission.getTitle(),
+                        commission.getContent(),
+                        commission.getPaymentType(),
+                        commission.getUnitAmount(),
+                        commission.getStartedAt(),
+                        commission.getEndedAt(),
+                        commission.isOpen(),
+                        commission.getWriterName()
+                )
+        );
+    }
+
+    public boolean isOwner(String memberCode, String commissionsCode) {
+        return commissionsRepository
+                .findByMemberCodeAndCode(memberCode, commissionsCode)
+                .isPresent();
+    }
+
+    public void closeCommission(String commissionCode) {
+        CommissionsEntity entity = commissionsRepository.findByCode(commissionCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION));
+
+        entity.closed();
+    }
 }

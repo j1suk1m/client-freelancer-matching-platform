@@ -21,9 +21,6 @@ public class DepositInternalController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<DepositRechargeResponse> recharge(@RequestBody DepositRechargeRequest request) {
-        if (request.amount() < 0L) {
-            throw new IllegalArgumentException("충전 금액은 음수일 수 없습니다.");
-        }
 
         DepositRechargeResponse rechargeResponse = depositService.recharge(request);
 
