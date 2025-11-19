@@ -156,6 +156,8 @@ public class CommissionsManagerService {
 
         commissionsService.delete(code, commissionCode);
         commissionsTagService.delete(code, commissionCode);
+
+        commissionKafkaService.deleteProducer(commissionCode);
     }
 
     @Transactional

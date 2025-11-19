@@ -7,6 +7,7 @@ import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import lombok.RequiredArgsConstructor;
 import org.hexagon.core.events.commission.CommissionCreatedEvent;
+import org.hexagon.core.events.commission.CommissionDeletedEvent;
 import org.hexagon.core.events.commission.CommissionUpdatedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -71,5 +72,11 @@ public class CommissionKafkaService {
         );
 
         kafkaTemplate.send(searchTopicName, commissionUpdatedEvent);
+    }
+
+    public void deleteProducer(String commissionCode) {
+        CommissionDeletedEvent commissionDeletedEvent = new CommissionDeletedEvent(commissionCode);
+
+        kafkaTemplate.send(searchTopicName, commissionDeletedEvent);
     }
 }
