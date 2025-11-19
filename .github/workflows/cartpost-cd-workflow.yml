@@ -24,6 +24,7 @@ jobs:
   deploying:
     needs: releasing
     uses: ./.github/workflows/deploy-workflow.yml
+    secrets: inherit
     with:
       service-name: hexagon-cartpost-service
       image-tag: ${{ needs.releasing.outputs.tag_name }}

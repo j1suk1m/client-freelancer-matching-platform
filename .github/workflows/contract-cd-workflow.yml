@@ -25,6 +25,7 @@ jobs:
   deploying:
     needs: releasing
     uses: ./.github/workflows/deploy-workflow.yml
+    secrets: inherit
     with:
       service-name: hexagon-contract-service
       image-tag: ${{ needs.releasing.outputs.tag_name }}
