@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 public class ContractReadService {
 
     private static final int PAGE_SIZE = 20;
+    private static final int CONTRACT_PARTICIPATION_COUNT = 2;
 
     private final ContractRepository contractRepository;
     private final UriConstructor uriConstructor;
@@ -47,8 +48,8 @@ public class ContractReadService {
                         restTemplate.getForObject(memberInfoUrl, MemberInfoResponse.class))
                 .orElseThrow(() -> new ContractException(INVALID_MEMBER)).members();
 
-        if (memberInfos.size() != 2) {
-            throw new ContractException(INVALID_MEMBER);
+        if (memberInfos.size() != CONTRACT_PARTICIPATION_COUNT) {
+            throw new ContractException(INVALID_MEMBER_COUNT);
         }
 
         MemberInfo firstMember = memberInfos.get(0);

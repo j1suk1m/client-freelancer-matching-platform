@@ -12,7 +12,9 @@ public enum ContractErrorCode {
     NOT_REQUESTED_STATUS(HttpStatus.BAD_REQUEST, 4012, "요청 상태인 계약만 성립할 수 있습니다."),
 
     INVALID_PAYMENT_MEMBER(HttpStatus.BAD_REQUEST, 4020, "현재 로그인한 회원만이 자신의 계약을 결제할 수 있으며 클라이언트여야 합니다."),
-    NOT_CONFIRMED_STATUS(HttpStatus.BAD_REQUEST, 4021, "계약 성사 상태인 계약만 결제할 수 있습니다.");
+    NOT_CONFIRMED_STATUS(HttpStatus.BAD_REQUEST, 4021, "계약 성사 상태인 계약만 결제할 수 있습니다."),
+
+    INVALID_MEMBER_COUNT(HttpStatus.BAD_REQUEST, 4030, "계약 참여자 수를 만족하지 않습니다.");
 
     private final int httpStatusCode;
     private final int statusCode;
