@@ -67,7 +67,7 @@ public class CommissionsService implements CrudService<CommissionsServiceCommand
         }
         boolean owned = commissions.stream().anyMatch(entity -> entity.getCode().equals(commissionsCode));
 
-        if (owned) {
+        if (!owned) {
             throw new BusinessException(CustomStatusCode.FORBIDDEN_COMMISSION);
         }
 
