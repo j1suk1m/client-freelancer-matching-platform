@@ -2,12 +2,12 @@ package com.example.communicationservice.controller.dto.response;
 
 import com.example.communicationservice.entity.ChatRoom;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ChatRoomReadResponse(
     String id,
     String name,
-    LocalDateTime updatedAt
+    Instant updatedAt
 ) {
     public static ChatRoomReadResponse from(ChatRoom chatRoom) {
         return new ChatRoomReadResponse(

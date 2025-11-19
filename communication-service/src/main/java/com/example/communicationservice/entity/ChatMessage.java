@@ -8,7 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Document(collection = "chat_messages")
@@ -25,7 +25,7 @@ public class ChatMessage {
     private String content;
 
     @CreatedDate
-    private LocalDateTime sentAt; // 전송된 시간
+    private Instant sentAt; // 전송된 시간
 
     @Builder
     public ChatMessage(String roomId, String senderCode, String content) {
