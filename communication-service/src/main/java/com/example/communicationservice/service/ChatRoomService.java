@@ -1,5 +1,7 @@
 package com.example.communicationservice.service;
 
+import com.example.communicationservice.client.MemberServiceClient;
+import com.example.communicationservice.client.dto.MemberExistOutput;
 import com.example.communicationservice.common.exception.ChatRoomException;
 import com.example.communicationservice.common.status.ResponseDtoStatus;
 import com.example.communicationservice.controller.dto.response.ChatRoomCreateResponse;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberServiceClient memberServiceClient;
 
     /**
      * 새로운 채팅방을 생성하고 저장합니다.
@@ -34,12 +37,17 @@ public class ChatRoomService {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_NOT_INCLUDE_SELF);
         }
 
+        MemberExistOutput result = memberServiceClient.getMemberExistences(memberCodes).getData();
+
+        // memberCodes의 모든 참여자 코드가 유효한지 확인
+        if (!result.notExists().isEmpty()) {
+            throw new ChatRoomException(ResponseDtoStatus.CHATROOM_INVALID_MEMBER);
+        }
+
         // 이미 생성된 채팅방이 있는지 확인
         if (chatRoomRepository.existsByMemberCodes(memberCodes, memberCodes.size())) {
             throw new ChatRoomException(ResponseDtoStatus.CHATROOM_ALREADY_EXISTS);
         }
-
-        // TODO: memberCodes의 모든 회원 코드가 유효한지 확인
 
         // 채팅방 생성
         ChatRoom chatRoom = ChatRoom.builder()
