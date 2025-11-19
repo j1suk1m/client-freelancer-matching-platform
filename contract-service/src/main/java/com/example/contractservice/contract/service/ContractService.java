@@ -13,7 +13,6 @@ import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
 import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
-import com.example.contractservice.contract.service.dto.event.ContractEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
@@ -35,6 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.hexagon.core.events.contract.ContractEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +102,7 @@ public class ContractService {
 
         contractRepository.saveContract(contractEntity);
 
-        applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
+        applicationEventPublisher.publishEvent(new ContractEvent(contract.getInfo().requestorCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.CONFIRMED.name()));
 
         return ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name());
     }
@@ -122,7 +122,7 @@ public class ContractService {
 
         saveSettlements(contracts);
 
-        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
+        contracts.forEach(contract -> applicationEventPublisher.publishEvent(new ContractEvent(request.xCode(), contract.getCode(), contract.getCreatedAt(), ContractStatus.PAID.name())));
 
         return contracts.stream()
                 .map(contract -> ContractInfoResponse.of(contract.getCode(), contract.getInfo().status().name()))
