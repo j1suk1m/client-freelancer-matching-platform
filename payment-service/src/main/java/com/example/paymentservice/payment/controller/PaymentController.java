@@ -5,12 +5,14 @@ import com.example.paymentservice.payment.controller.dto.request.PaymentConfirmR
 import com.example.paymentservice.payment.controller.dto.response.PayRechargeResponse;
 import com.example.paymentservice.payment.controller.dto.response.PaymentGetResponse;
 import com.example.paymentservice.payment.controller.dto.response.PaymentsGetResponse;
+import com.example.paymentservice.payment.service.PaymentServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -46,16 +48,18 @@ import java.util.Base64;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class PaymentController implements PaymentApi {
 
     private final ObjectMapper om = new ObjectMapper();
+    private final PaymentServiceImpl paymentService;
+
     @Value("${payment.toss.widget-secret-key}")
     private String widgetSecretKey;
 
     @Value("${payment.toss.confirm-url}")
     private String tossPaymentConfirmUrl;
-
 
     @PostMapping("/confirm")
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody PaymentConfirmRequest request) throws Exception {
@@ -68,6 +72,7 @@ public class PaymentController implements PaymentApi {
                 "amount", request.amount()
         );
 
+        log.info("request amount : {}", request.amount());
         // Basic 인증 헤더
         String authorization = "Basic " + Base64.getEncoder()
                 .encodeToString((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
@@ -85,11 +90,16 @@ public class PaymentController implements PaymentApi {
         HttpResponse<InputStream> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
 
         int code = response.statusCode();
-        InputStream responseStream = code == 200 ? response.body() : response.body();
-
-        Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
-        JSONObject jsonObject = (JSONObject) parser.parse(reader);
+        InputStream responseStream = response.body();
+        byte[] bodyBytes = responseStream.readAllBytes(); // 스트림 전체 읽기
         responseStream.close();
+
+        // byte[]를 다시 InputStream으로 만들어서 사용
+        paymentService.confirmAndSave(new ByteArrayInputStream(bodyBytes));
+
+        Reader reader = new InputStreamReader(new ByteArrayInputStream(bodyBytes), StandardCharsets.UTF_8);
+        JSONObject jsonObject = (JSONObject) parser.parse(reader);
+
 
         return ResponseEntity.status(code).body(jsonObject);
     }
