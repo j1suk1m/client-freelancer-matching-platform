@@ -62,7 +62,8 @@ public class PaymentController implements PaymentApi {
     private String tossPaymentConfirmUrl;
 
     @PostMapping("/confirm")
-    public ResponseEntity<JSONObject> confirmPayment(@RequestBody PaymentConfirmRequest request) throws Exception {
+    public ResponseEntity<JSONObject> confirmPayment(@RequestHeader("X-CODE") String memberCode,
+            @RequestBody PaymentConfirmRequest request) throws Exception {
 
         JSONParser parser = new JSONParser();
 
@@ -95,11 +96,10 @@ public class PaymentController implements PaymentApi {
         responseStream.close();
 
         // byte[]를 다시 InputStream으로 만들어서 사용
-        paymentService.confirmAndSave(new ByteArrayInputStream(bodyBytes));
+        paymentService.confirmAndSave(new ByteArrayInputStream(bodyBytes), memberCode);
 
         Reader reader = new InputStreamReader(new ByteArrayInputStream(bodyBytes), StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
-
 
         return ResponseEntity.status(code).body(jsonObject);
     }

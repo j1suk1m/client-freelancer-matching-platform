@@ -1,5 +1,10 @@
 package com.example.paymentservice.payment.service;
 
+import com.example.paymentservice.common.dto.ResponseDto;
+import com.example.paymentservice.payment.controller.dto.request.DepositRechargeRequest;
+import com.example.paymentservice.payment.controller.dto.response.DepositRechargeResponse;
+import com.example.paymentservice.payment.controller.internal.ContractClient;
+import com.example.paymentservice.payment.model.OrderEntity;
 import com.example.paymentservice.payment.model.PaymentEntity;
 import com.example.paymentservice.payment.model.PaymentStatus;
 import com.example.paymentservice.payment.repository.OrderRepository;
@@ -26,9 +31,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final ObjectMapper om = new ObjectMapper();
+    private final ContractClient contractClient;
 
     @Transactional
-    public void confirmAndSave(InputStream tossResponseStream) throws Exception {
+    public void confirmAndSave(InputStream tossResponseStream, String memberCode) throws Exception {
         InputStreamReader reader = new InputStreamReader(tossResponseStream, StandardCharsets.UTF_8);
         PaymentConfirmResponse paymentResponse = om.readValue(reader, PaymentConfirmResponse.class);
         log.info("Payment Confirm Response: {}", paymentResponse);
@@ -43,11 +49,18 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         paymentRepository.save(payment);
+        payForRecharge(memberCode, (long)paymentResponse.amount());
     }
 
     @Override
-    public PayRechargeResult payForRecharge(String code, String amount) {
-        return null;
+    public void payForRecharge(String memberCode, Long amount) {
+
+        DepositRechargeRequest request = new DepositRechargeRequest(
+                memberCode,
+                amount
+        );
+        // 2. Feign Client 호출
+        ResponseDto<DepositRechargeResponse> responseDto = contractClient.recharge(request);
     }
 
     @Override
