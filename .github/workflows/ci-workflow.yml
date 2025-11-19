@@ -137,21 +137,44 @@ jobs:
       - name: application-test.properties 파일 내용 확인
         run: cat ./search-service/src/main/resources/application-test.yml
 
-      - name: search-service 테스트 실행
-        working-directory: ./search-service
-        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
-
-#      - name: member-service 테스트 실행
-#        working-directory: ./member-service
-#        run: |
-#          if [ -f ./gradlew ]; then
-#            echo "gradlew exists"
-#          fi
-#          ./gradlew test --no-daemon -Dspring.profiles.active=test
-#
-#      - name: contract-service 테스트 실행
-#        working-directory: ./contract-service
+#      - name: search-service 테스트 실행
+#        working-directory: ./search-service
 #        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
+
+      - name: Elasticsearch docker down
+        run: |
+          docker stop elasticsearch 
+          docker rm elasticsearch 
+
+      - name: Redis docker run
+        run: |
+          docker run -d \
+            --name redis \
+            -p 6379:6379 \
+            redis:7
+
+      - name: Wait for Redis to be up
+        run: |
+          for i in {1..10}; do
+            if redis-cli ping | grep -q PONG; then
+              echo "Redis is up"
+              break
+            fi
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+
+      - name: member-service 테스트 실행
+        working-directory: ./member-service
+        run: |
+          if [ -f ./gradlew ]; then
+            echo "gradlew exists"
+          fi
+          ./gradlew test --no-daemon -Dspring.profiles.active=test
+
+      - name: contract-service 테스트 실행
+        working-directory: ./contract-service
+        run: ./gradlew test --no-daemon -Dspring.profiles.active=test
 #
 #      - name: cartpost-service 테스트 실행
 #        working-directory: ./cartpost-service
