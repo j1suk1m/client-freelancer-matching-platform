@@ -19,6 +19,9 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hexagon.core.events.commission.CommissionDeletedEvent;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,11 @@ public class CartServiceImpl implements CartService {
     private final CartsRepository cartsRepository;
     private final CartItemsRepository cartItemsRepository;
     private final ContractClient contractClient;
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Value("${search.topic.name}")
+    private String targetTopicName;
 
     @Override
     @Transactional(readOnly = true)
@@ -74,6 +82,12 @@ public class CartServiceImpl implements CartService {
         }
 
         cartItemsRepository.delete(cartItem);
+
+        // 카프카 서버로 삭제 이벤트 전달
+        CommissionDeletedEvent event = new CommissionDeletedEvent(cartItem.getContractCode());
+
+        // kafkaTemplate.send(토픽이름, 메세지객체)
+        kafkaTemplate.send(targetTopicName, event);
 
         return EmptyResponse.getInstance();
     }
