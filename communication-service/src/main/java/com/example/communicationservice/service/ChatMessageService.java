@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -83,7 +83,7 @@ public class ChatMessageService {
         ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
         // 채팅방의 updatedAt 갱신
-        chatRoom.setUpdatedAt(LocalDateTime.now());
+        chatRoom.setUpdatedAt(Instant.now());
         chatRoomRepository.save(chatRoom);
 
         return ChatMessageSendResponse.from(savedChatMessage);
