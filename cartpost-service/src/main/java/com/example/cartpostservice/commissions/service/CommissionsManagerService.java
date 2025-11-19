@@ -13,26 +13,35 @@ import com.example.cartpostservice.commissions.service.dto.request.CommissionsSe
 import com.example.cartpostservice.commissions.service.dto.request.TagServiceCommand;
 import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
 import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
+import com.example.cartpostservice.commissions.service.kafka.CommissionKafkaService;
 import com.example.cartpostservice.common.dto.ResponseDto;
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hexagon.core.events.commission.CommissionCreatedEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CommissionsManagerService {
 
     private final CommissionsService commissionsService;
     private final CommissionsTagService commissionsTagService;
+    private final CommissionKafkaService commissionKafkaService;
     private final MemberClient memberClient;
 
     @Transactional
@@ -74,6 +83,9 @@ public class CommissionsManagerService {
 
         // 응답 데이터에 commissionscode 전달
         CommissionCreateResponse commissionCreateResponse = new CommissionCreateResponse(commissionsCode);
+
+        // kafka
+        commissionKafkaService.createProducer(commissionsCode,request);
 
         return commissionCreateResponse;
     }
@@ -132,6 +144,9 @@ public class CommissionsManagerService {
 
         commissionsService.update(commissionsServiceCommand, commissionCode);
         commissionsTagService.update(tagServiceCommand, commissionCode);
+
+        // kafka
+        commissionKafkaService.updateProducer(commissionCode, request);
 
         return new CommissionUpdateResponse(commissionCode);
     }
