@@ -11,8 +11,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.memberservice.member.service.model.dto.output.MemberInfoOutput;
+import com.example.profileservice.common.model.vo.KafkaProducer;
 import com.example.profileservice.common.model.vo.PaymentType;
 import com.example.profileservice.common.model.vo.ResponseDto;
+import com.example.profileservice.common.model.vo.util.MemberFeignClient;
 import com.example.profileservice.rating.model.dto.request.MemberExistOutput;
 import com.example.profileservice.resume.model.entity.ResumeEntity;
 import com.example.profileservice.resume.repository.ResumeRepository;
@@ -25,7 +28,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
-import org.apache.kafka.clients.consumer.internals.AbstractPartitionAssignor.MemberInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,11 +66,22 @@ public class SelfPromotionControllerTest {
     private ResumeRepository resumeRepository;
 
     @MockitoBean
-    private MemberServiceClient memberServiceClient;
+    private MemberFeignClient memberFeignClient;
+
+    @MockitoBean
+    private KafkaProducer kafkaProducer;
 
     private SelfPromotionEntity initialPromotion;
     private SelfPromotionEntity otherPromotion;
     private ResumeEntity validResume;
+
+    // InternalMemberInfo의 Mock 타입 정의
+    public record InternalMemberInfo(String memberCode, String nickname) {} // 닉네임 필드명을 'nickname'으로 가정
+
+    // MemberInfoOutput의 Mock 타입 정의
+    public record MockMemberInfoOutput(
+            List<InternalMemberInfo> internalMemberInfos // 필드명을 'internalMemberInfos'로 가정
+    ) {}
 
     @BeforeEach
     void setUp() {
@@ -78,19 +91,26 @@ public class SelfPromotionControllerTest {
         // 2. 회원 존재 여부 Mocking (모든 유효 코드는 존재함)
         MemberExistOutput mockExistOutput = new MemberExistOutput(validCodes, List.of());
         ResponseDto<MemberExistOutput> mockExistResponse = ResponseDto.success(mockExistOutput);
-        Mockito.when(memberServiceClient.existMemberByCode(anyList()))
+        Mockito.when(memberFeignClient.existMemberByCode(anyList()))
                 .thenReturn(mockExistResponse);
 
         // 3. 회원 닉네임 조회 Mocking (toResponse 헬퍼 메서드에서 사용)
-        List<MemberInfo> memberInfos = List.of(
-                new MemberInfo(TEST_MEMBER_CODE, "테스터닉네임"),
-                new MemberInfo(OTHER_MEMBER_CODE, "타인닉네임")
+        List<InternalMemberInfo> internalMemberInfos = List.of(
+                new InternalMemberInfo(TEST_MEMBER_CODE, "테스터닉네임"),
+                new InternalMemberInfo(OTHER_MEMBER_CODE, "타인닉네임")
         );
-        MemberInfoOutput mockInfoOutput = new MemberInfoOutput(memberInfos);
-        ResponseDto<MemberInfoOutput> mockInfoResponse = ResponseDto.success(mockInfoOutput);
 
-        Mockito.when(memberServiceClient.getMemberInfoByCode(anyList()))
-                .thenReturn(mockInfoResponse);
+        MemberInfoOutput actualMemberInfoOutput = Mockito.mock(MemberInfoOutput.class);
+
+        Mockito.when(memberFeignClient.getMemberInfoByCode(anyList()))
+                .thenAnswer(invocation -> {
+                    // 실제 memberInfoOutput.internalMemberInfos()의 반환값을 Mocking된 리스트로 설정
+                    Mockito.when(actualMemberInfoOutput.internalMemberInfos())
+                            .thenReturn((List) internalMemberInfos);
+
+                    // 최종적으로 Feign Client가 반환해야 하는 ResponseDto<MemberInfoOutput> 객체를 생성
+                    return ResponseDto.success(actualMemberInfoOutput);
+                });
 
         // 4. Kafka Producer Mocking
         doNothing().when(kafkaProducer).send(any(String.class), any());
@@ -340,7 +360,7 @@ public class SelfPromotionControllerTest {
         );
         ResponseDto<MemberExistOutput> mockFailureResponse = ResponseDto.success(mockExistOutputFailure);
 
-        Mockito.when(memberServiceClient.existMemberByCode(invalidCodeList))
+        Mockito.when(memberFeignClient.existMemberByCode(invalidCodeList))
                 .thenReturn(mockFailureResponse);
 
         SelfPromotionCreateRequest request = new SelfPromotionCreateRequest(

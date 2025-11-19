@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.profileservice.common.model.vo.ResponseDto;
+import com.example.profileservice.common.model.vo.util.MemberFeignClient;
 import com.example.profileservice.experience.model.dto.request.ExperienceRequest;
 import com.example.profileservice.experience.model.entity.ExperienceEntity;
 import com.example.profileservice.experience.repository.ExperienceRepository;
@@ -64,7 +65,7 @@ public class ResumeControllerTest {
     private ExperienceRepository experienceRepository;
 
     @MockitoBean
-    private MemberServiceClient memberServiceClient;
+    private MemberFeignClient memberServiceClient;
 
     private ResumeEntity initialResume;
     private ExperienceEntity initialExperience;

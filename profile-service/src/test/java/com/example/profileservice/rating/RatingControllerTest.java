@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.profileservice.common.model.vo.ResponseDto;
+import com.example.profileservice.common.model.vo.util.MemberFeignClient;
 import com.example.profileservice.rating.model.dto.request.MemberExistOutput;
 import com.example.profileservice.rating.model.dto.request.RatingRequest;
 import com.example.profileservice.rating.repository.RatingRepository;
@@ -52,7 +53,7 @@ public class RatingControllerTest {
     private RatingService ratingService;
 
     @MockitoBean
-    private MemberServiceClient memberServiceClient;
+    private MemberFeignClient memberServiceClient;
 
     private RatingRequest satisfiedRequest;
     private RatingRequest unsatisfiedRequest;
