@@ -28,7 +28,7 @@ public class ChatMessage {
     private Instant sentAt; // 전송된 시간
 
     @Builder
-    public ChatMessage(String roomId, String senderCode, String content) {
+    private ChatMessage(String roomId, String senderCode, String content) {
         this.roomId = roomId;
         this.senderCode = senderCode;
         this.content = content;
