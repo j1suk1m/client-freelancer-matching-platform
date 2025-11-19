@@ -13,10 +13,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -29,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void confirmAndSave(InputStream tossResponseStream) throws Exception {
         InputStreamReader reader = new InputStreamReader(tossResponseStream, StandardCharsets.UTF_8);
         PaymentConfirmResponse paymentResponse = om.readValue(reader, PaymentConfirmResponse.class);
+        log.info("Payment Confirm Response: {}", paymentResponse);
 
         PaymentEntity payment = PaymentEntity.builder()
                 .paymentKey(paymentResponse.paymentKey())
@@ -36,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .amount((long)paymentResponse.amount())
                 .paymentStatus(PaymentStatus.valueOf(paymentResponse.status()))
                 .method(paymentResponse.method())
-                .approveAt(LocalDateTime.parse(paymentResponse.approvedAt()))
+                .approveAt(OffsetDateTime.parse(paymentResponse.approvedAt()).toInstant())
                 .build();
 
         paymentRepository.save(payment);
