@@ -9,6 +9,7 @@ import com.example.cartpostservice.cart.model.CartsEntity;
 import com.example.cartpostservice.cart.model.vo.ContractStatus;
 import com.example.cartpostservice.cart.repository.CartItemsRepository;
 import com.example.cartpostservice.cart.repository.CartsRepository;
+import com.example.cartpostservice.cart.service.kafka.CartKafkaService;
 import com.example.cartpostservice.common.dto.EmptyResponse;
 import com.example.cartpostservice.common.dto.ResponseDto;
 import com.example.cartpostservice.common.exception.BusinessException;
@@ -31,12 +32,10 @@ public class CartServiceImpl implements CartService {
 
     private final CartsRepository cartsRepository;
     private final CartItemsRepository cartItemsRepository;
+    private final CartKafkaService cartKafkaService;
     private final ContractClient contractClient;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${search.topic.name}")
-    private String targetTopicName;
 
     @Override
     @Transactional(readOnly = true)
@@ -83,11 +82,7 @@ public class CartServiceImpl implements CartService {
 
         cartItemsRepository.delete(cartItem);
 
-        // 카프카 서버로 삭제 이벤트 전달
-        CommissionDeletedEvent event = new CommissionDeletedEvent(cartItem.getContractCode());
-
-        // kafkaTemplate.send(토픽이름, 메세지객체)
-        kafkaTemplate.send(targetTopicName, event);
+        cartKafkaService.deleteProducer(cartItem.getContractCode());
 
         return EmptyResponse.getInstance();
     }
