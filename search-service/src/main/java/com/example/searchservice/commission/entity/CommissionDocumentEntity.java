@@ -1,6 +1,6 @@
 package com.example.searchservice.commission.entity;
 
-import com.example.searchservice.commission.common.PaymentType;
+import com.example.searchservice.common.vo.PaymentType;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -10,10 +10,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Getter
@@ -21,17 +24,22 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "commissions", createIndex = false)
+@Document(indexName = "commissions")
 @Setting(settingPath = "elasticsearch/commissions-settings.json")
 public class CommissionDocumentEntity {
 
     @Id
     private String code;
 
-    @Field(type = FieldType.Text)
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, analyzer = "commission_index_analyzer", searchAnalyzer = "commission_search_analyzer"),
+            otherFields = {
+                    @InnerField(suffix = "completion", type = FieldType.Search_As_You_Type)
+            }
+    )
     private String title;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "commission_index_analyzer", searchAnalyzer = "commission_search_analyzer")
     private String content;
 
     @Field(type = FieldType.Keyword)
@@ -61,4 +69,6 @@ public class CommissionDocumentEntity {
     @Field(type = FieldType.Date, format = DateFormat.date_time, name = "updated_at")
     private Instant updatedAt;
 
+    @Version
+    Long version;
 }

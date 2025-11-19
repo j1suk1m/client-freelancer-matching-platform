@@ -1,17 +1,16 @@
 package com.example.memberservice.member.controller;
 
-import com.example.memberservice.common.model.vo.Empty;
-import com.example.memberservice.common.model.vo.ResponseDto;
-import com.example.memberservice.member.controller.dto.request.UserCreateRequest;
-import com.example.memberservice.member.controller.dto.request.UserUpdateRequest;
-import com.example.memberservice.member.controller.dto.response.UserGetResponse;
+
+import com.example.memberservice.common.web.model.dto.ResponseDto;
+import com.example.memberservice.common.web.model.vo.Empty;
+import com.example.memberservice.member.controller.dto.request.MemberCreateRequest;
+import com.example.memberservice.member.controller.dto.request.MemberUpdateRequest;
+import com.example.memberservice.member.controller.dto.response.MemberGetResponse;
 import com.example.memberservice.member.controller.swagger.MemberApiControllerSwagger;
+import com.example.memberservice.member.mapper.MemberServiceInputMapper;
 import com.example.memberservice.member.service.MemberService;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,46 +38,57 @@ public class MemberApiController implements MemberApiControllerSwagger {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ResponseDto<UserGetResponse>> getMemberById(
-        @RequestParam(name = "member-code", required = false) String memberCode) {
-
-        return null;
+    public ResponseDto<MemberGetResponse> getMemberByCode(
+        @RequestHeader(name = "X-CODE", required = false) String xCode,
+        @RequestParam(name = "member-code", required = false) String paramCode) {
+        return ResponseDto.success(memberService.getMemberByCode(MemberServiceInputMapper.toGetMemberInput(xCode, paramCode)));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResponseDto<Empty>> createUser(@RequestBody UserCreateRequest request) {
 
-        return ResponseEntity.status(200).body(new ResponseDto<>(200,200, "요청에 성공적입니다.",Empty.getInstance()));
+    public ResponseDto<Empty> createMember(@RequestHeader(name = "X-CODE") String memberCode,
+        @RequestBody MemberCreateRequest request) {
+
+        memberService.createMember(MemberServiceInputMapper.toCreateMemberInput(memberCode, request));
+
+        return ResponseDto.success(HttpStatus.CREATED);
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Empty>> updateUser(@RequestBody UserUpdateRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto<Empty> updateMember(@RequestHeader(name = "X-CODE") String memberCode,
+        @RequestBody MemberUpdateRequest request) {
 
-        return null;
+        memberService.updateMember(MemberServiceInputMapper.toUpdateMemberInput(memberCode, request));
+        return ResponseDto.success();
     }
 
     @PatchMapping("/state")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Empty>> updateUserWorkState(@RequestHeader("X-CODE") String memberCode) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto<Empty> updateMemberWorkState(@RequestHeader("X-CODE") String memberCode) {
 
-        return null;
+        memberService.updateMemberWorkState(MemberServiceInputMapper.toUpdateMemberWorkStateInput(memberCode));
+        return ResponseDto.success();
     }
 
     @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<ResponseDto<Empty>> deleteUser() {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto<Empty> deleteMember(@RequestHeader("X-CODE") String memberCode
+    ) {
 
-        return null;
+        memberService.deleteMember(MemberServiceInputMapper.toDeleteMemberInput(memberCode));
+
+        return ResponseDto.success();
     }
 
     @GetMapping("/check-name")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Empty> existMemberByName(@RequestParam(name = "name") String name) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto<Empty> existMemberByName(@RequestHeader("X-CODE") String memberCode,
+        @RequestParam(name = "name") String name) {
 
-        return null;
+        memberService.existMemberByNickName(MemberServiceInputMapper.toExistMemberByNameInput(memberCode, name));
+
+        return ResponseDto.success();
     }
-
-
 }
