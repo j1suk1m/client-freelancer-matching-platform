@@ -19,7 +19,7 @@ env:
 jobs:
   deploy:
     name: ${{ inputs.service-name }}docker service container 재실행
-    runs-on: Self-hosted
+    runs-on: self-hosted
 
     steps:
       - name: 현재 동작 중인 container 삭제
