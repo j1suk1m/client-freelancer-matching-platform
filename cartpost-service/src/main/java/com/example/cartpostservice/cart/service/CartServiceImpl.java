@@ -1,12 +1,16 @@
 package com.example.cartpostservice.cart.service;
 
+import com.example.cartpostservice.cart.controller.dto.request.ContractPayRequest;
 import com.example.cartpostservice.cart.controller.dto.response.CartItemsGetResponse;
+import com.example.cartpostservice.cart.controller.dto.response.ContractInfoResponse;
+import com.example.cartpostservice.cart.controller.internal.ContractClient;
 import com.example.cartpostservice.cart.model.CartItemsEntity;
 import com.example.cartpostservice.cart.model.CartsEntity;
 import com.example.cartpostservice.cart.model.vo.ContractStatus;
 import com.example.cartpostservice.cart.repository.CartItemsRepository;
 import com.example.cartpostservice.cart.repository.CartsRepository;
 import com.example.cartpostservice.common.dto.EmptyResponse;
+import com.example.cartpostservice.common.dto.ResponseDto;
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import com.example.cartpostservice.common.model.vo.PaymentType;
@@ -24,6 +28,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartsRepository cartsRepository;
     private final CartItemsRepository cartItemsRepository;
+    private final ContractClient contractClient;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,6 +74,21 @@ public class CartServiceImpl implements CartService {
         }
 
         cartItemsRepository.delete(cartItem);
+
+        return EmptyResponse.getInstance();
+    }
+
+    @Override
+    public EmptyResponse payCartItems(String xCode, ContractPayRequest requests) {
+
+        ResponseDto<List<ContractInfoResponse>> response = contractClient.payContract(xCode, requests);
+
+        for (ContractInfoResponse contract : response.data()) {
+            if ("PAID".equals(contract.status())) {
+
+                cartItemsRepository.deleteByContractCode(contract.code());
+            }
+        }
 
         return EmptyResponse.getInstance();
     }
