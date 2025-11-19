@@ -14,4 +14,6 @@ public interface CartItemsRepository extends JpaRepository<CartItemsEntity, Stri
     Optional<CartItemsEntity> findByCode(String itemCode);
 
     void deleteByContractCode(String code);
+
+    boolean existsByContractCode(String s);
 }
