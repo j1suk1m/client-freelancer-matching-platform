@@ -24,7 +24,7 @@ public class MemberKafkaEventProducer implements MemberEventProducer{
     @Value("${kafka.topic.member.create-topic}")
     private String memberCreatedTopicName;
 
-    @Value("${kafka.topic.member.update-topic-topic}")
+    @Value("${kafka.topic.member.update-topic}")
     private String memberUpdatedTopicName;
 
 
