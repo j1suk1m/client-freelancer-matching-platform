@@ -12,7 +12,7 @@ import com.example.contractservice.contract.domain.Contract;
 import com.example.contractservice.contract.domain.exception.ContractException;
 import com.example.contractservice.contract.domain.vo.ContractInfo;
 import com.example.contractservice.contract.entity.ContractEntity;
-import com.example.contractservice.contract.event.dto.ContractEvent;
+import com.example.contractservice.contract.service.event.dto.ContractEvent;
 import com.example.contractservice.contract.repository.ContractRepository;
 import com.example.contractservice.contract.service.dto.request.ContractConfirmRequest;
 import com.example.contractservice.contract.service.dto.request.ContractPayProcessRequest;
@@ -25,6 +25,7 @@ import com.example.contractservice.deposit.service.DepositService;
 import com.example.contractservice.settlement.service.SettlementService;
 import com.example.contractservice.settlement.service.dto.request.SettlementSaveRequest;
 import java.net.URI;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -200,11 +201,13 @@ public class ContractService {
             throw new ContractException(INVALID_PAYMENT_MEMBER);
         }
 
-        boolean isAllConfirmed = contracts.stream().allMatch(Contract::isConfirmed);
+        boolean isAnyNotConfirmed = contracts.stream().anyMatch(contract -> !contract.isConfirmed() // CONFIRMED 상태가 아니거나
+                || contract.getInfo().startedAt().isBefore(Instant.now())); // CONFIRMED인데 현재 시간보다 프로젝트 시작일이 이전이라면(실제로는 CANCELLED 상태)
 
-        if (!isAllConfirmed) {
+        if (isAnyNotConfirmed) {
             throw new ContractException(NOT_CONFIRMED_STATUS);
         }
+
     }
 
     private void changeStatusToPay(List<Contract> contracts, List<ContractEntity> contractEntities) {
