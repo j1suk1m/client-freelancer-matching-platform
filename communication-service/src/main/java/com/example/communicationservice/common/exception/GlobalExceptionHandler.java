@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
             .body(ResponseDto.error(ResponseDtoStatus.VALIDATION_FAILED, errors));
     }
 
-    // 채팅방 커스텀 예외 처리
-    @ExceptionHandler(ChatRoomException.class)
-    public ResponseEntity<ResponseDto<Empty>> handleChatRoomException(ChatRoomException ex) {
+    // 커스텀 예외 처리
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ResponseDto<Empty>> handleChatRoomException(CustomException ex) {
         ResponseDtoStatus status = ex.getStatus();
 
         return ResponseEntity
