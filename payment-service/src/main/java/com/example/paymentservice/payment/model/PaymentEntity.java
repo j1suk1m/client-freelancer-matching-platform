@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -36,11 +37,11 @@ public class PaymentEntity extends BaseEntity {
     @Column(nullable = false)
     private String method;
 
-    @Column(nullable = false)
-    LocalDateTime approveAt;
+    @Column()
+    private Instant approveAt;
 
     @Builder
-    public PaymentEntity(String orderPgId,  String paymentKey, Long amount, PaymentStatus paymentStatus, String method, LocalDateTime approveAt) {
+    public PaymentEntity(String orderPgId,  String paymentKey, Long amount, PaymentStatus paymentStatus, String method, Instant approveAt) {
         this.orderPgId = orderPgId;
         this.paymentKey = paymentKey;
         this.amount = amount;
