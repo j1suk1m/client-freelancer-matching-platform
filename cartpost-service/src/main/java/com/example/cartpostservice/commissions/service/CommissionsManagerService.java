@@ -5,12 +5,15 @@ import com.example.cartpostservice.commissions.controller.dto.response.Commissio
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionReadResponse;
+import com.example.cartpostservice.commissions.controller.dto.response.InternalMemberInfo;
+import com.example.cartpostservice.commissions.controller.dto.response.MemberInfoOutput;
 import com.example.cartpostservice.commissions.controller.dto.response.MemberResponse;
 import com.example.cartpostservice.commissions.controller.internal.MemberClient;
 import com.example.cartpostservice.commissions.service.dto.request.CommissionsServiceCommand;
 import com.example.cartpostservice.commissions.service.dto.request.TagServiceCommand;
 import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
 import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
+import com.example.cartpostservice.common.dto.ResponseDto;
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import jakarta.transaction.Transactional;
@@ -35,7 +38,16 @@ public class CommissionsManagerService {
     @Transactional
     public CommissionCreateResponse createCommission(String memberCode, CommissionUpsertRequest request) {
 
-        MemberResponse member = memberClient.getMember(memberCode);
+        List<String> codes = List.of(memberCode);
+
+        // 2. Feign 요청 (GET /internal/members?member-code=)
+        ResponseDto<MemberInfoOutput> response = memberClient.getMemberInfoByCode(codes);
+
+        String nickName = response.data().internalMemberInfos().stream()
+                .filter(info -> info.memberCode().equals(memberCode)) // 혹시 모를 다른 회원 데이터 섞임 방지
+                .findFirst()
+                .map(InternalMemberInfo::nickName) // record 접근자 (getNickName 아님)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_MEMBER_INFO));
 
         // request에서 온 것을 커미션과 태그 용 리퀘스트로 분리
         CommissionsServiceCommand commissionsServiceCommand = new CommissionsServiceCommand(
@@ -46,7 +58,7 @@ public class CommissionsManagerService {
                 request.unitAmount(),
                 request.startedAt(),
                 request.endedAt(),
-                member.nickName()
+                nickName
         );
 
         // 커미션 서비스에 리퀘스트 데이터를 저장 데이터 받기
@@ -91,7 +103,16 @@ public class CommissionsManagerService {
     public CommissionUpdateResponse updateCommission(String code, String commissionCode,
             CommissionUpsertRequest request) {
 
-        MemberResponse member = memberClient.getMember(code);
+        List<String> codes = List.of(code);
+
+        // 2. Feign 요청 (GET /internal/members?member-code=)
+        ResponseDto<MemberInfoOutput> response = memberClient.getMemberInfoByCode(codes);
+
+        String nickName = response.data().internalMemberInfos().stream()
+                .filter(info -> info.memberCode().equals(code)) // 혹시 모를 다른 회원 데이터 섞임 방지
+                .findFirst()
+                .map(InternalMemberInfo::nickName) // record 접근자 (getNickName 아님)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_MEMBER_INFO));
 
         CommissionsServiceCommand commissionsServiceCommand = new CommissionsServiceCommand(
                 code,
@@ -101,7 +122,7 @@ public class CommissionsManagerService {
                 request.unitAmount(),
                 request.startedAt(),
                 request.endedAt(),
-                member.nickName()
+                nickName
         );
 
         TagServiceCommand tagServiceCommand = new TagServiceCommand(
