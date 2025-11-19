@@ -1,6 +1,6 @@
 package com.example.cartpostservice.commissions.service;
 
-import com.example.cartpostservice.commissions.controller.dto.request.CommissionCreateRequest;
+import com.example.cartpostservice.commissions.controller.dto.request.CommissionUpsertRequest;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
@@ -33,7 +33,7 @@ public class CommissionsManagerService {
     private final MemberClient memberClient;
 
     @Transactional
-    public CommissionCreateResponse createCommission(String memberCode, CommissionCreateRequest request) {
+    public CommissionCreateResponse createCommission(String memberCode, CommissionUpsertRequest request) {
 
         MemberResponse member = memberClient.getMember(memberCode);
 
@@ -89,7 +89,7 @@ public class CommissionsManagerService {
 
     @Transactional
     public CommissionUpdateResponse updateCommission(String code, String commissionCode,
-            CommissionCreateRequest request) {
+            CommissionUpsertRequest request) {
 
         MemberResponse member = memberClient.getMember(code);
 

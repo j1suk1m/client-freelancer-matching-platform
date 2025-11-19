@@ -1,6 +1,6 @@
 package com.example.cartpostservice.commissions.controller;
 
-import com.example.cartpostservice.commissions.controller.dto.request.CommissionCreateRequest;
+import com.example.cartpostservice.commissions.controller.dto.request.CommissionUpsertRequest;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionCreateResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.controller.dto.response.CommissionUpdateResponse;
@@ -34,9 +34,9 @@ public class CommissionsController implements CommissionsApi {
     @Override
     @PostMapping
     public ResponseEntity<ResponseDto<CommissionCreateResponse>> createCommission(@RequestHeader("X-CODE") String code,
-            @Valid @RequestBody CommissionCreateRequest commissionCreateRequest) {
+            @Valid @RequestBody CommissionUpsertRequest commissionUpsertRequest) {
 
-        CommissionCreateResponse response = commissionsManagerService.createCommission(code, commissionCreateRequest);
+        CommissionCreateResponse response = commissionsManagerService.createCommission(code, commissionUpsertRequest);
 
         return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.CREATED, response),
                 CustomStatusCode.CREATED.getStatus());
@@ -58,11 +58,11 @@ public class CommissionsController implements CommissionsApi {
     public ResponseEntity<ResponseDto<CommissionUpdateResponse>> updateCommission(
             @RequestHeader("X-CODE") String code,
             @PathVariable(name = "commission-code") String commissionCode,
-            @Valid @RequestBody CommissionCreateRequest commissionCreateRequest
+            @Valid @RequestBody CommissionUpsertRequest commissionUpsertRequest
     ) {
 
         CommissionUpdateResponse response = commissionsManagerService.updateCommission(code, commissionCode,
-                commissionCreateRequest);
+                commissionUpsertRequest);
 
         return new ResponseEntity<>(ResponseDto.success(CustomStatusCode.SUCCESS, response),
                 CustomStatusCode.SUCCESS.getStatus());

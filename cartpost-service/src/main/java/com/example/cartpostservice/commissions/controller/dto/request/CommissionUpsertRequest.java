@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Schema(description = "커미션 생성 요청 DTO")
-public record CommissionCreateRequest(
+public record CommissionUpsertRequest(
 
         @Schema(description = "의뢰 제목", example = "디자인 작업 요청")
         @NotBlank(message = "title은 반드시 입력해야 합니다.")
