@@ -242,9 +242,6 @@ public class ResumeControllerTest {
         // Mock 객체의 모든 기존 설정을 제거합니다.
         Mockito.reset(memberServiceClient);
 
-        // 정확한 인수를 정의합니다.
-        // List<String> inputCodes = List.of(INVALID_MEMBER_CODE); // 👈 이 코드는 불필요
-
         // INVALID_MEMBER_CODE는 존재하지 않도록 응답 설정 (실패 응답 DTO는 그대로 사용)
         MemberExistOutput mockExistOutputFailure = new MemberExistOutput(
                 List.of(), // 존재하는 코드 없음
