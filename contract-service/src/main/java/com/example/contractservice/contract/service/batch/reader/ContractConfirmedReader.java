@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class ContractConfirmedReader extends JpaCursorItemReader<ContractEntity> { // JpaPagingItemReader와 비교 필요
+public class ContractConfirmedReader extends JpaCursorItemReader<ContractEntity> { // TODO: 트러블슈팅 문서 보완
 
     public ContractConfirmedReader(EntityManagerFactory emFactory,
             @Value("#{jobParameters['dateStr']}") String dateStr,
