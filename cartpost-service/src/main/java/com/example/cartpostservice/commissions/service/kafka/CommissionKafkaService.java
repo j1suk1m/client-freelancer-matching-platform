@@ -1,8 +1,11 @@
 package com.example.cartpostservice.commissions.service.kafka;
 
 import com.example.cartpostservice.commissions.controller.dto.request.CommissionUpsertRequest;
+import com.example.cartpostservice.commissions.controller.dto.response.CommissionElementReadResponse;
 import com.example.cartpostservice.commissions.model.CommissionsEntity;
 import com.example.cartpostservice.commissions.repository.CommissionsRepository;
+import com.example.cartpostservice.commissions.service.dto.response.CommissionsServiceResult;
+import com.example.cartpostservice.commissions.service.dto.response.TagServiceResult;
 import com.example.cartpostservice.common.exception.BusinessException;
 import com.example.cartpostservice.common.exception.CustomStatusCode;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +81,28 @@ public class CommissionKafkaService {
         CommissionDeletedEvent commissionDeletedEvent = new CommissionDeletedEvent(commissionCode);
 
         kafkaTemplate.send(searchTopicName, commissionDeletedEvent);
+    }
+
+    public void finishProducer(String commissionCode, TagServiceResult tagResult) {
+
+        CommissionsEntity commissionsEntity = commissionsRepository.findByCode(commissionCode)
+                .orElseThrow(() -> new BusinessException(CustomStatusCode.NOT_FOUND_COMMISSION));
+
+        CommissionUpdatedEvent commissionUpdatedEvent = new CommissionUpdatedEvent(
+                commissionCode,
+                commissionsEntity.getTitle(),
+                commissionsEntity.getContent(),
+                commissionsEntity.getMemberCode(),
+                commissionsEntity.getWriterName(),
+                tagResult.tagCodes(),
+                commissionsEntity.getStartedAt(),
+                commissionsEntity.getEndedAt(),
+                commissionsEntity.getPaymentType(),
+                Long.parseLong(commissionsEntity.getUnitAmount()),
+                commissionsEntity.isOpen(),
+                commissionsEntity.getUpdatedAt()
+        );
+
+        kafkaTemplate.send(searchTopicName, commissionUpdatedEvent);
     }
 }

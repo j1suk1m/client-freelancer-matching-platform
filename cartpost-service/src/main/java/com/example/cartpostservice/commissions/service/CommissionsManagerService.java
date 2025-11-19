@@ -157,6 +157,7 @@ public class CommissionsManagerService {
         commissionsService.delete(code, commissionCode);
         commissionsTagService.delete(code, commissionCode);
 
+        // kafka
         commissionKafkaService.deleteProducer(commissionCode);
     }
 
@@ -167,6 +168,13 @@ public class CommissionsManagerService {
         }
 
         commissionsService.closeCommission(commissionCode);
+
+        CommissionsServiceResult commissionResult = commissionsService.read(commissionCode);
+        TagServiceResult tagResult = commissionsTagService.read(commissionResult.code());
+
+        // kafka
+        commissionKafkaService.finishProducer(commissionCode, tagResult);
+
     }
 
     @Transactional
