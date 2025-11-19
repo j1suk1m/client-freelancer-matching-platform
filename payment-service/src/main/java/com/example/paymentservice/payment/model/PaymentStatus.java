@@ -2,8 +2,11 @@ package com.example.paymentservice.payment.model;
 
 public enum PaymentStatus {
     READY,
+    IN_PROGRESS,
+    WAITING_FOR_DEPOSIT,
     DONE,
     CANCELED,
-    FAILED,
-    PARTIAL_CANCELED
+    PARTIAL_CANCELED,
+    ABORTED,
+    EXPIRED
 }
