@@ -32,10 +32,6 @@ jobs:
     permissions:
       contents: write
 
-    concurrency:
-      group: "tagging-${{ github.ref_name }}"  # 브랜치 단위로 직렬화
-      cancel-in-progress: false
-
     steps:
       - uses: actions/checkout@v5
 
