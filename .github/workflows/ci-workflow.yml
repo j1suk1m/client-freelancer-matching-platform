@@ -130,22 +130,6 @@ jobs:
             -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
             apache/kafka
 
-      - name: kafka 연결 확인
-        run: |
-          for i in {1..12}; do
-            if docker exec kafka opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092 > /dev/null 2>&1; then
-              echo "Kafka is up"
-              break
-            fi
-            echo "Waiting for Kafka to be ready..."
-            sleep 5
-          done
-
-          if [ $i -eq 12 ]; then
-            echo "Kafka failed to start." >&2
-            exit 1
-          fi
-
       - name: Elasticsearch docker run
         run: |
           docker run -d \
