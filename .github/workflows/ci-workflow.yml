@@ -109,31 +109,6 @@ jobs:
           sudo sysctl -w fs.file-max=262144
           sudo sysctl -w vm.max_map_count=262144
 
-      - name: Elasticsearch docker run
-        run: |
-          docker run -d \
-            --name elasticsearch \
-            -p 9200:9200 \
-            -e node.name=es01 \
-            -e cluster.name=cluster-exp \
-            -e discovery.type=single-node \
-            -e xpack.security.enabled=false \
-            -e xpack.security.http.ssl.enabled=false \
-            -e ES_JAVA_OPTS="-Xms512m -Xmx512m" \
-            eddie1031/es:9.1.3
-
-
-      - name: Wait for Elasticsearch to be up
-        run: |
-          for i in {1..10}; do
-            if curl -sSf http://localhost:9200; then
-              echo "Elasticsearch is up"
-              break
-            fi
-            echo "Waiting for Elasticsearch..."
-            sleep 8
-          done
-
       - name: Run Kafka container and wait for ready
         run: |
           docker run -d \
@@ -158,7 +133,7 @@ jobs:
       - name: kafka 연결 확인
         run: |
           for i in {1..12}; do
-            if docker exec -it kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; then
+            if docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; then
               echo "Kafka is up"
               break
             fi
@@ -170,6 +145,31 @@ jobs:
             echo "Kafka failed to start." >&2
             exit 1
           fi
+
+      - name: Elasticsearch docker run
+        run: |
+          docker run -d \
+            --name elasticsearch \
+            -p 9200:9200 \
+            -e node.name=es01 \
+            -e cluster.name=cluster-exp \
+            -e discovery.type=single-node \
+            -e xpack.security.enabled=false \
+            -e xpack.security.http.ssl.enabled=false \
+            -e ES_JAVA_OPTS="-Xms512m -Xmx512m" \
+            eddie1031/es:9.1.3
+
+
+      - name: Wait for Elasticsearch to be up
+        run: |
+          for i in {1..10}; do
+            if curl -sSf http://localhost:9200; then
+              echo "Elasticsearch is up"
+              break
+            fi
+            echo "Waiting for Elasticsearch..."
+            sleep 8
+          done
 
       - name: application-test.properties 파일 내용 확인
         run: cat ./search-service/src/main/resources/application-test.yml
