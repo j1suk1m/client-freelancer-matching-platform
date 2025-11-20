@@ -153,8 +153,10 @@ jobs:
             -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
             -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
             -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
-            apache/kafka:3.5.0
+            apache/kafka
 
+      - name: kafka 연결 확인
+        run: |
           for i in {1..12}; do
             if docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; then
               echo "Kafka is up"
