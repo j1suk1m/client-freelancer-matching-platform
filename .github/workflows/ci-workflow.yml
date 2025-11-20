@@ -134,6 +134,41 @@ jobs:
             sleep 8
           done
 
+      - name: Run Kafka container and wait for ready
+        run: |
+          docker run -d \
+            --name kafka \
+            -p 9092:9092 \
+            -p 9091:9091 \
+            -p 9090:9090 \
+            -e KAFKA_NODE_ID=1 \
+            -e CLUSTER_ID=ZWU1Y2JiNDctNDg3ZC4tNGY2Ny1iNzJh \
+            -e KAFKA_PROCESS_ROLES=controller,broker \
+            -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9091 \
+            -e KAFKA_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9092 \
+            -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9090,EXTERNAL://localhost:9092 \
+            -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT \
+            -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+            -e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT \
+            -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+            -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+            -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+            apache/kafka:3.5.0
+
+          for i in {1..12}; do
+            if docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; then
+              echo "Kafka is up"
+              break
+            fi
+            echo "Waiting for Kafka to be ready..."
+            sleep 5
+          done
+
+          if [ $i -eq 12 ]; then
+            echo "Kafka failed to start." >&2
+            exit 1
+          fi
+
       - name: application-test.properties 파일 내용 확인
         run: cat ./search-service/src/main/resources/application-test.yml
 
