@@ -3,7 +3,9 @@ package com.example.searchservice.tag;
 import com.example.searchservice.tag.service.TagAliasLoadService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 public class TagAliasLoadServiceTest {
 
     @Test
